@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Welcome</title>
+    <link>https://jensenmo.github.io/website/</link>
+    <description>Recent content on Welcome</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language><atom:link href="https://jensenmo.github.io/website/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>About</title>
+      <link>https://jensenmo.github.io/website/about/</link>
+      <pubDate>Sat, 15 Aug 2020 14:15:52 +0100</pubDate>
+      
+      <guid>https://jensenmo.github.io/website/about/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
