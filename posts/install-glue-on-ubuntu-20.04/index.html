@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="en">
+
+    <meta name="author" content="Morten Jensen">
+    <meta name="description" content="Background It&rsquo;s much faster to be able to develop and debug AWS Glue / PySpark scripts locally.
+The Developing and Testing ETL Scripts Locally Using the AWS Glue ETL Library instructions describe installation but are not complete. There are certain dependencies to consider to make this work.
+Also note that the version of PySpark used (2.4.3) for Glue 1.0 does not support:
+ Python 3.8, which Ubuntu 20.04 comes with. Therefore some of the PySpark code needs to be hacked a bit as per Stackoverflow and Gist.">
+    <meta name="keywords" content="blog,developer,personal">
+
+    
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Install &amp; run AWS Glue 1.0 and PySpark on Ubuntu 20.04"/>
+<meta name="twitter:description" content="Background It&rsquo;s much faster to be able to develop and debug AWS Glue / PySpark scripts locally.
+The Developing and Testing ETL Scripts Locally Using the AWS Glue ETL Library instructions describe installation but are not complete. There are certain dependencies to consider to make this work.
+Also note that the version of PySpark used (2.4.3) for Glue 1.0 does not support:
+ Python 3.8, which Ubuntu 20.04 comes with. Therefore some of the PySpark code needs to be hacked a bit as per Stackoverflow and Gist."/>
+
+    <meta property="og:title" content="Install &amp; run AWS Glue 1.0 and PySpark on Ubuntu 20.04" />
+<meta property="og:description" content="Background It&rsquo;s much faster to be able to develop and debug AWS Glue / PySpark scripts locally.
+The Developing and Testing ETL Scripts Locally Using the AWS Glue ETL Library instructions describe installation but are not complete. There are certain dependencies to consider to make this work.
+Also note that the version of PySpark used (2.4.3) for Glue 1.0 does not support:
+ Python 3.8, which Ubuntu 20.04 comes with. Therefore some of the PySpark code needs to be hacked a bit as per Stackoverflow and Gist." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://jensenmo.github.io/posts/install-glue-on-ubuntu-20.04/" />
+<meta property="article:published_time" content="2020-08-05T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-08-05T00:00:00+00:00" />
+
+
+    
+      <base href="https://jensenmo.github.io/posts/install-glue-on-ubuntu-20.04/">
+    
+    <title>
+  Install &amp; run AWS Glue 1.0 and PySpark on Ubuntu 20.04 · Welcome
+</title>
+
+    
+      <link rel="canonical" href="https://jensenmo.github.io/posts/install-glue-on-ubuntu-20.04/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="https://jensenmo.github.io/css/coder.min.0e5ce5b959a68dfe0232c6ddcec1e8ef154517c968464707f3181c437fe611c0.css" integrity="sha256-DlzluVmmjf4CMsbdzsHo7xVFF8loRkcH8xgcQ3/mEcA=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+      <link rel="stylesheet" href="https://jensenmo.github.io/css/custom.css" />
+    
+
+    
+
+    <link rel="icon" type="image/png" href="https://jensenmo.github.io/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://jensenmo.github.io/img/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.75.0-DEV" />
+  </head>
+  
+  
+  
+  <body class="colorscheme-light"
+        onload=""
+  >
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Welcome
+    </a>
+    
+      <span id="dark-mode-toggle" class="float-right">
+        <i class="fas fa-adjust fa-fw"></i>
+      </span>
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fas fa-bars fa-fw"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="https://jensenmo.github.io/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="https://jensenmo.github.io/about/">About</a>
+            </li>
+          
+        
+        
+        <li class="navigation-item separator">
+          <span>|</span>
+        </li>
+      </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Install &amp; run AWS Glue 1.0 and PySpark on Ubuntu 20.04</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2020-08-05T00:00:00Z'>
+                August 5, 2020
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              3-minute read
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+        <h2 id="background">Background</h2>
+<p>It&rsquo;s much faster to be able to develop and debug AWS Glue / PySpark scripts locally.</p>
+<p>The <a href="https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-libraries.html">Developing and Testing ETL Scripts Locally Using the AWS Glue ETL Library</a> instructions describe installation but are not complete. There are certain dependencies to consider to make this work.</p>
+<p>Also note that the version of PySpark used (2.4.3) for Glue 1.0 does not support:</p>
+<ul>
+<li>Python 3.8, which Ubuntu 20.04 comes with. Therefore some of the PySpark code needs to be hacked a bit as per <a href="https://stackoverflow.com/questions/58700384/how-to-fix-typeerror-an-integer-is-required-got-type-bytes-error-when-tryin">Stackoverflow</a> and <a href="https://gist.github.com/ei-grad/d311d0f34b60ebef96841a3a39103622">Gist</a>.</li>
+<li>Java 11, which Ubuntu 20.04 comes with. OpenJDK 8 headless is therefore installed and made the default runtime interpreter</li>
+</ul>
+<h2 id="install-ubuntu-package-dependencies">Install Ubuntu package dependencies</h2>
+<p>First install the Ubuntu package dependencies:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt install zip
+sudo apt install python-pytest
+<span style="font-style:italic"># Maven v3.6.3 is currently distributed</span>
+sudo apt install maven
+<span style="font-style:italic"># Ubuntu 20.04 comes with openjdk 11 per default, which PySpark is not compatible with</span>
+sudo apt install openjdk-8-jdk-headless
+sudo update-alternatives --config java
+<span style="font-style:italic"># Choose the option /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java</span>
+</code></pre></div><p>Consider updating <code>python</code> and <code>pip</code> alternatives:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+sudo update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+</code></pre></div><h2 id="install-aws-glue-python-library">Install AWS Glue Python library</h2>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd
+mkdir -p $HOME/app
+
+<span style="font-style:italic"># Just get the zip file from github, no need to clone repo (get glue-1.0, which supports Python3)</span>
+curl -LO https://github.com/awslabs/aws-glue-libs/archive/glue-1.0.zip
+unzip glue-1.0.zip -d $HOME/app
+mv $HOME/app/aws-glue-libs-glue-1.0 $HOME/app/aws-glue-libs
+rm glue-1.0.zip
+</code></pre></div><h2 id="install-glue-10-artifacts">Install Glue (1.0) artifacts</h2>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd
+mkdir -p $HOME/app
+
+curl -LO https://aws-glue-etl-artifacts.s3.amazonaws.com/glue-1.0/spark-2.4.3-bin-hadoop2.8.tgz
+tar xvpfz spark-2.4.3-bin-hadoop2.8.tgz -C $HOME/app
+rm spark-2.4.3-bin-hadoop2.8.tgz
+</code></pre></div><p>Now, as per this <a href="https://gist.github.com/ei-grad/d311d0f34b60ebef96841a3a39103622">Gist</a> the file <code>$HOME/app/spark-2.4.3-bin-spark-2.4.3-bin-hadoop2.8/python/pyspark/cloudpickle.py</code> will need to be edited in order for PySpark to work with Python 3.8. If this is not done then the PySpark shell will fail to start.</p>
+<p>First make a copy of the file:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cp -p $HOME/app/spark-2.4.3-bin-spark-2.4.3-bin-hadoop2.8/python/pyspark/cloudpickle.py <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>      $HOME/app/spark-2.4.3-bin-spark-2.4.3-bin-hadoop2.8/python/pyspark/cloudpickle.py.original
+</code></pre></div><p>Then edit the file <code>$HOME/app/spark-2.4.3-bin-spark-2.4.3-bin-hadoop2.8/python/pyspark/cloudpickle.py</code> and make the necessary changes as per abovementioned Gist.</p>
+<h2 id="create-glue-source-file">Create glue source file</h2>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p $HOME/bin
+
+cat <span style="font-style:italic">&lt;&lt;EOF &gt;$HOME/bin/glue
+</span><span style="font-style:italic"># Spark / Glue
+</span><span style="font-style:italic">export SPARK_HOME=\$HOME/app/spark-2.4.3-bin-spark-2.4.3-bin-hadoop2.8
+</span><span style="font-style:italic">export PATH=\$HOME/app/spark-2.4.3-bin-spark-2.4.3-bin-hadoop2.8/bin:\$PATH
+</span><span style="font-style:italic">export PATH=\$HOME/app/aws-glue-libs/bin:\$PATH
+</span><span style="font-style:italic">EOF</span>
+</code></pre></div><h2 id="source-environment-and-test">Source environment and test</h2>
+<p>Below <code>./bin/gluepyspark</code> command will download a considerable number of artifacts using <code>maven</code>.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">. glue
+cd $HOME/app/aws-glue-libs
+<span style="font-style:italic"># Start Glue Shell</span>
+./bin/gluepyspark
+</code></pre></div><h2 id="pyspark-for-ide-lookup">pyspark for IDE lookup</h2>
+<p>Optionally, it&rsquo;s possible to install PySpark (same version as that used with Glue) in the virtualenv to ensure that the IDE can cross-reference it.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="font-style:italic"># For VSCode run this from the project/git folder</span>
+python3 -m venv .
+pip3 install pyspark==2.4.3
+</code></pre></div><h2 id="test-aws-glue-set-up--pyspark">Test AWS Glue set-up &amp; PySpark</h2>
+<p>Before starting the Glue PySpark shell:</p>
+<ul>
+<li>Make sure relevant AWS credentials are available via environment variables or <code>.aws/credentials</code> profile (and AWS_PROFILE is set accordingly)</li>
+<li>Set a suitable region</li>
+</ul>
+<p>Start the Glue PySpark shell :</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export AWS_REGION=eu-west-1
+
+cd $HOME/app/aws-glue-libs
+./bin/gluepyspark
+</code></pre></div><p>Run some test code - if this doesn&rsquo;t yield an error then it&rsquo;s ready to go:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="font-weight:bold">import</span> <span style="font-weight:bold">sys</span>
+<span style="font-weight:bold">from</span> <span style="font-weight:bold">awsglue.transforms</span> <span style="font-weight:bold">import</span> *
+<span style="font-weight:bold">from</span> <span style="font-weight:bold">awsglue.utils</span> <span style="font-weight:bold">import</span> getResolvedOptions
+<span style="font-weight:bold">from</span> <span style="font-weight:bold">pyspark.context</span> <span style="font-weight:bold">import</span> SparkContext
+<span style="font-weight:bold">from</span> <span style="font-weight:bold">awsglue.context</span> <span style="font-weight:bold">import</span> GlueContext
+<span style="font-weight:bold">from</span> <span style="font-weight:bold">awsglue.job</span> <span style="font-weight:bold">import</span> Job
+
+glueContext = GlueContext(SparkContext.getOrCreate())
+job = Job(glueContext)
+job.init(<span style="font-style:italic">&#39;test-job1&#39;</span>)
+job.commit()
+</code></pre></div>
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js" id="MathJax-script"></script>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ['$', '$'], ['\\(', '\\)']
+        ],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  </section>
+
+      </div>
+
+      
+  <footer class="footer">
+    <section class="container">
+      
+        <p>Co. Westmeath, Ireland.</p>
+      
+      
+        ©
+        
+        2020
+         Morten Jensen 
+      
+      
+         · 
+        Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+      
+      
+    </section>
+  </footer>
+
+    </main>
+
+    
+      
+      <script src="https://jensenmo.github.io/js/dark-mode.min.0213e1773e6d1c5a644f847c67a6f8abac49a3776e2976f6008038af8c5b76a1.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+  </body>
+
+</html>
