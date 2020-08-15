@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Welcome</title>
+    <title>Morten Jensen</title>
     <link>https://jensenmo.github.io/</link>
-    <description>Recent content on Welcome</description>
+    <description>Recent content on Morten Jensen</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <lastBuildDate>Wed, 05 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://jensenmo.github.io/index.xml" rel="self" type="application/rss+xml" />
@@ -13,7 +13,8 @@
       <pubDate>Sat, 15 Aug 2020 14:15:52 +0100</pubDate>
       
       <guid>https://jensenmo.github.io/about/</guid>
-      <description></description>
+      <description>I am a senior hands-on IT professional and tech leader with more than 25 years of IT experience. I have extensive experience with AWS Cloud, DevOps, automation, migration, integration, databases etc.
+On a personal level I enjoy running and the odd game of golf when I don&amp;rsquo;t have my head stuck in a book or busy tinkering with a Raspberry Pi.</description>
     </item>
     
     <item>
