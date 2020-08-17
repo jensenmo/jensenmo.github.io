@@ -6,7 +6,17 @@
     <description>Recent content in Posts on Morten Jensen</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Wed, 05 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://jensenmo.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 15 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://jensenmo.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Use the Raspberry Pi 4 for AWS development - Part 1, Installation</title>
+      <link>https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/</link>
+      <pubDate>Sat, 15 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/</guid>
+      <description>Background With the advent of the Raspberry Pi 4, Pi&amp;rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the Arm space with the release of Graviton-based EC2 and support for Arm 64-bit (aarch64) with the following services:
+ AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs  Currently, there&amp;rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&amp;rsquo;s will run on Graviton-based EC2 instancesin AWS).</description>
+    </item>
+    
     <item>
       <title>Install &amp; run AWS Glue 1.0 and PySpark on Ubuntu 20.04</title>
       <link>https://jensenmo.github.io/posts/install-glue-on-ubuntu-20.04/</link>
