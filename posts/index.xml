@@ -6,15 +6,24 @@
     <description>Recent content in Posts on Morten Jensen</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 15 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://jensenmo.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 16 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://jensenmo.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Use the Raspberry Pi 4 for AWS development - Part 1, Installation</title>
       <link>https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/</link>
-      <pubDate>Sat, 15 Aug 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 16 Aug 2020 00:00:00 +0000</pubDate>
       
       <guid>https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/</guid>
       <description>Background With the advent of the Raspberry Pi 4, Pi&amp;rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the Arm space with the release of Graviton-based EC2 and support for Arm 64-bit (aarch64) with the following services:
- AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs  Currently, there&amp;rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&amp;rsquo;s will run on Graviton-based EC2 instancesin AWS).</description>
+ AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs  Currently, there&amp;rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&amp;rsquo;s will run on Graviton-based EC2 instances in AWS).</description>
+    </item>
+    
+    <item>
+      <title>Get started with Ubuntu 20.04 on Raspberry Pi 4</title>
+      <link>https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/</link>
+      <pubDate>Sat, 15 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/</guid>
+      <description>Background With the advent of the Raspberry Pi 4, Pi&amp;rsquo;s have become quite powerful both in CPU and memory terms and are now good candidates for software development on Arm architecture. The Pi 4 boasts quad-core ARM v8 64-bit 1.5Ghz CPU and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2.0) ports.</description>
     </item>
     
     <item>

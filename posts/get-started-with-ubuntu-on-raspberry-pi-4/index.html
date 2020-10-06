@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Language" content="en">
+
+    <meta name="author" content="Morten Jensen">
+    <meta name="description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in CPU and memory terms and are now good candidates for software development on Arm architecture. The Pi 4 boasts quad-core ARM v8 64-bit 1.5Ghz CPU and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2.0) ports.">
+    <meta name="keywords" content="Arm,Arm64,Raspberry Pi,Development,Ubuntu,Docker,Kubernetes">
+
+    
+
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Get started with Ubuntu 20.04 on Raspberry Pi 4"/>
+<meta name="twitter:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in CPU and memory terms and are now good candidates for software development on Arm architecture. The Pi 4 boasts quad-core ARM v8 64-bit 1.5Ghz CPU and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2.0) ports."/>
+
+    <meta property="og:title" content="Get started with Ubuntu 20.04 on Raspberry Pi 4" />
+<meta property="og:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in CPU and memory terms and are now good candidates for software development on Arm architecture. The Pi 4 boasts quad-core ARM v8 64-bit 1.5Ghz CPU and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2.0) ports." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/" />
+<meta property="article:published_time" content="2020-08-15T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-08-15T00:00:00+00:00" />
+
+
+    
+      <base href="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/">
+    
+    <title>
+  Get started with Ubuntu 20.04 on Raspberry Pi 4 · Morten Jensen
+</title>
+
+    
+      <link rel="canonical" href="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/">
+    
+
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+
+    
+      
+      
+      <link rel="stylesheet" href="https://jensenmo.github.io/css/coder.min.0e5ce5b959a68dfe0232c6ddcec1e8ef154517c968464707f3181c437fe611c0.css" integrity="sha256-DlzluVmmjf4CMsbdzsHo7xVFF8loRkcH8xgcQ3/mEcA=" crossorigin="anonymous" media="screen" />
+    
+
+    
+
+    
+
+    
+      <link rel="stylesheet" href="https://jensenmo.github.io/css/custom.css" />
+    
+
+    
+
+    <link rel="icon" type="image/png" href="https://jensenmo.github.io/img/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="https://jensenmo.github.io/img/favicon-16x16.png" sizes="16x16">
+
+    <meta name="generator" content="Hugo 0.75.0-DEV" />
+  </head>
+  
+  
+  
+  <body class="colorscheme-light"
+        onload=""
+  >
+    <main class="wrapper">
+      <nav class="navigation">
+  <section class="container">
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+      <span id="dark-mode-toggle" class="float-right">
+        <i class="fas fa-adjust fa-fw"></i>
+      </span>
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fas fa-bars fa-fw"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="https://jensenmo.github.io/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link" href="https://jensenmo.github.io/about/">About</a>
+            </li>
+          
+        
+        
+        <li class="navigation-item separator">
+          <span>|</span>
+        </li>
+      </ul>
+    
+  </section>
+</nav>
+
+
+      <div class="content">
+        
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">Get started with Ubuntu 20.04 on Raspberry Pi 4</h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fas fa-calendar"></i>
+              <time datetime='2020-08-15T00:00:00Z'>
+                August 15, 2020
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fas fa-clock"></i>
+              5-minute read
+            </span>
+          </div>
+          
+          
+        </div>
+      </header>
+
+      <div>
+        
+        <h2 id="background">Background</h2>
+<p>With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in <a href="https://www.raspberrypi.org/products/raspberry-pi-4-model-b/specifications/">CPU and memory terms</a> and are now good candidates for software development on Arm architecture. The Pi 4 boasts quad-core ARM v8 64-bit 1.5Ghz CPU and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2.0) ports.</p>
+<p>My personal interest in the Pi 4 is in part AWS-based. AWS has recently made significant headway in the Arm space with the release of Graviton-based EC2 instances with support for Arm 64-bit (aarch64).</p>
+<p>This post details how to set-up and get started with Ubuntu 20.04 on the Pi 4.</p>
+<p>So why choose Ubuntu over Raspberry Pi OS (aka. Raspbian)?</p>
+<p>The Raspberry Pi 4 has Arm64 64-bit (aarch64) support. With the Pi 4 the additional memory options (4GB and 8GB) makes it relevant to use a 64-bit OS.</p>
+<p>Ubuntu has <a href="https://wiki.ubuntu.com/ARM/RaspberryPi">distributions</a> that can be installed on the Raspberry PI. This includes a 64-bit version of the OS for select 3 and 4 models.</p>
+<p>Currently the <a href="https://www.raspberrypi.org/blog/latest-raspberry-pi-os-update-may-2020/">Raspberry Pi OS 64-bit version has only been announced in Beta</a> recently.</p>
+<p>On release, Ubuntu 20.04 was <a href="https://ubuntu.com/blog/ubuntu-20-04-lts-is-certified-for-the-raspberry-pi">certified with full support</a> on Raspberry Pi 4.</p>
+<p>In other words, Ubuntu 20.04 is currently the only <a href="https://wiki.ubuntu.com/FocalFossa/ReleaseNotes#Raspberry_Pi">fully supported Arm64 64-bit OS</a>.</p>
+<h2 id="installation">Installation</h2>
+<p>There is a <a href="https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#1-overview">How to install Ubuntu on your Raspberry Pi</a> tutorial available from Ubuntu, which is easy to follow.</p>
+<h2 id="configuration">Configuration</h2>
+<p>This section details the various configuration that is needed after successful installation of Ubuntu on the Raspberry Pi.</p>
+<h3 id="screen-resolution">Screen resolution</h3>
+<p>Raspberry PI screen resolution configuration - incuding custom modes - is documented in <a href="https://www.raspberrypi.org/documentation/configuration/hdmi-config.md">hdmi-config.md</a> and <a href="https://www.raspberrypi.org/documentation/configuration/config-txt/video.md">video.md</a>.</p>
+<p>The file <code>/boot/firmware/usercfg.txt</code> contains custom Ubuntu configuration for the Raspberry PI. This includes things like screen resolution, which take effect immediately during boot.</p>
+<p>Note that the configured screen resolution takes effect for both terminal and X window system.</p>
+<p>Below is an example configuration for a custom 2560 x 1080 monitor configuration (<code>hdmi_mode</code> 87) with 21:9 (7) aspect ratio. <em>The example will need to be adjusted according to monitor type and resolution &amp; refresh requirements</em>.</p>
+<p>The example also uses the vc4-fkms-v3d driver, which provides acceleration for both 2D (e.g. desktop) and 3D (OpenGL ES 3). More information <a href="https://www.raspberrypi.org/blog/vc4-and-v3d-opengl-drivers-for-raspberry-pi-an-update/">here</a>.</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ini" data-lang="ini">dtoverlay=<span style="font-style:italic">vc4-fkms-v3d</span>
+max_framebuffers=<span style="font-style:italic">2</span>
+gpu_mem=<span style="font-style:italic">128</span>
+<span style="font-style:italic">#hdmi_enable_4kp60=1</span>
+
+<span style="font-style:italic"># [HDMI:0]</span>
+hdmi_group:0=<span style="font-style:italic">2</span>
+hdmi_cvt:0=<span style="font-style:italic">2560 1080 60 7</span>
+hdmi_mode:0=<span style="font-style:italic">87</span>
+hdmi_drive:0=<span style="font-style:italic">2</span>
+disable_overscan:0=<span style="font-style:italic">1</span>
+
+max_framebuffer_width:0=<span style="font-style:italic">4096</span>
+max_framebuffer_height:0=<span style="font-style:italic">2160</span>
+framebuffer_width:0=<span style="font-style:italic">2560</span>
+framebuffer_height:0=<span style="font-style:italic">1080</span>
+
+<span style="font-style:italic"># [HDMI:1]</span>
+hdmi_group:1=<span style="font-style:italic">2</span>
+hdmi_mode:1=<span style="font-style:italic">82</span>
+hdmi_drive:1=<span style="font-style:italic">2</span>
+</code></pre></div><p>After editing the file, do a reboot, e.g. using the <code>sudo reboot</code> command.</p>
+<h3 id="installing-a-desktop">Installing a desktop</h3>
+<p>The simple, lightweight desktop called <a href="https://lxqt.github.io/">LXQt</a> can be installed by running: <code>sudo apt install lubuntu-desktop</code>.</p>
+<p>There are <a href="https://wiki.ubuntu.com/ARM/RaspberryPi#Desktop">other options</a> too.</p>
+<h3 id="set-hostname">Set hostname</h3>
+<p>A new hostname can be set, e.g. <code>rpi4-1</code>, with the command: <code>sudo hostnamectl set-hostname rpi4-1</code>.</p>
+<h3 id="static-network-ip">Static network IP</h3>
+<p>Follow the <a href="https://ubuntu.com/server/docs/network-configuration">Ubuntu server network configuration documentation</a>.</p>
+<p>Per default the wired (eth0) network adapter uses DHCP to get an IP address and is listed in the Ubuntu Server UI Desktop as being Unmanaged.</p>
+<p>The eth0 DHCP network configuration exists in the cloud-init netplan file <code>/etc/netplan/50-cloud-init.yaml</code>:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="font-weight:bold">network</span>:
+    <span style="font-weight:bold">ethernets</span>:
+        <span style="font-weight:bold">eth0</span>:
+            <span style="font-weight:bold">dhcp4</span>: <span style="font-weight:bold">true</span>
+            <span style="font-weight:bold">optional</span>: <span style="font-weight:bold">true</span>
+    <span style="font-weight:bold">version</span>: 2
+</code></pre></div><p>To disable the cloud-init netplan, which provides above configuration, create a new file <code>/etc/cloud/cloud.cfg.d/99-disable-network-config.cfg</code> and paste in:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="font-weight:bold">network</span>: {<span style="font-weight:bold">config</span>: disabled}
+</code></pre></div><p>Create a new netplan configuration file <code>/etc/netplan/99_config.yaml</code> with static IP address configuration, which resembles:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="font-weight:bold">network</span>:
+  <span style="font-weight:bold">version</span>: 2
+  <span style="font-weight:bold">renderer</span>: networkd
+  <span style="font-weight:bold">ethernets</span>:
+    <span style="font-weight:bold">eth0</span>:
+      <span style="font-weight:bold">addresses</span>:
+        - 192.168.0.14/24
+      <span style="font-weight:bold">gateway4</span>: 192.168.0.1
+      <span style="font-weight:bold">nameservers</span>:
+          <span style="font-weight:bold">addresses</span>:
+            - 192.168.0.1
+            - 1.1.1.1
+</code></pre></div><p>Remove the cloud-init netplan file:</p>
+<p><code>sudo rm /etc/netplan/50-cloud-init.yaml</code></p>
+<p>Apply netplan configuration (or alternatively reboot):</p>
+<p><code>sudo netplan apply</code></p>
+<p>More advanced configurations can also be achieved with <a href="https://netplan.io/examples">netplan</a>. E.g. multiple networks, IP addresses and default routes with metric-based weighting. Here&rsquo;s an example:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="font-weight:bold">network</span>:
+  <span style="font-weight:bold">version</span>: 2
+  <span style="font-weight:bold">renderer</span>: networkd
+  <span style="font-weight:bold">ethernets</span>:
+    <span style="font-weight:bold">eth0</span>:
+      <span style="font-weight:bold">addresses</span>:
+        - 192.168.0.14/24
+        - 192.168.1.14/24
+      <span style="font-weight:bold">routes</span>:
+        - <span style="font-weight:bold">to</span>: 0.0.0.0/0
+          <span style="font-weight:bold">via</span>: 192.168.0.1
+          <span style="font-weight:bold">metric</span>: 50
+        - <span style="font-weight:bold">to</span>: 0.0.0.0/0
+          <span style="font-weight:bold">via</span>: 192.168.1.1
+          <span style="font-weight:bold">metric</span>: 100
+      <span style="font-weight:bold">nameservers</span>:
+          <span style="font-weight:bold">addresses</span>:
+            - 1.1.1.1
+            - 192.168.0.1
+            - 192.168.1.1
+</code></pre></div><h2 id="software">Software</h2>
+<p>This section details software to install for development purposes.</p>
+<h3 id="visual-studio-code">Visual Studio Code</h3>
+<p>You will need to trust the <a href="https://packagecloud.io/app/headmelted/codebuilds/gpg">packagecloud.io headmelted</a> repository GPG key by running the following:</p>
+<p><code>curl https://packagecloud.io/headmelted/codebuilds/gpgkey | sudo apt-key add -</code></p>
+<p>Then follow the instructions to <a href="https://code.headmelted.com">install Visual Studio Code</a>.</p>
+<h3 id="docker">Docker</h3>
+<p><a href="https://docs.docker.com/engine/install/ubuntu/">Docker installation documentation on Ubuntu</a>.</p>
+<p>This is the short version:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo apt-get update
+
+sudo apt-get install -y <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>    apt-transport-https <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>    ca-certificates <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>    curl <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>    gnupg-agent <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>    software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+<span style="font-style:italic"># Verify that key was loaded</span>
+sudo apt-key fingerprint 0EBFCD88
+
+sudo add-apt-repository <span style="font-weight:bold;font-style:italic">\
+</span><span style="font-weight:bold;font-style:italic"></span>   <span style="font-style:italic">&#34;deb [arch=arm64] https://download.docker.com/linux/ubuntu \
+</span><span style="font-style:italic">   </span><span style="font-weight:bold">$(</span>lsb_release -cs<span style="font-weight:bold">)</span><span style="font-style:italic"> \
+</span><span style="font-style:italic">   stable&#34;</span>
+
+sudo apt-get update
+
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+<span style="font-style:italic"># Verify correct installation of docker:</span>
+sudo docker run hello-world
+
+<span style="font-style:italic"># Add current user for docker administration (remember to restart)</span>
+sudo usermod -aG docker $USER
+</code></pre></div><p>Do a reboot and then check that docker is up and running:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+</code></pre></div><h3 id="python-3">Python 3</h3>
+<p>Python 3(.8) is already installed per default.</p>
+<p>To install pip (python package manager) and venv (python virtual environment), run:</p>
+<p><code>sudo apt install -y python3-pip python3-venv</code></p>
+<h3 id="kubernetes">Kubernetes</h3>
+<p>Ubuntu 20.04 comes with a new packaging and deployment tool, <a href="https://snapcraft.io/about">Snap</a>. It promises to make software distribution, installation and configuration easer by bundling a given software and its requirements in a single package and to ring-fence the software from other installations on a system.</p>
+<p>Opinions on new Snap packaging are mixed but a prime example of Snap in action is the relatively lightweight <a href="https://ubuntu.com/tutorials/install-a-local-kubernetes-with-microk8s#1-overview"> Snap microk8s Kubernetes distribution</a>, which can be easily installed using: <code>sudo snap install microk8s --classic</code>.</p>
+<p>This also works on the Raspberry Pi 4.</p>
+<p>Note that if you do not want microk8s to start by default at every boot, this behaviour can be disabled using <code>sudo snap stop --disable microk8s</code>.</p>
+<p>To start microk8s, run <code>sudo snap start microk8s</code>. Note that this will take a minute or so to complete at which point the local node should be reporting as ready:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-fallback" data-lang="fallback">microk8s kubectl get nodes
+NAME     STATUS   ROLES    AGE   VERSION
+rpi4-1   Ready    &lt;none&gt;   19d   v1.19.0-34+&lt;...&gt;
+</code></pre></div>
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+      </footer>
+    </article>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js" id="MathJax-script"></script>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [
+          ['$', '$'], ['\\(', '\\)']
+        ],
+        processEscapes: true,
+        processEnvironments: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  </section>
+
+      </div>
+
+      
+  <footer class="footer">
+    <section class="container">
+      
+        <p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>&nbsp;&nbsp;This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
+      
+      
+        &copy;
+        
+        2020
+        Morten Jensen,  Ireland 
+      
+      
+         · 
+        Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
+      
+      
+    </section>
+  </footer>
+
+    </main>
+
+    
+      
+      <script src="https://jensenmo.github.io/js/dark-mode.min.0213e1773e6d1c5a644f847c67a6f8abac49a3776e2976f6008038af8c5b76a1.js"></script>
+    
+
+    
+
+    
+
+    
+
+    <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/plausible.js"></script>
+
+
+  </body>
+
+</html>
