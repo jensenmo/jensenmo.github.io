@@ -7,17 +7,17 @@
     <meta http-equiv="Content-Language" content="en">
 
     <meta name="author" content="Morten Jensen">
-    <meta name="description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in CPU and memory terms and are now good candidates for software development on Arm architecture. The Pi 4 boasts quad-core ARM v8 64-bit 1.5Ghz CPU and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2.0) ports.">
-    <meta name="keywords" content="Arm,Arm64,Raspberry Pi,Development,Ubuntu,Docker,Kubernetes">
+    <meta name="description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in CPU and memory terms and are now good candidates for software development on ARM architecture. The Pi 4 boasts quad-core ARM v8 1.5Ghz CPU with 64-bit support and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2.">
+    <meta name="keywords" content="ARM,ARM64,AArch64,Raspberry Pi,Development,Ubuntu,Docker,Kubernetes">
 
     
 
     <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Get started with Ubuntu 20.04 on Raspberry Pi 4"/>
-<meta name="twitter:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in CPU and memory terms and are now good candidates for software development on Arm architecture. The Pi 4 boasts quad-core ARM v8 64-bit 1.5Ghz CPU and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2.0) ports."/>
+<meta name="twitter:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in CPU and memory terms and are now good candidates for software development on ARM architecture. The Pi 4 boasts quad-core ARM v8 1.5Ghz CPU with 64-bit support and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2."/>
 
     <meta property="og:title" content="Get started with Ubuntu 20.04 on Raspberry Pi 4" />
-<meta property="og:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in CPU and memory terms and are now good candidates for software development on Arm architecture. The Pi 4 boasts quad-core ARM v8 64-bit 1.5Ghz CPU and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2.0) ports." />
+<meta property="og:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in CPU and memory terms and are now good candidates for software development on ARM architecture. The Pi 4 boasts quad-core ARM v8 1.5Ghz CPU with 64-bit support and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/" />
 <meta property="article:published_time" content="2020-08-15T00:00:00+00:00" />
@@ -120,7 +120,7 @@
             </span>
             <span class="reading-time">
               <i class="fas fa-clock"></i>
-              5-minute read
+              6-minute read
             </span>
           </div>
           
@@ -131,22 +131,22 @@
       <div>
         
         <h2 id="background">Background</h2>
-<p>With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in <a href="https://www.raspberrypi.org/products/raspberry-pi-4-model-b/specifications/">CPU and memory terms</a> and are now good candidates for software development on Arm architecture. The Pi 4 boasts quad-core ARM v8 64-bit 1.5Ghz CPU and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2.0) ports.</p>
-<p>My personal interest in the Pi 4 is in part AWS-based. AWS has recently made significant headway in the Arm space with the release of Graviton-based EC2 instances with support for Arm 64-bit (aarch64).</p>
+<p>With the advent of the Raspberry Pi 4, Pi&rsquo;s have become quite powerful both in <a href="https://www.raspberrypi.org/products/raspberry-pi-4-model-b/specifications/">CPU and memory terms</a> and are now good candidates for software development on ARM architecture. The Pi 4 boasts quad-core ARM v8 1.5Ghz CPU with 64-bit support and the option of 2, 4 or 8GB of DDR4 memory. It also has excellent connectivity through dual HDMI support (including 4k), Gigabit Ethernet and USB 3.0 (and 2.0) ports.</p>
+<p>My personal interest in the Pi 4 is in part AWS-based. AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 instances based on ARM64 (aka. <a href="https://en.wikipedia.org/wiki/AArch64">AArch64</a>) architecture.</p>
 <p>This post details how to set-up and get started with Ubuntu 20.04 on the Pi 4.</p>
 <p>So why choose Ubuntu over Raspberry Pi OS (aka. Raspbian)?</p>
-<p>The Raspberry Pi 4 has Arm64 64-bit (aarch64) support. With the Pi 4 the additional memory options (4GB and 8GB) makes it relevant to use a 64-bit OS.</p>
-<p>Ubuntu has <a href="https://wiki.ubuntu.com/ARM/RaspberryPi">distributions</a> that can be installed on the Raspberry PI. This includes a 64-bit version of the OS for select 3 and 4 models.</p>
+<p>The Raspberry Pi 4 has ARM64 64-bit (AArch64) support. With the Pi 4 the additional memory options (4GB and 8GB) makes it highly relevant to use a 64-bit OS.</p>
+<p>Ubuntu has <a href="https://wiki.ubuntu.com/ARM/RaspberryPi">distributions</a> that can be installed on the Raspberry Pi. This includes a 64-bit version of the OS for select Pi 3 and 4 models.</p>
 <p>Currently the <a href="https://www.raspberrypi.org/blog/latest-raspberry-pi-os-update-may-2020/">Raspberry Pi OS 64-bit version has only been announced in Beta</a> recently.</p>
 <p>On release, Ubuntu 20.04 was <a href="https://ubuntu.com/blog/ubuntu-20-04-lts-is-certified-for-the-raspberry-pi">certified with full support</a> on Raspberry Pi 4.</p>
-<p>In other words, Ubuntu 20.04 is currently the only <a href="https://wiki.ubuntu.com/FocalFossa/ReleaseNotes#Raspberry_Pi">fully supported Arm64 64-bit OS</a>.</p>
+<p>In other words, Ubuntu 20.04 is currently the only <a href="https://wiki.ubuntu.com/FocalFossa/ReleaseNotes#Raspberry_Pi">fully supported ARM64 64-bit OS</a>.</p>
 <h2 id="installation">Installation</h2>
 <p>There is a <a href="https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#1-overview">How to install Ubuntu on your Raspberry Pi</a> tutorial available from Ubuntu, which is easy to follow.</p>
 <h2 id="configuration">Configuration</h2>
 <p>This section details the various configuration that is needed after successful installation of Ubuntu on the Raspberry Pi.</p>
 <h3 id="screen-resolution">Screen resolution</h3>
-<p>Raspberry PI screen resolution configuration - incuding custom modes - is documented in <a href="https://www.raspberrypi.org/documentation/configuration/hdmi-config.md">hdmi-config.md</a> and <a href="https://www.raspberrypi.org/documentation/configuration/config-txt/video.md">video.md</a>.</p>
-<p>The file <code>/boot/firmware/usercfg.txt</code> contains custom Ubuntu configuration for the Raspberry PI. This includes things like screen resolution, which take effect immediately during boot.</p>
+<p>Raspberry Pi screen resolution configuration - incuding custom modes - is documented in <a href="https://www.raspberrypi.org/documentation/configuration/hdmi-config.md">hdmi-config.md</a> and <a href="https://www.raspberrypi.org/documentation/configuration/config-txt/video.md">video.md</a>.</p>
+<p>The file <code>/boot/firmware/usercfg.txt</code> contains custom Ubuntu configuration for the Raspberry Pi. This includes things like screen resolution, which take effect immediately during boot.</p>
 <p>Note that the configured screen resolution takes effect for both terminal and X window system.</p>
 <p>Below is an example configuration for a custom 2560 x 1080 monitor configuration (<code>hdmi_mode</code> 87) with 21:9 (7) aspect ratio. <em>The example will need to be adjusted according to monitor type and resolution &amp; refresh requirements</em>.</p>
 <p>The example also uses the vc4-fkms-v3d driver, which provides acceleration for both 2D (e.g. desktop) and 3D (OpenGL ES 3). More information <a href="https://www.raspberrypi.org/blog/vc4-and-v3d-opengl-drivers-for-raspberry-pi-an-update/">here</a>.</p>
@@ -230,9 +230,11 @@ hdmi_drive:1=<span style="font-style:italic">2</span>
 </code></pre></div><h2 id="software">Software</h2>
 <p>This section details software to install for development purposes.</p>
 <h3 id="visual-studio-code">Visual Studio Code</h3>
+<p>Up until very recently no official Microsoft Visual Studio Code (VSCode) builds exist for ARM. <a href="https://headmelted.com/">Headmelted</a> provides unofficial builds of VSCode for ARM.</p>
 <p>You will need to trust the <a href="https://packagecloud.io/app/headmelted/codebuilds/gpg">packagecloud.io headmelted</a> repository GPG key by running the following:</p>
 <p><code>curl https://packagecloud.io/headmelted/codebuilds/gpgkey | sudo apt-key add -</code></p>
-<p>Then follow the instructions to <a href="https://code.headmelted.com">install Visual Studio Code</a>.</p>
+<p>Then follow the instructions to <a href="https://code.headmelted.com">install VSCode</a>.</p>
+<p>Bootnote: Microsoft has started to release <a href="https://github.com/microsoft/vscode/pull/106289">insider builds of VSCode for both ARMv7 and ARMv8 (64-bit)</a> and an official release is said to be imminent (probably as part of VSCode 1.50).</p>
 <h3 id="docker">Docker</h3>
 <p><a href="https://docs.docker.com/engine/install/ubuntu/">Docker installation documentation on Ubuntu</a>.</p>
 <p>This is the short version:</p>
@@ -271,7 +273,32 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 <p>Python 3(.8) is already installed per default.</p>
 <p>To install pip (python package manager) and venv (python virtual environment), run:</p>
 <p><code>sudo apt install -y python3-pip python3-venv</code></p>
-<h3 id="kubernetes">Kubernetes</h3>
+<h3 id="node">Node</h3>
+<p>The default way of installing Node in Ubuntu is via <code>sudo apt install npm</code>. However, as of writing the provided version is v10, which is an LTS in Maintenance. v12 is the Active LTS and is therefore preferable.</p>
+<p>To install v12 (or later) the <a href="https://github.com/nvm-sh/nvm#installing-and-updating">Node Version Manager (NVM)</a> can be used. Unlike with apt, NVM and installation of node does not require root privileges and in effect provides a virtual user environment (not unlike pip/python) without the need to install npm packages globally as root.</p>
+<p>To install NVM, <a href="https://github.com/nvm-sh/nvm/releases/">check latest version</a> (e.g v0.36.0) and then run:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cd
+curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.36.0/install.sh -O
+chmod ug+x install.sh
+./install.sh
+export NVM_DIR=<span style="font-style:italic">&#34;</span>$HOME<span style="font-style:italic">/.nvm&#34;</span>
+[ -s <span style="font-style:italic">&#34;</span>$NVM_DIR<span style="font-style:italic">/nvm.sh&#34;</span> ] &amp;&amp; <span style="font-weight:bold;font-style:italic">\.</span> <span style="font-style:italic">&#34;</span>$NVM_DIR<span style="font-style:italic">/nvm.sh&#34;</span>  <span style="font-style:italic"># This loads nvm</span>
+[ -s <span style="font-style:italic">&#34;</span>$NVM_DIR<span style="font-style:italic">/bash_completion&#34;</span> ] &amp;&amp; <span style="font-weight:bold;font-style:italic">\.</span> <span style="font-style:italic">&#34;</span>$NVM_DIR<span style="font-style:italic">/bash_completion&#34;</span>  <span style="font-style:italic"># This loads nvm bash_completion</span>
+
+<span style="font-style:italic"># Find latest Node v12 version</span>
+nvm ls-remote | grep v12 | grep Latest
+       v12.18.4   (Latest LTS: Erbium)
+
+<span style="font-style:italic"># Install latest v12 version</span>
+nvm install v12.18.4
+
+<span style="font-style:italic"># Explicitly set the currently active Node version to use</span>
+nvm use node v12.18.4
+
+<span style="font-style:italic"># Validate that the correct version is used</span>
+node --version
+v12.18.4
+</code></pre></div><h3 id="kubernetes">Kubernetes</h3>
 <p>Ubuntu 20.04 comes with a new packaging and deployment tool, <a href="https://snapcraft.io/about">Snap</a>. It promises to make software distribution, installation and configuration easer by bundling a given software and its requirements in a single package and to ring-fence the software from other installations on a system.</p>
 <p>Opinions on new Snap packaging are mixed but a prime example of Snap in action is the relatively lightweight <a href="https://ubuntu.com/tutorials/install-a-local-kubernetes-with-microk8s#1-overview"> Snap microk8s Kubernetes distribution</a>, which can be easily installed using: <code>sudo snap install microk8s --classic</code>.</p>
 <p>This also works on the Raspberry Pi 4.</p>

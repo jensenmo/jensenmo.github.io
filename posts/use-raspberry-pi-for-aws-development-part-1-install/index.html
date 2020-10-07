@@ -7,19 +7,19 @@
     <meta http-equiv="Content-Language" content="en">
 
     <meta name="author" content="Morten Jensen">
-    <meta name="description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the Arm space with the release of Graviton-based EC2 and support for Arm 64-bit (aarch64) with the following services:
+    <meta name="description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:
  AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs  Currently, there&rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&rsquo;s will run on Graviton-based EC2 instances in AWS).">
-    <meta name="keywords" content="AWS,Raspberry Pi,Arm,Arm64,Development,Ubuntu,Docker,SAM,Chalice">
+    <meta name="keywords" content="AWS,Raspberry Pi,ARM,ARM64,AArch64,Development,Ubuntu,Docker,SAM,Chalice">
 
     
 
     <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Use the Raspberry Pi 4 for AWS development - Part 1, Installation"/>
-<meta name="twitter:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the Arm space with the release of Graviton-based EC2 and support for Arm 64-bit (aarch64) with the following services:
+<meta name="twitter:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:
  AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs  Currently, there&rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&rsquo;s will run on Graviton-based EC2 instances in AWS)."/>
 
     <meta property="og:title" content="Use the Raspberry Pi 4 for AWS development - Part 1, Installation" />
-<meta property="og:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the Arm space with the release of Graviton-based EC2 and support for Arm 64-bit (aarch64) with the following services:
+<meta property="og:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:
  AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs  Currently, there&rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&rsquo;s will run on Graviton-based EC2 instances in AWS)." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/" />
@@ -123,7 +123,7 @@
             </span>
             <span class="reading-time">
               <i class="fas fa-clock"></i>
-              2-minute read
+              3-minute read
             </span>
           </div>
           
@@ -134,7 +134,7 @@
       <div>
         
         <h2 id="background">Background</h2>
-<p>With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the Arm space with the release of Graviton-based EC2 and support for Arm 64-bit (aarch64) with the following services:</p>
+<p>With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:</p>
 <ul>
 <li><a href="https://aws.amazon.com/about-aws/whats-new/2019/11/aws-codebuild-adds-support-for-arm--gpu--and-x-large-compute-typ/">AWS CodeBuild</a></li>
 <li><a href="https://docs.aws.amazon.com/eks/latest/userguide/arm-support.html">Amazon EKS worker nodes (beta preview)</a></li>
@@ -143,16 +143,16 @@
 <p>Currently, there&rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&rsquo;s will run on Graviton-based EC2 instances in AWS). It&rsquo;s possible that this will change in the future.</p>
 <p>In the meantime, this post details how to install Ubuntu 20.04 as the development environment to build software destined for AWS services.</p>
 <p>So why choose Ubuntu over Raspberry Pi OS (aka. Raspbian)?</p>
-<p>The Raspberry Pi 4 has Arm64 64-bit (aarch64) support. With the Pi 4 the additional memory options (4GB and 8GB) makes it relevant to use a 64-bit OS.</p>
+<p>The Raspberry Pi 4 has ARM64 64-bit (aarch64) support. With the Pi 4 the additional memory options (4GB and 8GB) makes it highly relevant to use a 64-bit OS.</p>
 <p>Ubuntu has <a href="https://wiki.ubuntu.com/ARM/RaspberryPi">distributions</a> that can be installed on the Raspberry PI. This includes a 64-bit version of the OS for select 3 and 4 models.</p>
 <p>Currently the <a href="https://www.raspberrypi.org/blog/latest-raspberry-pi-os-update-may-2020/">Raspberry Pi OS 64-bit version has only been announced in Beta</a> relatively recently.</p>
 <p>On release, Ubuntu 20.04 was <a href="https://ubuntu.com/blog/ubuntu-20-04-lts-is-certified-for-the-raspberry-pi">certified with full support</a> on Raspberry Pi 4.</p>
-<p>In other words, Ubuntu 20.04 is currently the only <a href="https://wiki.ubuntu.com/FocalFossa/ReleaseNotes#Raspberry_Pi">fully supported Arm64 64-bit OS</a>.</p>
+<p>In other words, Ubuntu 20.04 is currently the only <a href="https://wiki.ubuntu.com/FocalFossa/ReleaseNotes#Raspberry_Pi">fully supported ARM64 64-bit OS</a>.</p>
 <p>Note that this post assumes that you have followed the <a href="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/">Get started with Ubuntu 20.04 on Raspberry Pi 4</a> post, which describes how to set-up various development software.</p>
 <h2 id="software">Software</h2>
 <p>This section details software to install for AWS development purposes.</p>
 <h3 id="aws-cli-v2">aws cli (v2)</h3>
-<p>The aws cli v2 is available for Arm64 - <a href="https://aws.amazon.com/blogs/developer/aws-cli-v2-now-available-for-linux-arm/">Installation instructions</a>.</p>
+<p>The aws cli v2 is available for ARM64 - <a href="https://aws.amazon.com/blogs/developer/aws-cli-v2-now-available-for-linux-arm/">Installation instructions</a>.</p>
 <p>This is the short version of installation instructions:</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -O <span style="font-style:italic">&#39;https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip&#39;</span>
 
@@ -166,6 +166,7 @@ sudo ./aws/install
 <p>The cfn-lint package is an excellent linter for AWS Cloudformation and can be installed with:</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">pip3 install --user cfn-lint
 </code></pre></div><h3 id="aws-chalice">aws chalice</h3>
+<p>Chalice requires Python3 and installation instructions are included on the <a href="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/">Get started with Ubuntu 20.04 on Raspberry Pi 4</a> page.</p>
 <p><a href="https://github.com/aws/chalice">aws chalice</a> is a framework that allows you to create Serverless Lambda applications easily.</p>
 <p>To install chalice, first create a virtual environment for python in a suitable location and finally install with pip:</p>
 <div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mkdir -p $HOME/dev/git/test-app
@@ -173,6 +174,13 @@ cd -p $HOME/dev/git/test-app
 python3 -m venv .venv
 . .venv/bin/activate
 python3 -m pip install chalice
+</code></pre></div><h3 id="aws-cdk-cloud-development-kit">aws cdk (Cloud Development Kit)</h3>
+<p>The CDK requires node and installation instructions are included on the <a href="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/">Get started with Ubuntu 20.04 on Raspberry Pi 4</a> page.</p>
+<p>To install the CDK, run:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">npm install -g aws-cdk
+
+cdk --version
+1.66.0 (build 459488d)
 </code></pre></div>
       </div>
 
