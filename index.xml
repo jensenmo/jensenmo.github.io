@@ -6,7 +6,19 @@
     <description>Recent content on Morten Jensen</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 16 Aug 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://jensenmo.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 21 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://jensenmo.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Enable Security Hub in an AWS Organization</title>
+      <link>https://jensenmo.github.io/posts/enable-security-hub-in-org/</link>
+      <pubDate>Sun, 21 Feb 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://jensenmo.github.io/posts/enable-security-hub-in-org/</guid>
+      <description>Background In November 2020 AWS announced that Security Hub now integrates with AWS Organizations.
+Unlike for many other AWS Organizations services integrations you will not find the ability to enable Security Hub on the Organizations page in the Master account.
+Integration can be activated from the Security Hub. If Security Hub is already in use then the option to integrate may not figure on the Security Hub Console.
+Activation can be done via a command line with aws securityhub update-organization-configuration --auto-enable from the Organizations Administrator acount.</description>
+    </item>
+    
     <item>
       <title>Use the Raspberry Pi 4 for AWS development - Part 1, Installation</title>
       <link>https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/</link>
