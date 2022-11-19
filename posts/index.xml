@@ -6,7 +6,18 @@
     <description>Recent content in Posts on Morten Jensen</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 21 Feb 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://jensenmo.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 19 Nov 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://jensenmo.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>On the Path to a Sustainable Home in Ireland</title>
+      <link>https://jensenmo.github.io/posts/on-the-path-to-a-sustainable-home/</link>
+      <pubDate>Sat, 19 Nov 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://jensenmo.github.io/posts/on-the-path-to-a-sustainable-home/</guid>
+      <description>In this post, I explain how we have gone about upgrading our home to become a sustainable home with a top rating. As well as experiences along the way.
+But first a disclaimer: this guide is for retrofits and incremental change. What we did might not be entirely suitable for others. Also, note that many of the organisations, initiatives, metrics and thresholds listed below are Irish.
+The beginning We bought our home back in 2015.</description>
+    </item>
+    
     <item>
       <title>Enable Security Hub in an AWS Organization</title>
       <link>https://jensenmo.github.io/posts/enable-security-hub-in-org/</link>
@@ -26,7 +37,7 @@ Activation can be done via a command line with aws securityhub update-organizati
       
       <guid>https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/</guid>
       <description>Background With the advent of the Raspberry Pi 4, Pi&amp;rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:
- AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs  Currently, there&amp;rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&amp;rsquo;s will run on Graviton-based EC2 instances in AWS).</description>
+AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs Currently, there&amp;rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&amp;rsquo;s will run on Graviton-based EC2 instances in AWS).</description>
     </item>
     
     <item>
@@ -47,7 +58,7 @@ Activation can be done via a command line with aws securityhub update-organizati
       <description>Background It&amp;rsquo;s much faster to be able to develop and debug AWS Glue / PySpark scripts locally.
 The Developing and Testing ETL Scripts Locally Using the AWS Glue ETL Library instructions describe installation but are not complete. There are certain dependencies to consider to make this work.
 Also note that the version of PySpark used (2.4.3) for Glue 1.0 does not support:
- Python 3.8, which Ubuntu 20.04 comes with. Therefore some of the PySpark code needs to be hacked a bit as per Stackoverflow and Gist.</description>
+Python 3.8, which Ubuntu 20.04 comes with. Therefore some of the PySpark code needs to be hacked a bit as per Stackoverflow and Gist.</description>
     </item>
     
   </channel>
