@@ -1,187 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Language" content="en">
-
-    <meta name="author" content="Morten Jensen">
-    <meta name="description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:
-AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs Currently, there&rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&rsquo;s will run on Graviton-based EC2 instances in AWS).">
-    <meta name="keywords" content="AWS,Raspberry Pi,ARM,ARM64,AArch64,Development,Ubuntu,Docker,SAM,Chalice">
-
-    
-
-    <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Use the Raspberry Pi 4 for AWS development - Part 1, Installation"/>
-<meta name="twitter:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:
-AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs Currently, there&rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&rsquo;s will run on Graviton-based EC2 instances in AWS)."/>
-
-    <meta property="og:title" content="Use the Raspberry Pi 4 for AWS development - Part 1, Installation" />
-<meta property="og:description" content="Background With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:
-AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs Currently, there&rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&rsquo;s will run on Graviton-based EC2 instances in AWS)." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-08-16T00:00:00+00:00" />
-<meta property="article:modified_time" content="2020-08-16T00:00:00+00:00" />
-
-
-
-    
-      <base href="https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/">
-    
-    <title>
+<head>
+  <title>
   Use the Raspberry Pi 4 for AWS development - Part 1, Installation · Morten Jensen
 </title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
 
-    
-      <link rel="canonical" href="https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/">
-    
 
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
 
-    
-      
-      
-      <link rel="stylesheet" href="https://jensenmo.github.io/css/coder.min.0e5ce5b959a68dfe0232c6ddcec1e8ef154517c968464707f3181c437fe611c0.css" integrity="sha256-DlzluVmmjf4CMsbdzsHo7xVFF8loRkcH8xgcQ3/mEcA=" crossorigin="anonymous" media="screen" />
-    
 
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+  Background
+  
     
+    Link to heading
+  
 
-    
+With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:
 
-    
-      <link rel="stylesheet" href="https://jensenmo.github.io/css/custom.css" />
-    
+AWS CodeBuild
+Amazon EKS worker nodes (beta preview)
+AWS ECS (for EC2) ARM AMIs
 
-    
+Currently, there&rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&rsquo;s will run on Graviton-based EC2 instances in AWS). It&rsquo;s possible that this will change in the future.">
+<meta name="keywords" content="AWS, Raspberry Pi, ARM, ARM64, AArch64, Development, Ubuntu, Docker, SAM, Chalice">
 
-    <link rel="icon" type="image/png" href="https://jensenmo.github.io/img/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="https://jensenmo.github.io/img/favicon-16x16.png" sizes="16x16">
 
-    <meta name="generator" content="Hugo 0.105.0">
-  </head>
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Use the Raspberry Pi 4 for AWS development - Part 1, Installation">
+  <meta name="twitter:description" content="Background Link to heading With the advent of the Raspberry Pi 4, Pi’s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:
+AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs Currently, there’s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI’s will run on Graviton-based EC2 instances in AWS). It’s possible that this will change in the future.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Use the Raspberry Pi 4 for AWS development - Part 1, Installation">
+  <meta property="og:description" content="Background Link to heading With the advent of the Raspberry Pi 4, Pi’s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:
+AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs Currently, there’s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI’s will run on Graviton-based EC2 instances in AWS). It’s possible that this will change in the future.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2020-08-16T00:00:00+00:00">
+    <meta property="article:modified_time" content="2020-08-16T00:00:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
   
   
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
   
-  <body class="colorscheme-light"
-        onload=""
-  >
-    <main class="wrapper">
-      <nav class="navigation">
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
   <section class="container">
+    
     <a class="navigation-title" href="https://jensenmo.github.io/">
       Morten Jensen
     </a>
     
-      <span id="dark-mode-toggle" class="float-right">
-        <i class="fas fa-adjust fa-fw"></i>
-      </span>
+    
       <input type="checkbox" id="menu-toggle" />
       <label class="menu-button float-right" for="menu-toggle">
-        <i class="fas fa-bars fa-fw"></i>
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
       </label>
       <ul class="navigation-list">
         
           
             <li class="navigation-item">
-              <a class="navigation-link" href="https://jensenmo.github.io/posts/">Blog</a>
+              <a class="navigation-link " href="/posts/">Blog</a>
             </li>
           
             <li class="navigation-item">
-              <a class="navigation-link" href="https://jensenmo.github.io/about/">About</a>
+              <a class="navigation-link " href="/about/">About</a>
             </li>
           
         
         
-        <li class="navigation-item separator">
-          <span>|</span>
-        </li>
       </ul>
     
   </section>
 </nav>
 
 
-      <div class="content">
-        
+    <div class="content">
+      
   <section class="container post">
     <article>
       <header>
         <div class="post-title">
-          <h1 class="title">Use the Raspberry Pi 4 for AWS development - Part 1, Installation</h1>
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/use-raspberry-pi-for-aws-development-part-1-install/">
+              Use the Raspberry Pi 4 for AWS development - Part 1, Installation
+            </a>
+          </h1>
         </div>
         <div class="post-meta">
           <div class="date">
             <span class="posted-on">
-              <i class="fas fa-calendar"></i>
-              <time datetime='2020-08-16T00:00:00Z'>
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2020-08-16T00:00:00Z">
                 August 16, 2020
               </time>
             </span>
             <span class="reading-time">
-              <i class="fas fa-clock"></i>
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
               3-minute read
             </span>
           </div>
           
           
+          
         </div>
       </header>
 
-      <div>
+      <div class="post-content">
         
-        <h2 id="background">Background</h2>
+        <h2 id="background">
+  Background
+  <a class="heading-link" href="#background">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
 <p>With the advent of the Raspberry Pi 4, Pi&rsquo;s have sufficiently powerful in terms of both CPU and memory for AWS development. Furthermore, AWS has recently made significant headway in the ARM space with the release of Graviton-based EC2 and support for ARM 64-bit (aarch64) with the following services:</p>
 <ul>
-<li><a href="https://aws.amazon.com/about-aws/whats-new/2019/11/aws-codebuild-adds-support-for-arm--gpu--and-x-large-compute-typ/">AWS CodeBuild</a></li>
-<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/arm-support.html">Amazon EKS worker nodes (beta preview)</a></li>
-<li><a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html">AWS ECS (for EC2) ARM AMIs</a></li>
+<li><a href="https://aws.amazon.com/about-aws/whats-new/2019/11/aws-codebuild-adds-support-for-arm--gpu--and-x-large-compute-typ/"  class="external-link" target="_blank" rel="noopener">AWS CodeBuild</a></li>
+<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/arm-support.html"  class="external-link" target="_blank" rel="noopener">Amazon EKS worker nodes (beta preview)</a></li>
+<li><a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI.html"  class="external-link" target="_blank" rel="noopener">AWS ECS (for EC2) ARM AMIs</a></li>
 </ul>
 <p>Currently, there&rsquo;s no known way to run Amazon Linux 2 on a Raspberry Pi (but AMI&rsquo;s will run on Graviton-based EC2 instances in AWS). It&rsquo;s possible that this will change in the future.</p>
 <p>In the meantime, this post details how to install Ubuntu 20.04 as the development environment to build software destined for AWS services.</p>
 <p>So why choose Ubuntu over Raspberry Pi OS (aka. Raspbian)?</p>
 <p>The Raspberry Pi 4 has ARM64 64-bit (aarch64) support. With the Pi 4 the additional memory options (4GB and 8GB) makes it highly relevant to use a 64-bit OS.</p>
-<p>Ubuntu has <a href="https://wiki.ubuntu.com/ARM/RaspberryPi">distributions</a> that can be installed on the Raspberry PI. This includes a 64-bit version of the OS for select 3 and 4 models.</p>
-<p>Currently the <a href="https://www.raspberrypi.org/blog/latest-raspberry-pi-os-update-may-2020/">Raspberry Pi OS 64-bit version has only been announced in Beta</a> relatively recently.</p>
-<p>On release, Ubuntu 20.04 was <a href="https://ubuntu.com/blog/ubuntu-20-04-lts-is-certified-for-the-raspberry-pi">certified with full support</a> on Raspberry Pi 4.</p>
-<p>In other words, Ubuntu 20.04 is currently the only <a href="https://wiki.ubuntu.com/FocalFossa/ReleaseNotes#Raspberry_Pi">fully supported ARM64 64-bit OS</a>.</p>
-<p>Note that this post assumes that you have followed the <a href="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/">Get started with Ubuntu 20.04 on Raspberry Pi 4</a> post, which describes how to set-up various development software.</p>
-<h2 id="software">Software</h2>
+<p>Ubuntu has <a href="https://wiki.ubuntu.com/ARM/RaspberryPi"  class="external-link" target="_blank" rel="noopener">distributions</a> that can be installed on the Raspberry PI. This includes a 64-bit version of the OS for select 3 and 4 models.</p>
+<p>Currently the <a href="https://www.raspberrypi.org/blog/latest-raspberry-pi-os-update-may-2020/"  class="external-link" target="_blank" rel="noopener">Raspberry Pi OS 64-bit version has only been announced in Beta</a> relatively recently.</p>
+<p>On release, Ubuntu 20.04 was <a href="https://ubuntu.com/blog/ubuntu-20-04-lts-is-certified-for-the-raspberry-pi"  class="external-link" target="_blank" rel="noopener">certified with full support</a> on Raspberry Pi 4.</p>
+<p>In other words, Ubuntu 20.04 is currently the only <a href="https://wiki.ubuntu.com/FocalFossa/ReleaseNotes#Raspberry_Pi"  class="external-link" target="_blank" rel="noopener">fully supported ARM64 64-bit OS</a>.</p>
+<p>Note that this post assumes that you have followed the <a href="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/" >Get started with Ubuntu 20.04 on Raspberry Pi 4</a> post, which describes how to set-up various development software.</p>
+<h2 id="software">
+  Software
+  <a class="heading-link" href="#software">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
 <p>This section details software to install for AWS development purposes.</p>
-<h3 id="aws-cli-v2">aws cli (v2)</h3>
-<p>The aws cli v2 is available for ARM64 - <a href="https://aws.amazon.com/blogs/developer/aws-cli-v2-now-available-for-linux-arm/">Installation instructions</a>.</p>
+<h3 id="aws-cli-v2">
+  aws cli (v2)
+  <a class="heading-link" href="#aws-cli-v2">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>The aws cli v2 is available for ARM64 - <a href="https://aws.amazon.com/blogs/developer/aws-cli-v2-now-available-for-linux-arm/"  class="external-link" target="_blank" rel="noopener">Installation instructions</a>.</p>
 <p>This is the short version of installation instructions:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -O <span style="font-style:italic">&#39;https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip&#39;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>curl -O <span style="color:#e6db74">&#39;https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip&#39;</span>
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>unzip awscli-exe-linux-aarch64.zip
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>sudo ./aws/install
-</span></span></code></pre></div><h3 id="aws-sam-cli">aws sam cli</h3>
-<p>The <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-linux.html">aws sam cli</a> can be installed using:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pip3 install --user aws-sam-cli
-</span></span></code></pre></div><h3 id="cfn-lint">cfn-lint</h3>
+</span></span></code></pre></div><h3 id="aws-sam-cli">
+  aws sam cli
+  <a class="heading-link" href="#aws-sam-cli">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>The <a href="https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-linux.html"  class="external-link" target="_blank" rel="noopener">aws sam cli</a> can be installed using:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pip3 install --user aws-sam-cli
+</span></span></code></pre></div><h3 id="cfn-lint">
+  cfn-lint
+  <a class="heading-link" href="#cfn-lint">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
 <p>The cfn-lint package is an excellent linter for AWS Cloudformation and can be installed with:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pip3 install --user cfn-lint
-</span></span></code></pre></div><h3 id="aws-chalice">aws chalice</h3>
-<p>Chalice requires Python3 and installation instructions are included on the <a href="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/">Get started with Ubuntu 20.04 on Raspberry Pi 4</a> page.</p>
-<p><a href="https://github.com/aws/chalice">aws chalice</a> is a framework that allows you to create Serverless Lambda applications easily.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pip3 install --user cfn-lint
+</span></span></code></pre></div><h3 id="aws-chalice">
+  aws chalice
+  <a class="heading-link" href="#aws-chalice">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>Chalice requires Python3 and installation instructions are included on the <a href="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/" >Get started with Ubuntu 20.04 on Raspberry Pi 4</a> page.</p>
+<p><a href="https://github.com/aws/chalice"  class="external-link" target="_blank" rel="noopener">aws chalice</a> is a framework that allows you to create Serverless Lambda applications easily.</p>
 <p>To install chalice, first create a virtual environment for python in a suitable location and finally install with pip:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir -p $HOME/dev/git/test-app
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>mkdir -p $HOME/dev/git/test-app
 </span></span><span style="display:flex;"><span>cd -p $HOME/dev/git/test-app
 </span></span><span style="display:flex;"><span>python3 -m venv .venv
 </span></span><span style="display:flex;"><span>. .venv/bin/activate
 </span></span><span style="display:flex;"><span>python3 -m pip install chalice
-</span></span></code></pre></div><h3 id="aws-cdk-cloud-development-kit">aws cdk (Cloud Development Kit)</h3>
-<p>The CDK requires node and installation instructions are included on the <a href="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/">Get started with Ubuntu 20.04 on Raspberry Pi 4</a> page.</p>
+</span></span></code></pre></div><h3 id="aws-cdk-cloud-development-kit">
+  aws cdk (Cloud Development Kit)
+  <a class="heading-link" href="#aws-cdk-cloud-development-kit">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>The CDK requires node and installation instructions are included on the <a href="https://jensenmo.github.io/posts/get-started-with-ubuntu-on-raspberry-pi-4/" >Get started with Ubuntu 20.04 on Raspberry Pi 4</a> page.</p>
 <p>To install the CDK, run:</p>
-<div class="highlight"><pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>npm install -g aws-cdk
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>npm install -g aws-cdk
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span>cdk --version
-</span></span><span style="display:flex;"><span>1.66.0 (build 459488d)
+</span></span><span style="display:flex;"><span>1.66.0 <span style="color:#f92672">(</span>build 459488d<span style="color:#f92672">)</span>
 </span></span></code></pre></div>
       </div>
 
@@ -193,66 +272,94 @@ AWS CodeBuild Amazon EKS worker nodes (beta preview) AWS ECS (for EC2) ARM AMIs 
         
         
         
+        
+        
+        
+        
       </footer>
     </article>
 
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js" id="MathJax-script"></script>
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [
-          ['$', '$'], ['\\(', '\\)']
-        ],
-        processEscapes: true,
-        processEnvironments: true
-      },
-      options: {
-        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
       }
-    };
-  </script>
+    );"></script>
   </section>
 
-      </div>
+    </div>
 
-      
-  <footer class="footer">
-    <section class="container">
-      
-        <p><a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a>&nbsp;&nbsp;This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</p>
-      
-      
-        &copy;
-        
-        2022
-        Morten Jensen,  Ireland 
-      
-      
-         · 
-        Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
-      
-      
-    </section>
-  </footer>
-
-    </main>
-
+    <footer class="footer">
+  <section class="container">
+    ©
     
-      
-      <script src="https://jensenmo.github.io/js/dark-mode.min.c2d8a1f8f2660e4a46d776277c72695a1e0ca65939d79f754441d47551604af5.js"></script>
+    2025
+     Morten Jensen 
+    ·
     
-
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
     
+  </section>
+</footer>
 
-    
+  </main>
 
-    
+  
 
-    <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/plausible.js"></script>
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
 
 
-  </body>
+  
 
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
 </html>

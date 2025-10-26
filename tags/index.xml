@@ -4,7 +4,8 @@
     <title>Tags on Morten Jensen</title>
     <link>https://jensenmo.github.io/tags/</link>
     <description>Recent content in Tags on Morten Jensen</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en</language><atom:link href="https://jensenmo.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo</generator>
+    <language>en</language>
+    <atom:link href="https://jensenmo.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>
