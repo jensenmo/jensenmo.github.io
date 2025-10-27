@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  JCA Binding execute of Reference operation &#39;merge&#39; failed due to: DBWriteInteractionSpec Execute Failed Exception · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="Another problem I faced today while using the DbAdapter for merging rows from another web service (as per my previous blog) was that commits failed. This turned out to be because Global Transactions were enabled on the Data Source that was referenced to by the DbAdapter configuration (see below).
+
+  Solution
+  
+    
+    Link to heading
+  
+
+Global Transactions can be disabled on the data source by going to: Home -&gt; Data Sources -&gt; Data source name -&gt; Transactions -&gt; Un-tick: Supports Global Transactions and then Save the data source.">
+<meta name="keywords" content="Binding, execute, Reference, operation, merge, failed, DBWriteInteractionSpec, Execute, Failed, Exception">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="JCA Binding execute of Reference operation &#39;merge&#39; failed due to: DBWriteInteractionSpec Execute Failed Exception">
+  <meta name="twitter:description" content="Another problem I faced today while using the DbAdapter for merging rows from another web service (as per my previous blog) was that commits failed. This turned out to be because Global Transactions were enabled on the Data Source that was referenced to by the DbAdapter configuration (see below).
+Solution Link to heading Global Transactions can be disabled on the data source by going to: Home -&gt; Data Sources -&gt; Data source name -&gt; Transactions -&gt; Un-tick: Supports Global Transactions and then Save the data source.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/jca-binding-execute-of-reference-operation-merge-failed-due-to-dbwriteinteractionspec-execute-failed-exception/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="JCA Binding execute of Reference operation &#39;merge&#39; failed due to: DBWriteInteractionSpec Execute Failed Exception">
+  <meta property="og:description" content="Another problem I faced today while using the DbAdapter for merging rows from another web service (as per my previous blog) was that commits failed. This turned out to be because Global Transactions were enabled on the Data Source that was referenced to by the DbAdapter configuration (see below).
+Solution Link to heading Global Transactions can be disabled on the data source by going to: Home -&gt; Data Sources -&gt; Data source name -&gt; Transactions -&gt; Un-tick: Supports Global Transactions and then Save the data source.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2013-01-23T21:27:00+00:00">
+    <meta property="article:modified_time" content="2013-01-23T21:27:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/jca-binding-execute-of-reference-operation-merge-failed-due-to-dbwriteinteractionspec-execute-failed-exception/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/jca-binding-execute-of-reference-operation-merge-failed-due-to-dbwriteinteractionspec-execute-failed-exception/">
+              JCA Binding execute of Reference operation &#39;merge&#39; failed due to: DBWriteInteractionSpec Execute Failed Exception
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2013-01-23T21:27:00Z">
+                January 23, 2013
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              2-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>Another problem I faced today while using the DbAdapter for merging rows from another web service (as per my previous blog) was that commits failed. This turned out to be because Global Transactions were enabled on the Data Source that was referenced to by the DbAdapter configuration (see below).</p>
+<h2 id="solution">
+  Solution
+  <a class="heading-link" href="#solution">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Global Transactions can be disabled on the data source by going to: Home -&gt; Data Sources -&gt; <em>Data source name</em> -&gt; Transactions -&gt; Un-tick: Supports Global Transactions and then Save the data source.</p>
+<h2 id="error-output">
+  Error Output
+  <a class="heading-link" href="#error-output">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>[2013-01-23T18:57:09.109+00:00] [AdminServer] [ERROR] [] [oracle.soa.mediator.serviceEngine] [tid: [ACTIVE].ExecuteThread: &#39;3&#39; for queue: &#39;weblogic.kernel.Default (self-tuning)&#39;] [userId: ] [ecid: 9509de3c0774d59e:-2c8c14e5:13c6452f049:-8000-0000000000017281,0:2] [WEBSERVICE_PORT.name: PPRInvocation_pt] [APP: soa-infra] [composite_name: PPR] [component_name: PPRDataRouter] [component_instance_id: A72C5CC0658E11E2AF67035B1A7C2490] [J2EE_MODULE.name: fabric] [WEBSERVICE.name: pprinvocation_client_ep] [J2EE_APP.name: soa-infra] [composite_instance_id: 30006] Post 2 mess failed[[
+</span></span><span style="display:flex;"><span>oracle.fabric.common.FabricInvocationException: BINDING.JCA-12563
+</span></span><span style="display:flex;"><span>Exception occured when binding was invoked.
+</span></span><span style="display:flex;"><span>Exception occured during invocation of JCA binding: &#34;JCA Binding execute of Reference operation &#39;merge&#39; failed due to: DBWriteInteractionSpec Execute Failed Exception.
+</span></span><span style="display:flex;"><span>merge failed. Descriptor name: [PPRPersistenceService.PriceData].
+</span></span><span style="display:flex;"><span>Caused by java.sql.SQLException: Cannot call Connection.commit in distributed transaction. Transaction Manager will commit the resource manager when the distributed transaction is committed..
+</span></span><span style="display:flex;"><span>Please see the logs for the full DBAdapter logging output prior to this exception. This exception is considered retriable, likely due to a communication failure. To classify it as non-retriable instead add property nonRetriableErrorCodes with value &#34;0&#34; to your deployment descriptor (i.e. weblogic-ra.xml). To auto retry a retriable fault set these composite.xml properties for this invoke: jca.retry.interval, jca.retry.count, and jca.retry.backoff. All properties are integers.
+</span></span><span style="display:flex;"><span>&#34;.
+</span></span><span style="display:flex;"><span>The invoked JCA adapter raised a resource exception.
+</span></span><span style="display:flex;"><span>Please examine the above error message carefully to determine a resolution.
+</span></span><span style="display:flex;"><span>at oracle.integration.platform.blocks.adapter.fw.jca.cci.EndpointInteractionException.getFabricInvocationException(EndpointInteractionException.java:75)
+</span></span><span style="display:flex;"><span>at oracle.integration.platform.blocks.adapter.AdapterReference.getFabricInvocationException(AdapterReference.java:307)
+</span></span><span style="display:flex;"><span>at oracle.integration.platform.blocks.adapter.AdapterReference.post(AdapterReference.java:293)
+</span></span><span style="display:flex;"><span>at oracle.integration.platform.blocks.mesh.AsynchronousMessageHandler.doPost(AsynchronousMessageHandler.java:142)
+</span></span><span style="display:flex;"><span>at oracle.integration.platform.blocks.mesh.MessageRouter.post(MessageRouter.java:197)
+</span></span><span style="display:flex;"><span>at oracle.integration.platform.blocks.mesh.MeshImpl.post(MeshImpl.java:215)
+</span></span><span style="display:flex;"><span>at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+</span></span><span style="display:flex;"><span>at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+</span></span><span style="display:flex;"><span>at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+</span></span><span style="display:flex;"><span>at java.lang.reflect.Method.invoke(Method.java:597)
+</span></span><span style="display:flex;"><span>at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:307)
+</span></span><span style="display:flex;"><span>at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:182)
+</span></span></code></pre></div><hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2013/01/jca-binding-execute-of-reference.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2013/01/jca-binding-execute-of-reference.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

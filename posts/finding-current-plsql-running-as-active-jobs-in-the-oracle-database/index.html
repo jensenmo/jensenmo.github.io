@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Finding current PL/SQL running as active jobs in the Oracle database · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="I was asked to kill a DBMS_JOB job process that was running a particular PL/SQL package/procedure. I was looking through documents and Oracle Support but didn&rsquo;t find anything useful, at least not during the couple of minutes I tried. So instead I had a look at v$session and realised that it includes the plsql_entry_object_id and plsql_entry_subprogram_id columns, which allows me to do the following:
+
+  SQL Query to Find Active Jobs
+  
+    
+    Link to heading
+  
+
+select s.username, s.sid, s.serial#, s.program, s.last_call_et, s.logon_time,
+       p.object_name package_name, p.procedure_name
+from v$session s, dba_procedures p
+where s.type = &#39;USER&#39;
+  and s.status = &#39;ACTIVE&#39;
+  and regexp_like(s.program, &#39;\(J\d\d\d\)&#39;)
+  and p.object_id (&#43;) = s.plsql_entry_object_id
+  and NVL(p.subprogram_id (&#43;), 0) = NVL(s.plsql_entry_subprogram_id, 0)
+/
+
+  Alternative Approach
+  
+    
+    Link to heading
+  
+
+Oh, and afterwards I found Oracle Support note 61730.1 and a number of other notes on the DBA_JOBS_RUNNING view, which states what jobs are currently running.">
+<meta name="keywords" content="Finding, current, PL/SQL, running, active, jobs, Oracle, database">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Finding current PL/SQL running as active jobs in the Oracle database">
+  <meta name="twitter:description" content="I was asked to kill a DBMS_JOB job process that was running a particular PL/SQL package/procedure. I was looking through documents and Oracle Support but didn’t find anything useful, at least not during the couple of minutes I tried. So instead I had a look at v$session and realised that it includes the plsql_entry_object_id and plsql_entry_subprogram_id columns, which allows me to do the following:
+SQL Query to Find Active Jobs Link to heading select s.username, s.sid, s.serial#, s.program, s.last_call_et, s.logon_time, p.object_name package_name, p.procedure_name from v$session s, dba_procedures p where s.type = &#39;USER&#39; and s.status = &#39;ACTIVE&#39; and regexp_like(s.program, &#39;\(J\d\d\d\)&#39;) and p.object_id (&#43;) = s.plsql_entry_object_id and NVL(p.subprogram_id (&#43;), 0) = NVL(s.plsql_entry_subprogram_id, 0) / Alternative Approach Link to heading Oh, and afterwards I found Oracle Support note 61730.1 and a number of other notes on the DBA_JOBS_RUNNING view, which states what jobs are currently running.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/finding-current-plsql-running-as-active-jobs-in-the-oracle-database/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Finding current PL/SQL running as active jobs in the Oracle database">
+  <meta property="og:description" content="I was asked to kill a DBMS_JOB job process that was running a particular PL/SQL package/procedure. I was looking through documents and Oracle Support but didn’t find anything useful, at least not during the couple of minutes I tried. So instead I had a look at v$session and realised that it includes the plsql_entry_object_id and plsql_entry_subprogram_id columns, which allows me to do the following:
+SQL Query to Find Active Jobs Link to heading select s.username, s.sid, s.serial#, s.program, s.last_call_et, s.logon_time, p.object_name package_name, p.procedure_name from v$session s, dba_procedures p where s.type = &#39;USER&#39; and s.status = &#39;ACTIVE&#39; and regexp_like(s.program, &#39;\(J\d\d\d\)&#39;) and p.object_id (&#43;) = s.plsql_entry_object_id and NVL(p.subprogram_id (&#43;), 0) = NVL(s.plsql_entry_subprogram_id, 0) / Alternative Approach Link to heading Oh, and afterwards I found Oracle Support note 61730.1 and a number of other notes on the DBA_JOBS_RUNNING view, which states what jobs are currently running.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2010-07-26T14:36:00+01:00">
+    <meta property="article:modified_time" content="2010-07-26T14:36:00+01:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/finding-current-plsql-running-as-active-jobs-in-the-oracle-database/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/finding-current-plsql-running-as-active-jobs-in-the-oracle-database/">
+              Finding current PL/SQL running as active jobs in the Oracle database
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2010-07-26T14:36:00&#43;01:00">
+                July 26, 2010
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              One-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>I was asked to kill a <code>DBMS_JOB</code> job process that was running a particular PL/SQL package/procedure. I was looking through documents and Oracle Support but didn&rsquo;t find anything useful, at least not during the couple of minutes I tried. So instead I had a look at <code>v$session</code> and realised that it includes the <code>plsql_entry_object_id</code> and <code>plsql_entry_subprogram_id</code> columns, which allows me to do the following:</p>
+<h2 id="sql-query-to-find-active-jobs">
+  SQL Query to Find Active Jobs
+  <a class="heading-link" href="#sql-query-to-find-active-jobs">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> s.username, s.sid, s.serial<span style="color:#f92672">#</span>, s.program, s.last_call_et, s.logon_time,
+</span></span><span style="display:flex;"><span>       p.object_name package_name, p.procedure_name
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> v$session s, dba_procedures p
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> s.<span style="color:#66d9ef">type</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;USER&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">and</span> s.status <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;ACTIVE&#39;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">and</span> regexp_like(s.program, <span style="color:#e6db74">&#39;\(J\d\d\d\)&#39;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">and</span> p.object_id (<span style="color:#f92672">+</span>) <span style="color:#f92672">=</span> s.plsql_entry_object_id
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">and</span> NVL(p.subprogram_id (<span style="color:#f92672">+</span>), <span style="color:#ae81ff">0</span>) <span style="color:#f92672">=</span> NVL(s.plsql_entry_subprogram_id, <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span><span style="color:#f92672">/</span>
+</span></span></code></pre></div><h2 id="alternative-approach">
+  Alternative Approach
+  <a class="heading-link" href="#alternative-approach">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Oh, and afterwards I found Oracle Support note 61730.1 and a number of other notes on the <code>DBA_JOBS_RUNNING</code> view, which states what jobs are currently running.</p>
+<hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2010/07/finding-current-plsql-running-as-active.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2010/07/finding-current-plsql-running-as-active.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Optimising Data Pump Export and Import Performance · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+  Background
+  
+    
+    Link to heading
+  
+
+Recently I was tasked to come up with ways to significantly improve expdp &amp; impdp performance. The client had a 300GB database (total of 76GB dump files) and it took 2.5 hours or longer to export the database - 5 hours or longer to import it. The existing job was already using parallelism of 8.
+The customer was concerned over timings because they were considering data pump as a means of doing a database upgrade (fresh database) on a separate system. Furthermore they wanted to be able to use data pump for refresh of test data in some of their test databases. They wanted the option to exclude some of the data objects too.">
+<meta name="keywords" content="Optimising, Data, Pump, Export, Import, Performance">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Optimising Data Pump Export and Import Performance">
+  <meta name="twitter:description" content="Background Link to heading Recently I was tasked to come up with ways to significantly improve expdp &amp; impdp performance. The client had a 300GB database (total of 76GB dump files) and it took 2.5 hours or longer to export the database - 5 hours or longer to import it. The existing job was already using parallelism of 8.
+The customer was concerned over timings because they were considering data pump as a means of doing a database upgrade (fresh database) on a separate system. Furthermore they wanted to be able to use data pump for refresh of test data in some of their test databases. They wanted the option to exclude some of the data objects too.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/optimising-data-pump-export-and-import-performance/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Optimising Data Pump Export and Import Performance">
+  <meta property="og:description" content="Background Link to heading Recently I was tasked to come up with ways to significantly improve expdp &amp; impdp performance. The client had a 300GB database (total of 76GB dump files) and it took 2.5 hours or longer to export the database - 5 hours or longer to import it. The existing job was already using parallelism of 8.
+The customer was concerned over timings because they were considering data pump as a means of doing a database upgrade (fresh database) on a separate system. Furthermore they wanted to be able to use data pump for refresh of test data in some of their test databases. They wanted the option to exclude some of the data objects too.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2012-10-13T20:31:00+01:00">
+    <meta property="article:modified_time" content="2012-10-13T20:31:00+01:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/optimising-data-pump-export-and-import-performance/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/optimising-data-pump-export-and-import-performance/">
+              Optimising Data Pump Export and Import Performance
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2012-10-13T20:31:00&#43;01:00">
+                October 13, 2012
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              9-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <h2 id="background">
+  Background
+  <a class="heading-link" href="#background">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Recently I was tasked to come up with ways to significantly improve <code>expdp</code> &amp; <code>impdp</code> performance. The client had a 300GB database (total of 76GB dump files) and it took 2.5 hours or longer to export the database - 5 hours or longer to import it. The existing job was already using parallelism of 8.</p>
+<p>The customer was concerned over timings because they were considering data pump as a means of doing a database upgrade (fresh database) on a separate system. Furthermore they wanted to be able to use data pump for refresh of test data in some of their test databases. They wanted the option to exclude some of the data objects too.</p>
+<p>The system was AIX-based and database was running in an LPAR with 5 CPU cores assigned to it. It was also connected to a SAN, which could sustain 1.5GB/s read and writes from this system with an average of 2-3ms latencies; which in fairness was one of the most capable I/O sub systems that I have encountered.</p>
+<p>Throughout I used the two parameters <code>metrics=y</code> and <code>trace=1FF0300</code> in order to generate trace information and some (rather rudimentary) metrics.</p>
+<h2 id="the-problem">
+  The Problem
+  <a class="heading-link" href="#the-problem">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>I started out simple and chose to unload the largest table in the database with different levels of parallelism, which produced the following results:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Processes</th>
+          <th>Time</th>
+          <th>Estimated MB/s unload of 19.40GB (write only)</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>8</td>
+          <td>2m39.70s</td>
+          <td>169.12</td>
+      </tr>
+      <tr>
+          <td>16</td>
+          <td>1m27.95s</td>
+          <td>451.68</td>
+      </tr>
+      <tr>
+          <td>32</td>
+          <td>1m11.63s</td>
+          <td>728.23</td>
+      </tr>
+      <tr>
+          <td>64</td>
+          <td>1m12.79s</td>
+          <td>698.09</td>
+      </tr>
+  </tbody>
+</table>
+<p>This confirmed a couple things:</p>
+<ol>
+<li>The problem with unload performance did not appear to necessarily be data size related; this test unloaded 25% of the raw data set in terms of size</li>
+<li>More parallelism is better on this system – up to at least 32 processes; I didn&rsquo;t bother with 48, 40 etc. as the unload performance issues appeared not to be hampered by I/O or even substantially be parallelism given the findings above</li>
+</ol>
+<p>Also, at 32 and 64 processes we saw substantial amounts of <strong>library cache load lock</strong> and <strong>enq: TQ - DDL contention</strong> while the 5 cores were on average 20% busy.</p>
+<p>Then I started off a new unload of the full database in order to determine the source of the waits. I found that things went very well until the dump came to a particular table.</p>
+<p>It turns out that the table had a BLOB. The BLOB data was as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">max</span>(dbms_lob.GETLENGTH(lob_content)) max_len
+</span></span><span style="display:flex;"><span>, <span style="color:#66d9ef">avg</span>(dbms_lob.getlength(lob_content)) avg_len
+</span></span><span style="display:flex;"><span>, <span style="color:#66d9ef">min</span>(dbms_lob.getlength(lob_content)) min_len
+</span></span><span style="display:flex;"><span>, <span style="color:#66d9ef">sum</span>(<span style="color:#66d9ef">CASE</span> <span style="color:#66d9ef">WHEN</span> dbms_lob.GETLENGTH(lob_content) <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">4000</span> <span style="color:#66d9ef">THEN</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">ELSE</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">END</span>) lt4k
+</span></span><span style="display:flex;"><span>, <span style="color:#66d9ef">sum</span>(<span style="color:#66d9ef">CASE</span> <span style="color:#66d9ef">WHEN</span> dbms_lob.GETLENGTH(lob_content) <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">4000</span> <span style="color:#66d9ef">THEN</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">ELSE</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">END</span>) gt4k
+</span></span><span style="display:flex;"><span>, <span style="color:#66d9ef">sum</span>(<span style="color:#66d9ef">CASE</span> <span style="color:#66d9ef">WHEN</span> dbms_lob.GETLENGTH(lob_content) <span style="color:#66d9ef">IS</span> <span style="color:#66d9ef">NULL</span> <span style="color:#66d9ef">THEN</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">ELSE</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">END</span>) <span style="color:#66d9ef">isnull</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> <span style="color:#e6db74">&#34;TEST&#34;</span>.<span style="color:#e6db74">&#34;TESTTABLE&#34;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span> MAX_LEN AVG_LEN MIN_LEN LT4K GT4K <span style="color:#66d9ef">ISNULL</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------- ---------- ---------- ---------- ---------- ----------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span> <span style="color:#ae81ff">8000</span> <span style="color:#ae81ff">7389</span>.<span style="color:#ae81ff">40765</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">31459</span> <span style="color:#ae81ff">327232</span> <span style="color:#ae81ff">641309</span>
+</span></span></code></pre></div><p>With an 8KB block size and <code>ENABLE STORAGE IN ROW CHUNK 8192</code> it meant that as each LOB locator was read it resulted in <code>db file sequential read</code> wait events (single-block reads) for approximately 91% of non-null LOBs, which was observed in <code>v$session</code>/<code>v$session_wait</code> (<code>p1</code>/<code>p2</code>/<code>p3</code>) for the data pump worker - and by correlating with <code>dba_extents</code> using <code>file_id</code> and <code>block_id</code>.</p>
+<p>Worse, as product enhancement 5943346 (PARALLELISM OF DATAPUMP JOB ON TABLE WITH LOB COLUMN) indicates, parallelism for the whole dump and even at LOB table level went out the window because data pump serializes the dump when it comes to a LOB table. This was also observed as all sessions bar one data pump worker were sitting idle.</p>
+<p>I also ran tests on the LOB table whereby I forced the access method by using <code>ACCESS_METHOD</code> with <code>EXTERNAL_TABLE</code> and <code>DIRECT_PATH</code> and I made the following findings:</p>
+<ul>
+<li>One session still exported the table regardless of parallelism</li>
+<li>The <code>db file sequential read</code> wait event was evident in both cases for the LOB segment read itself</li>
+</ul>
+<p>In short, it didn&rsquo;t make a difference - but had to be tried. In actual fact I also tried both forced access methods on the full database dump minus the LOB table. In both cases timings were somewhat worse than just leaving data pump to choose access method on a per-table basis (<code>DIRECT_PATH</code> also failed for a queue table: <code>ORA-31696: unable to export/import TABLE_DATA:&quot;SYSMAN&quot;.&quot;MGMT_NOTIFY_QTABLE&quot; using client specified DIRECT_PATH method</code>).</p>
+<p>At this point I had split the problem into two - 1) the whole database minus LOB table and 2) the LOB table.</p>
+<h2 id="the-whole-database-minus-lob-table">
+  The Whole Database Minus LOB Table
+  <a class="heading-link" href="#the-whole-database-minus-lob-table">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>After further tests I concluded that the following changes helped with export data pump:</p>
+<ul>
+<li><code>parallel=32</code>, compared to 8, reduced unload times from approximately 40 minutes to 12 minutes</li>
+<li><code>parallel_execution_message_size</code> (data pump workers are fed by PX slaves) was the default of 2152 bytes and increasing it to 16384 reduced the unload by another approximately 5% percent</li>
+</ul>
+<p>Furthermore, setting both <code>db_block_checking</code> and <code>db_block_checksum</code> (not really recommended for obvious reasons) to <code>false</code> also yielded another few percent.</p>
+<h2 id="the-lob-table">
+  The LOB Table
+  <a class="heading-link" href="#the-lob-table">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The key to improving the LOB table unload performance would be to in some way parallelise the load because only one session is unloading the data even when using a parallel parameter of more than 1. After spending some time considering this I tried a few different bucketing schemes - one was using the PK (using just one of the two columns) and <code>NTILE</code> for 32 processes but offered significant upfront overhead in terms of running a query to identify the buckets.</p>
+<p>Instead, I came up with a more scalable scheme of identifying the bucket by modulo on <code>dbms_rowid.rowid_block_number</code> on the table. This led to a very simple perl script (see below). This worked out very well and I managed to unload the whole table with 32 processes in approximately 11 minutes, which was a considerable improvement on the more than 1.5 hours spent on the LOB table in a normal unload.</p>
+<h2 id="the-whole-database-minus-lob-table-import">
+  The Whole Database Minus LOB Table Import
+  <a class="heading-link" href="#the-whole-database-minus-lob-table-import">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The target system for import was unfortunately a test system with only 2 CPU cores and it was felt on performance - and therefore the statistics below are not a like-for-like comparison between export and import on the system.</p>
+<p>I ran an initial test import without the troublesome LOB table and the import took 2.5 hours. I was running out of time on my assignment and therefore decided to make a number of changes in one go (never really recommended, but needs must) as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">database</span> flashback <span style="color:#66d9ef">off</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">database</span> noarchivelog;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- from 2152
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">system</span> <span style="color:#66d9ef">set</span> parallel_execution_message_size<span style="color:#f92672">=</span><span style="color:#ae81ff">16384</span> <span style="color:#66d9ef">scope</span><span style="color:#f92672">=</span>spfile;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- from 1G
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">system</span> <span style="color:#66d9ef">set</span> pga_aggregate_target<span style="color:#f92672">=</span><span style="color:#ae81ff">6</span><span style="color:#66d9ef">G</span> <span style="color:#66d9ef">scope</span><span style="color:#f92672">=</span><span style="color:#66d9ef">both</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- from 32M
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">system</span> <span style="color:#66d9ef">set</span> streams_pool_size<span style="color:#f92672">=</span><span style="color:#ae81ff">128</span>m <span style="color:#66d9ef">scope</span><span style="color:#f92672">=</span><span style="color:#66d9ef">both</span>;
+</span></span></code></pre></div><p>The <code>flashback</code> and <code>noarchivelog</code>, which for full database imports would be fair options to turn off during import given that your rollback in case of error is quite simple, certainly reduced the import times considerably. However, the <code>pga_aggregate_target</code> proved to be the most important change in the overall scheme of things because indexes were built towards the end of the job and took 3 times longer than actually creating the tables and importing the data in this test.</p>
+<p>For lack of better index build timings I used <code>DBA_OBJECTS</code> and <code>DBA_INDEXES</code> as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">avg</span>(nvl((i.last_analyzed <span style="color:#f92672">-</span> o.created) <span style="color:#f92672">*</span> <span style="color:#ae81ff">86400</span>, <span style="color:#ae81ff">0</span>)) avg_ctime
+</span></span><span style="display:flex;"><span>     , <span style="color:#66d9ef">max</span>(nvl((i.last_analyzed <span style="color:#f92672">-</span> o.created) <span style="color:#f92672">*</span> <span style="color:#ae81ff">86400</span>, <span style="color:#ae81ff">0</span>)) max_ctime
+</span></span><span style="display:flex;"><span>     , <span style="color:#66d9ef">min</span>(nvl((i.last_analyzed <span style="color:#f92672">-</span> o.created) <span style="color:#f92672">*</span> <span style="color:#ae81ff">86400</span>, <span style="color:#ae81ff">0</span>)) min_ctime
+</span></span><span style="display:flex;"><span>     , <span style="color:#66d9ef">sum</span>(nvl((i.last_analyzed <span style="color:#f92672">-</span> o.created) <span style="color:#f92672">*</span> <span style="color:#ae81ff">86400</span>, <span style="color:#ae81ff">0</span>)) rec_build_s
+</span></span><span style="display:flex;"><span>     , (<span style="color:#66d9ef">max</span>(i.last_analyzed) <span style="color:#f92672">-</span> <span style="color:#66d9ef">min</span>(o.created)) <span style="color:#f92672">*</span><span style="color:#ae81ff">86400</span> total_dur_s
+</span></span><span style="display:flex;"><span>     , <span style="color:#66d9ef">min</span>(o.created) start_t
+</span></span><span style="display:flex;"><span>     , <span style="color:#66d9ef">max</span>(i.last_analyzed) end_t
+</span></span><span style="display:flex;"><span>     , <span style="color:#66d9ef">count</span>(<span style="color:#f92672">*</span>) indexes
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> dba_objects o, dba_indexes i
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> o.<span style="color:#66d9ef">owner</span> <span style="color:#66d9ef">IN</span> (<span style="color:#e6db74">&#39;TEST&#39;</span>)
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">and</span> o.object_type<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;INDEX&#39;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#66d9ef">and</span> o.object_name <span style="color:#f92672">=</span> i.index_name
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">order</span> <span style="color:#66d9ef">by</span> created;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>AVG_CTIME MAX_CTIME MIN_CTIME REC_BUILD_S TOTAL_DUR_S START_T END_T INDEXES
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------- ---------- ---------- ----------- ----------- ------------------- ------------------- ----------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">2</span>.<span style="color:#ae81ff">10726644</span> <span style="color:#ae81ff">512</span> <span style="color:#ae81ff">0</span> <span style="color:#ae81ff">3654</span> <span style="color:#ae81ff">4191</span> <span style="color:#ae81ff">2012</span><span style="color:#f92672">-</span><span style="color:#ae81ff">06</span><span style="color:#f92672">-</span><span style="color:#ae81ff">22</span> <span style="color:#ae81ff">12</span>:<span style="color:#ae81ff">26</span>:<span style="color:#ae81ff">42</span> <span style="color:#ae81ff">2012</span><span style="color:#f92672">-</span><span style="color:#ae81ff">06</span><span style="color:#f92672">-</span><span style="color:#ae81ff">22</span> <span style="color:#ae81ff">13</span>:<span style="color:#ae81ff">36</span>:<span style="color:#ae81ff">33</span> <span style="color:#ae81ff">1734</span>
+</span></span></code></pre></div><p>What I also found was that there was no overlap on index creation timings so the indexes were created sequentially. During import indexes are created/built one at a time but parallelism (PX slaves) is used during the rebuild for larger indexes. So there is a degree of parallelism involved in building one index at a time in order to maximise CPU usage and I/O on a multi-core system (aren&rsquo;t they all these days..?)</p>
+<p>Furthermore by increasing <code>pga_aggregate_target</code> as much as I could on the system (without causing swapping) I managed to reduce the amount of disk sorts from 171 to 37, which cut a further couple of hundred seconds off the import.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Statistic Total per Second per Trans
+</span></span><span style="display:flex;"><span>-------------------------------- ------------------ -------------- -------------
+</span></span><span style="display:flex;"><span>physical read total bytes 330,878,612,480 52,208,283.7 5,497,966.4
+</span></span><span style="display:flex;"><span>physical write total bytes 405,243,809,792 63,942,131.7 6,733,638.1
+</span></span><span style="display:flex;"><span>redo size 127,460,689,524 20,111,616.7 2,117,920.5
+</span></span><span style="display:flex;"><span>sorts (disk) 37 0.0 0.0
+</span></span><span style="display:flex;"><span>sorts (memory) 1,754,519 276.8 29.2
+</span></span><span style="display:flex;"><span>sorts (rows) 1,400,989,947 221,057.8 23,279.2
+</span></span><span style="display:flex;"><span>log switches (derived) 129 73.28
+</span></span></code></pre></div><p>In the end, the total import time was reduced from 2.5 hours to 1 hour and 12 minutes.</p>
+<h2 id="the-lob-table-import">
+  The LOB Table Import
+  <a class="heading-link" href="#the-lob-table-import">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>After various tests it quickly became apparent to me that creating the table up front without any constraints (and that included the implicit not null constraints) and then importing each chunk one at a time appeared very fast indeed. The total time spent on importing all 32 buckets was approximately 11 minutes.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>time impdp <span style="color:#ae81ff">\&#39;</span>/ as sysdba<span style="color:#ae81ff">\&#39;</span> tables<span style="color:#f92672">=</span>TEST.TESTTABLE dumpfile<span style="color:#f92672">=</span>TEST_DPUMP:TESTTABLE001 logfile<span style="color:#f92672">=</span>TEST_DPUMP:imp_TESTTABLE001 TABLE_EXISTS_ACTION<span style="color:#f92672">=</span>append
+</span></span><span style="display:flex;"><span>time impdp <span style="color:#ae81ff">\&#39;</span>/ as sysdba<span style="color:#ae81ff">\&#39;</span> tables<span style="color:#f92672">=</span>TEST.TESTTABLE dumpfile<span style="color:#f92672">=</span>TEST_DPUMP:TESTTABLE101 logfile<span style="color:#f92672">=</span>TEST_DPUMP:imp_TESTTABLE101 TABLE_EXISTS_ACTION<span style="color:#f92672">=</span>append
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>It was then a matter of adding the constraints and indexes afterwards (dump DDL using <code>DBMS_METADATA</code>), which took only a few minutes - and could use index rebuild parallelism as well, as needed.</p>
+<h2 id="conclusion">
+  Conclusion
+  <a class="heading-link" href="#conclusion">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>There is certainly some performance improvements to be made on the standard data pump jobs. They do require a fair bit of testing and experimentation in a given environment but may be well worth it if data pump performance is a concern. Hopefully, the article will also have provided some troubleshooting and ideas for solutions and workarounds to some of the most common data pump performance problems.</p>
+<p>I should also mention that the following Oracle Support notes are good starting points for understanding performance related issues with Data Pump and they are well worth reading. There are a number of both 10g and 11g related bugs that can seriously affect performance and it&rsquo;s well worth having a look around rather than just accepting slow performance.</p>
+<ul>
+<li>Master Note for Data Pump [ID 1264715.1]</li>
+<li>Checklist For Slow Performance Of DataPump Export (expdp) And Import (impdp) [ID 453895.1]</li>
+<li>Parallel Capabilities of Oracle Data Pump [ID 365459.1]</li>
+</ul>
+<h2 id="export-script-parallel_dumppl">
+  Export Script: parallel_dump.pl
+  <a class="heading-link" href="#export-script-parallel_dumppl">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-perl" data-lang="perl"><span style="display:flex;"><span><span style="color:#75715e">#!/usr/bin/perl</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">use</span> strict;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">my</span> $PARALLEL<span style="color:#f92672">=</span><span style="color:#ae81ff">32</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">my</span> $PFILE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;parallel_table_exp.par&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">my</span> @row;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">my</span> $sp_flash_time<span style="color:#f92672">=</span><span style="color:#e6db74">`sqlplus -S / as sysdba &lt;&lt;EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">set heading off pagesize 0 feedback off verify off echo off
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">select to_char(systimestamp, &#39;dd/mon/yyyy hh24:mi:ss&#39;) from dual;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">exit
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">`</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">my</span> $flash_time<span style="color:#f92672">=</span>$sp_flash_time;
+</span></span><span style="display:flex;"><span>$flash_time <span style="color:#f92672">=~</span> <span style="color:#e6db74">s/^\s+|\s+$//g</span>;
+</span></span><span style="display:flex;"><span>open(PARFILE, <span style="color:#e6db74">&#34;&gt;&#34;</span>, $PFILE);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">print</span> PARFILE <span style="color:#e6db74">&#34;flashback_time=\&#34;to_timestamp(&#39;${flash_time}&#39;, &#39;dd/mon/yyyy hh24:mi:ss&#39;)\&#34;\n&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">print</span> PARFILE <span style="color:#e6db74">&#34;parallel=1\n&#34;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">print</span> PARFILE <span style="color:#e6db74">&#34;exclude=statistics\n&#34;</span>;
+</span></span><span style="display:flex;"><span>close(PARFILE);
+</span></span><span style="display:flex;"><span>$SIG{CHLD} <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;IGNORE&#39;</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">my</span> $shard <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">my</span> $cmd;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">foreach</span> ($shard <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span> ; $shard <span style="color:#f92672">&lt;</span> $PARALLEL ; $shard<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>  $cmd <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;expdp \\\&#39;/ as sysdba\\\&#39; tables=TEST.TESTTABLE dumpfile=TEST_DPUMP:RT${shard}%U logfile=TEST_DPUMP:RT${shard}&#34;</span>;
+</span></span><span style="display:flex;"><span>  $cmd <span style="color:#f92672">.=</span> <span style="color:#e6db74">&#34; parfile=${PFILE}&#34;</span>;
+</span></span><span style="display:flex;"><span>  $cmd <span style="color:#f92672">.=</span> <span style="color:#e6db74">&#34; query=TEST.TESTTABLE:\&#39;\&#34;where mod(dbms_rowid.rowid_block_number(rowid), ${PARALLEL}) = &#34;</span> <span style="color:#f92672">.</span> $shard <span style="color:#f92672">.</span> <span style="color:#e6db74">&#34;\&#34;\&#39;&#34;</span>;
+</span></span><span style="display:flex;"><span>  $cmd <span style="color:#f92672">.=</span> <span style="color:#e6db74">&#34; &amp;&#34;</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">print</span> <span style="color:#e6db74">&#34;Starting: $cmd\n&#34;</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">my</span> $cpid <span style="color:#f92672">=</span> system($cmd);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2012/10/optimising-data-pump-export-and-import.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2012/10/optimising-data-pump-export-and-import.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

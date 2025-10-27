@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Using getMBean to Navigate Cluster Servers · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+  Overview
+  
+    
+    Link to heading
+  
+
+Just a quick reminder to self on how to e.g. clear and import ADF customization metadata across all cluster servers.
+
+  Example Script
+  
+    
+    Link to heading
+  
+
+c = getMBean(&#34;/Clusters/webapp-cluster&#34;)
+
+for s in c.getServers():
+    deleteMetadata(&#34;webapp&#34;, s.getName(), &#34;/**&#34;)
+    purgeMetadata(&#34;webapp&#34;, s.getName(), 0)
+    importMetadata(application=&#39;webapp&#39;, server=s.getName(), fromLocation=&#39;webapp-customization.mar&#39;, remote=&#39;true&#39;)
+
+Originally published at https://jensenmo.blogspot.com/2013/10/using-getmbean-to-navigate-cluster.html">
+<meta name="keywords" content="Using, getMBean, Navigate, Cluster, Servers">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Using getMBean to Navigate Cluster Servers">
+  <meta name="twitter:description" content="Overview Link to heading Just a quick reminder to self on how to e.g. clear and import ADF customization metadata across all cluster servers.
+Example Script Link to heading c = getMBean(&#34;/Clusters/webapp-cluster&#34;) for s in c.getServers(): deleteMetadata(&#34;webapp&#34;, s.getName(), &#34;/**&#34;) purgeMetadata(&#34;webapp&#34;, s.getName(), 0) importMetadata(application=&#39;webapp&#39;, server=s.getName(), fromLocation=&#39;webapp-customization.mar&#39;, remote=&#39;true&#39;) Originally published at https://jensenmo.blogspot.com/2013/10/using-getmbean-to-navigate-cluster.html">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/using-getmbean-to-navigate-cluster-servers/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Using getMBean to Navigate Cluster Servers">
+  <meta property="og:description" content="Overview Link to heading Just a quick reminder to self on how to e.g. clear and import ADF customization metadata across all cluster servers.
+Example Script Link to heading c = getMBean(&#34;/Clusters/webapp-cluster&#34;) for s in c.getServers(): deleteMetadata(&#34;webapp&#34;, s.getName(), &#34;/**&#34;) purgeMetadata(&#34;webapp&#34;, s.getName(), 0) importMetadata(application=&#39;webapp&#39;, server=s.getName(), fromLocation=&#39;webapp-customization.mar&#39;, remote=&#39;true&#39;) Originally published at https://jensenmo.blogspot.com/2013/10/using-getmbean-to-navigate-cluster.html">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2013-10-01T13:32:00+01:00">
+    <meta property="article:modified_time" content="2013-10-01T13:32:00+01:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/using-getmbean-to-navigate-cluster-servers/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/using-getmbean-to-navigate-cluster-servers/">
+              Using getMBean to Navigate Cluster Servers
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2013-10-01T13:32:00&#43;01:00">
+                October 1, 2013
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              One-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <h2 id="overview">
+  Overview
+  <a class="heading-link" href="#overview">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Just a quick reminder to self on how to e.g. clear and import ADF customization metadata across all cluster servers.</p>
+<h2 id="example-script">
+  Example Script
+  <a class="heading-link" href="#example-script">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>c <span style="color:#f92672">=</span> getMBean(<span style="color:#e6db74">&#34;/Clusters/webapp-cluster&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span> s <span style="color:#f92672">in</span> c<span style="color:#f92672">.</span>getServers():
+</span></span><span style="display:flex;"><span>    deleteMetadata(<span style="color:#e6db74">&#34;webapp&#34;</span>, s<span style="color:#f92672">.</span>getName(), <span style="color:#e6db74">&#34;/**&#34;</span>)
+</span></span><span style="display:flex;"><span>    purgeMetadata(<span style="color:#e6db74">&#34;webapp&#34;</span>, s<span style="color:#f92672">.</span>getName(), <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    importMetadata(application<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;webapp&#39;</span>, server<span style="color:#f92672">=</span>s<span style="color:#f92672">.</span>getName(), fromLocation<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;webapp-customization.mar&#39;</span>, remote<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;true&#39;</span>)
+</span></span></code></pre></div><hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2013/10/using-getmbean-to-navigate-cluster.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2013/10/using-getmbean-to-navigate-cluster.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

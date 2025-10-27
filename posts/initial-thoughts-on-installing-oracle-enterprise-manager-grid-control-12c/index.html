@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Initial thoughts on Installing Oracle Enterprise Manager Grid Control 12c · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="For those of you battling with installing Oracle Enterprise Manager Grid Control 11g the thought of spending hours on Oracle Support and reading documentation trying figure out exactly what versions of various components to install - and to figure out what the latest error message means - is probably still relatively fresh in mind and is a painful memory best left alone to sink into obscurity over time.
+I have just installed Oracle Enterprise Manager Grid Control 12c and it is a refreshingly simple task to do compared to the previous version. You no longer need to decide on a JDK versus JRockIt and what version of WebLogic to use, support, certification options etc (although you would have the option to worry about all these things - if you got the time and feel particularly masochistic). All this is now bundled with 12c.">
+<meta name="keywords" content="Initial, thoughts, Installing, Oracle, Enterprise, Manager, Grid, Control">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Initial thoughts on Installing Oracle Enterprise Manager Grid Control 12c">
+  <meta name="twitter:description" content="For those of you battling with installing Oracle Enterprise Manager Grid Control 11g the thought of spending hours on Oracle Support and reading documentation trying figure out exactly what versions of various components to install - and to figure out what the latest error message means - is probably still relatively fresh in mind and is a painful memory best left alone to sink into obscurity over time.
+I have just installed Oracle Enterprise Manager Grid Control 12c and it is a refreshingly simple task to do compared to the previous version. You no longer need to decide on a JDK versus JRockIt and what version of WebLogic to use, support, certification options etc (although you would have the option to worry about all these things - if you got the time and feel particularly masochistic). All this is now bundled with 12c.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/initial-thoughts-on-installing-oracle-enterprise-manager-grid-control-12c/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Initial thoughts on Installing Oracle Enterprise Manager Grid Control 12c">
+  <meta property="og:description" content="For those of you battling with installing Oracle Enterprise Manager Grid Control 11g the thought of spending hours on Oracle Support and reading documentation trying figure out exactly what versions of various components to install - and to figure out what the latest error message means - is probably still relatively fresh in mind and is a painful memory best left alone to sink into obscurity over time.
+I have just installed Oracle Enterprise Manager Grid Control 12c and it is a refreshingly simple task to do compared to the previous version. You no longer need to decide on a JDK versus JRockIt and what version of WebLogic to use, support, certification options etc (although you would have the option to worry about all these things - if you got the time and feel particularly masochistic). All this is now bundled with 12c.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2011-10-21T15:43:00+01:00">
+    <meta property="article:modified_time" content="2011-10-21T15:43:00+01:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/initial-thoughts-on-installing-oracle-enterprise-manager-grid-control-12c/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/initial-thoughts-on-installing-oracle-enterprise-manager-grid-control-12c/">
+              Initial thoughts on Installing Oracle Enterprise Manager Grid Control 12c
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2011-10-21T15:43:00&#43;01:00">
+                October 21, 2011
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              2-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>For those of you battling with installing Oracle Enterprise Manager Grid Control 11g the thought of spending hours on Oracle Support and reading documentation trying figure out exactly what versions of various components to install - and to figure out what the latest error message means - is probably still relatively fresh in mind and is a painful memory best left alone to sink into obscurity over time.</p>
+<p>I have just installed Oracle Enterprise Manager Grid Control 12c and it is a refreshingly simple task to do compared to the previous version. You no longer need to decide on a JDK versus JRockIt and what version of WebLogic to use, support, certification options etc (although you would have the option to worry about all these things - if you got the time and feel particularly masochistic). All this is now bundled with 12c.</p>
+<h2 id="installation-requirements">
+  Installation Requirements
+  <a class="heading-link" href="#installation-requirements">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The only other thing to install and configure is really a database.</p>
+<p>Just follow the following Oracle Support note <strong>How to Install Enterprise Manager Cloud Control 12.1.0.1 (12c) on Linux [ID 1359176.1]</strong> to install and you&rsquo;re pretty much set.</p>
+<h2 id="system-requirements">
+  System Requirements
+  <a class="heading-link" href="#system-requirements">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The latest system requirements are rather memory hungry - I just barely got database (ignoring minimum requirements of 2GB SGA I configured 1536MB of <code>memory_max_size</code> - of which 512MB is the shared pool) and OMS running on 4GB of memory - I strongly suggest to allocate 5GB for an entry-level installation as I am seeing 1GB of swap space being allocated in my VMWare instance, running CentOS 5.7 with irrelevant services turned off.</p>
+<h2 id="new-features">
+  New Features
+  <a class="heading-link" href="#new-features">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>I also really like the Agent Deployment feature for remote targets, which uses SSH to deploy the agent to hosts &ldquo;out there&rdquo;. There&rsquo;s also some auto-discovery feature to discover hosts that could benefit from an agent on the network - but I have as of yet not had a chance to play with this.</p>
+<p>The interface is also slick and less cluttered than the old interface - I like it.</p>
+<h2 id="overall-assessment">
+  Overall Assessment
+  <a class="heading-link" href="#overall-assessment">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Overall, so far, I will probably give Oracle 4.5/5 stars for ease and effort in 12c, which is the opposite end of the scale of 11g, in terms of installation, configuration and overall usage.</p>
+<hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2011/10/initial-thoughts-on-installing-oracle.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2011/10/initial-thoughts-on-installing-oracle.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Retrieving stack traces/backtraces from Apache/PHP crashes on RedHat Linux · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+  Overview
+  
+    
+    Link to heading
+  
+
+This post is effectively an amalgamation of 3 documents:
+
+How can I download or install debuginfo packages for RHEL systems?
+Installing Debuginfo Packages
+PHP - Generating a gdb backtrace
+
+The notes above deal with pieces of the puzzle to generate stack traces/backtraces of crashing PHP code; and this note effectively takes the more holistic view to getting it done.
+
+  Identifying Crashes
+  
+    
+    Link to heading
+  
+
+Evidence that crashes occur is typically located in the /var/log/httpd/error_log* files - e.g. entries like:">
+<meta name="keywords" content="Retrieving, stack, traces/backtraces, Apache/PHP, crashes, RedHat, Linux">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Retrieving stack traces/backtraces from Apache/PHP crashes on RedHat Linux">
+  <meta name="twitter:description" content="Overview Link to heading This post is effectively an amalgamation of 3 documents:
+How can I download or install debuginfo packages for RHEL systems? Installing Debuginfo Packages PHP - Generating a gdb backtrace The notes above deal with pieces of the puzzle to generate stack traces/backtraces of crashing PHP code; and this note effectively takes the more holistic view to getting it done.
+Identifying Crashes Link to heading Evidence that crashes occur is typically located in the /var/log/httpd/error_log* files - e.g. entries like:">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/retrieving-stack-tracesbacktraces-from-apachephp-crashes-on-redhat-linux/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Retrieving stack traces/backtraces from Apache/PHP crashes on RedHat Linux">
+  <meta property="og:description" content="Overview Link to heading This post is effectively an amalgamation of 3 documents:
+How can I download or install debuginfo packages for RHEL systems? Installing Debuginfo Packages PHP - Generating a gdb backtrace The notes above deal with pieces of the puzzle to generate stack traces/backtraces of crashing PHP code; and this note effectively takes the more holistic view to getting it done.
+Identifying Crashes Link to heading Evidence that crashes occur is typically located in the /var/log/httpd/error_log* files - e.g. entries like:">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2017-08-24T10:58:00+01:00">
+    <meta property="article:modified_time" content="2017-08-24T10:58:00+01:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/retrieving-stack-tracesbacktraces-from-apachephp-crashes-on-redhat-linux/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/retrieving-stack-tracesbacktraces-from-apachephp-crashes-on-redhat-linux/">
+              Retrieving stack traces/backtraces from Apache/PHP crashes on RedHat Linux
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2017-08-24T10:58:00&#43;01:00">
+                August 24, 2017
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              3-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <h2 id="overview">
+  Overview
+  <a class="heading-link" href="#overview">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>This post is effectively an amalgamation of 3 documents:</p>
+<ul>
+<li>How can I download or install debuginfo packages for RHEL systems?</li>
+<li>Installing Debuginfo Packages</li>
+<li>PHP - Generating a gdb backtrace</li>
+</ul>
+<p>The notes above deal with pieces of the puzzle to generate stack traces/backtraces of crashing PHP code; and this note effectively takes the more holistic view to getting it done.</p>
+<h2 id="identifying-crashes">
+  Identifying Crashes
+  <a class="heading-link" href="#identifying-crashes">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Evidence that crashes occur is typically located in the <code>/var/log/httpd/error_log*</code> files - e.g. entries like:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>[timestamp] [core:notice]
+</span></span><span style="display:flex;"><span>[pid 7528] AH00052: child pid 11172 exit signal Segmentation fault (11)
+</span></span><span style="display:flex;"><span>[timestamp] [core:notice]
+</span></span><span style="display:flex;"><span>[pid 7528] AH00052: child pid 11063 exit signal Segmentation fault (11)
+</span></span></code></pre></div><p>In summary, it is possible to retrieve stack traces of PHP code crashes that cause the Apache process to terminate (e.g. Segmentation fault). This is achieved with the GNU Debugger (gdb). Note that the one piece of the puzzle that is not covered is the requirement for the <code>yum-utils</code> package, which contains the <code>debuginfo-install</code> command.</p>
+<p>To generate the stack trace we use <code>gdb</code> to start/run <code>httpd</code> in debug mode (<code>-X</code>).</p>
+<h2 id="installing-required-packages">
+  Installing Required Packages
+  <a class="heading-link" href="#installing-required-packages">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>First things first, we need to install various packages - please do so only on a desktop or dev/test server that can suffer a period of outage:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo yum install gdb yum-utils kernel-debuginfo kernel-debuginfo-common
+</span></span></code></pre></div><p>When you first run <code>gdb</code> it will tell you if it has the requisite debug information - and if not it will give you instructions to install:</p>
+<p>In our case, when running <code>gdb /sbin/httpd</code> as per below we were notified to run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo debuginfo-install httpd-2.4.6-67.el7_4.2.x86_64
+</span></span></code></pre></div><p>We exit&rsquo;ed gdb (<code>q</code> + ENTER), installed above and then ran gdb again as per below.</p>
+<h2 id="running-gdb-to-capture-stack-trace">
+  Running gdb to Capture Stack Trace
+  <a class="heading-link" href="#running-gdb-to-capture-stack-trace">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo -s
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Stop apache (e.g. on a dev/test environment)</span>
+</span></span><span style="display:flex;"><span>service httpd stop
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Run gdb</span>
+</span></span><span style="display:flex;"><span>gdb /sbin/httpd
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>GNU gdb (GDB) Red Hat Enterprise Linux 7.6.1-100.el7
+</span></span><span style="display:flex;"><span>Copyright (C) 2013 Free Software Foundation, Inc.
+</span></span><span style="display:flex;"><span>License GPLv3+: GNU GPL version 3 or later
+</span></span><span style="display:flex;"><span>This is free software: you are free to change and redistribute it.
+</span></span><span style="display:flex;"><span>There is NO WARRANTY, to the extent permitted by law.  Type &#34;show copying&#34;
+</span></span><span style="display:flex;"><span>and &#34;show warranty&#34; for details.
+</span></span><span style="display:flex;"><span>This GDB was configured as &#34;x86_64-redhat-linux-gnu&#34;.
+</span></span><span style="display:flex;"><span>For bug reporting instructions, please see:
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>Reading symbols from /usr/sbin/httpd...
+</span></span><span style="display:flex;"><span>Reading symbols from /usr/lib/debug/usr/sbin/httpd.debug...done.
+</span></span><span style="display:flex;"><span>done.
+</span></span></code></pre></div><pre tabindex="0"><code class="language-gdb" data-lang="gdb">(gdb) run -X
+Starting program: /sbin/httpd -X
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library &#34;/lib64/libthread_db.so.1&#34;.
+Detaching after fork from child process 10363.
+Detaching after fork from child process 10364.
+Detaching after fork from child process 10365.
+</code></pre><p>Now run the request through the client to the Apache server, which causes the crash:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Program received signal SIGSEGV, Segmentation fault.
+</span></span><span style="display:flex;"><span>0x00007fffe8b36c49 in _zval_ptr_dtor () from /usr/local/zend/lib/apache2/libphp7.so
+</span></span></code></pre></div><p>Produce the backtrace:</p>
+<pre tabindex="0"><code class="language-gdb" data-lang="gdb">(gdb) bt
+#0  0x00007fffe8b36c49 in _zval_ptr_dtor () from /usr/local/zend/lib/apache2/libphp7.so
+#1  0x00007fffd9ada5b1 in php_oci_bind_hash_dtor () from /usr/local/zend/lib/php_extensions/oci8.so
+#2  0x00007fffe8b57bb2 in zend_hash_destroy () from /usr/local/zend/lib/apache2/libphp7.so
+#3  0x00007fffd9ae552b in php_oci_statement_free () from /usr/local/zend/lib/php_extensions/oci8.so
+...
+</code></pre><h2 id="analysis">
+  Analysis
+  <a class="heading-link" href="#analysis">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>As can be seen above, the culprit is the function <code>zval_ptr_dtor</code>, which is called from the OCI driver/interface (Oracle Call Interface) and is related to freeing up the OCI statement.</p>
+<h2 id="next-steps">
+  Next Steps
+  <a class="heading-link" href="#next-steps">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>If you have support with e.g. Zend/Roguewave it is now possible to raise a support request with them and include the stack trace.</p>
+<p>Alternatively, one could do a search on the crashing function via <a href="https://bugs.php.net"  class="external-link" target="_blank" rel="noopener">https://bugs.php.net</a> for any outstanding bugs and/or file a new bug request.</p>
+<hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2017/08/retrieving-stack-tracesbacktraces-from.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2017/08/retrieving-stack-tracesbacktraces-from.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

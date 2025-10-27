@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  A tale from the Troubleshooting Department - on the Floor · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="I was recently involved in troubleshooting a problem for a customer after a migration of a database and an application server to newer hardware and operating system.
+The problem was costing the customer a lot of money every minute it persisted - now a couple of days in duration, which resulted in at best 40% capacity on the floor when compared to normal throughput. The situation was becoming untenable and naturally the customer was becoming desperate.">
+<meta name="keywords" content="tale, Troubleshooting, Department, Floor">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="A tale from the Troubleshooting Department - on the Floor">
+  <meta name="twitter:description" content="I was recently involved in troubleshooting a problem for a customer after a migration of a database and an application server to newer hardware and operating system.
+The problem was costing the customer a lot of money every minute it persisted - now a couple of days in duration, which resulted in at best 40% capacity on the floor when compared to normal throughput. The situation was becoming untenable and naturally the customer was becoming desperate.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/a-tale-from-the-troubleshooting-department-on-the-floor/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="A tale from the Troubleshooting Department - on the Floor">
+  <meta property="og:description" content="I was recently involved in troubleshooting a problem for a customer after a migration of a database and an application server to newer hardware and operating system.
+The problem was costing the customer a lot of money every minute it persisted - now a couple of days in duration, which resulted in at best 40% capacity on the floor when compared to normal throughput. The situation was becoming untenable and naturally the customer was becoming desperate.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2012-06-18T21:27:00+01:00">
+    <meta property="article:modified_time" content="2012-06-18T21:27:00+01:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/a-tale-from-the-troubleshooting-department-on-the-floor/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/a-tale-from-the-troubleshooting-department-on-the-floor/">
+              A tale from the Troubleshooting Department - on the Floor
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2012-06-18T21:27:00&#43;01:00">
+                June 18, 2012
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              9-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>I was recently involved in troubleshooting a problem for a customer after a migration of a database and an application server to newer hardware and operating system.</p>
+<p>The problem was costing the customer a lot of money every minute it persisted - now a couple of days in duration, which resulted in at best 40% capacity on the floor when compared to normal throughput. The situation was becoming untenable and naturally the customer was becoming desperate.</p>
+<p>The customer has a conveyer belt with various manual and automated picking lines feeding orders (stock) into totes on the belt. The picking lines are each controlled by a small embedded PC.</p>
+<p>The IT infrastructure part of the system, involving the application server, embedded PC&rsquo;s and an Oracle database, is optimised to calculate when the orders coming down the feeding lines is due to hit the belt such that 1) it can synchronize with the arrival of a tote and crucially 2) keep the conveyor belt running continuously.</p>
+<p>The problem manifested itself by spurious interruptions on only one automated feeding line causing the belt to stop for long periods of time and causing an estimated 60% capacity decrease.</p>
+<h2 id="initial-investigation">
+  Initial Investigation
+  <a class="heading-link" href="#initial-investigation">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>A couple of days after the migration and upgrade, which was carried out by others, a colleague and I were sent on-site by our company to have a look. When we arrived we found the place abuzz with activity - the customer, the belt vendor, the IT infrastructure provider and a few others were working out options to try. A lot of troubleshooting effort had been put into trying to identify and resolve the issue over the past few days and there were no major leads as to the root cause other than some potential network related problems.</p>
+<p>On the back of concerns over the new server being a lot faster than the old server they devised plans to reduce CPU speed, CPU cores, memory etc. for the database. But to no avail.</p>
+<p>At this point they were running out of options and my colleague and I were finally given access to have a look at the problem. One of my other colleagues who had had a look at the problem overnight mentioned that he had noticed that the Oracle database wait event <code>sqlnet message from client</code> often hit 65 seconds when running a 10046 trace - so we started there.</p>
+<h2 id="network-analysis">
+  Network Analysis
+  <a class="heading-link" href="#network-analysis">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>With the belt vendor&rsquo;s help we managed to get onto the network switch with Wireshark, while capturing traffic between the troubled picking line PC (client) and the Oracle database server; and at the same time running a 10046 trace. What we found there was interesting. The client would send a SQL*Net request to the server and the server in turn would respond. Occasionally there would be a problem. A few hundred milliseconds after the initial request the client would duplicate its request as if it had heard nothing from the database server - and the database server in turn would respond promptly with a TCP duplicate acknowledgement. 65 seconds later the server would then repeat with a retransmission; again, as if the client had heard nothing. Then things would move on again. We could correlate this pattern with the picking line queue filling up at the same point. Some time later, after requesting access to the picking line PC, we noticed that running <code>ifconfig -a</code> continuously would also show an increase in the &ldquo;frames&rdquo; counter around the time that we saw packet loss from a TCP perspective. The &ldquo;frames&rdquo; counter counts received (layer 2) frames that are corrupted in some way or are only partially received.</p>
+<p>After a while of monitoring this we decided to go on the floor, standing next to the picking line, to see if we could spot any abnormalities and to determine if there were any events on the floor to correlate with. We brought a wirelessly connected laptop with a SSH connection to the picking line PC.</p>
+<p>Bear in mind that at this point there was a lot of scepticism over the findings because the picking line and the PC had not been changed (well, after the problem the PC was changed in case it was causing an issue but afterwards the issue persisted) - no belt changes had been made. It was only the database and application servers that had been upgraded and migrated to new hardware, including a new network switch.</p>
+<h2 id="the-smoking-gun">
+  The Smoking Gun
+  <a class="heading-link" href="#the-smoking-gun">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>After about 10 minutes there we noticed a pattern; the smoking gun. We realised that there was an electrical motor at the belt and near the PC (actually, it turns out that there were two electrical motors - but one was hidden under the belt).</p>
+<p>Every time the motor(s) were running (always in unison) the &ldquo;frames&rdquo; counter would increase sporadically. But every time the motor was stopped there were no issues. We also took note of the fact, after a while, that regardless of whether the motor was on or not there was network traffic - so it was not a simple case of no motor running = no network traffic = no problem; or vice versa. The point was that we had a feedback loop - the motor would interrupt network traffic flow, which in turn caused the picking line PC to stop the belt (motor) - until the database server ultimately re-transmitted the SQL*Net packet while the motor was not running. Then the picking line PC would start the belt again. And so on and so forth ad nauseam.</p>
+<p>Understandably, there was still a fair bit of scepticism over the findings - after all, nothing had changed on the floor. Our suggestion was therefore that while the new server had not caused the problem it may have made it visible - perhaps by treating loss of frames/packets (traffic flow) over the network differently compared to the old server.</p>
+<h2 id="testing-and-verification">
+  Testing and Verification
+  <a class="heading-link" href="#testing-and-verification">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The IT Infrastructure provider therefore set off to do three experiments in order to make up isolated test cases:</p>
+<ol>
+<li>
+<p>Take two laptops and the same network wire, strew the cable across the motors and do file transfers while the motors were turned on and off - the test proved inconclusive; while they experienced multiple frame loss during their tests they were not 100% able to match it to the motor running - or not.</p>
+</li>
+<li>
+<p>Put the old server on the network and do file transfers from the old server to the picking line PC while the motor was switched on and off</p>
+</li>
+<li>
+<p>Do file transfers from the new server to the picking line PC while the motor was switched on and off</p>
+</li>
+</ol>
+<p>The last two tests proved very conclusive. While copy activity from the old server dropped the pace of the copy while the motor was running, traffic was still coming through at a reduced rate. Not so for the new servers - they would stall the file transfer for up to&hellip; You got it, 65 seconds!</p>
+<p>At this point the involved parties started to accept the findings. The findings were further verified by a senior techie with the belt provider who flew over from Germany that same night with two new picking line PC&rsquo;s - and crucially an oscilloscope. Replacing the picking line PC didn&rsquo;t make a difference and when he kicked off the oscilloscope it quickly became apparent that there was a lot of Electro-Magnetic Interference (EMI) in the vicinity of the electrical motors while they were running.</p>
+<h2 id="the-solution">
+  The Solution
+  <a class="heading-link" href="#the-solution">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Now we knew the root cause and it was well after 0:00 at night. The customer really needed to get the lines running by 8:00 this morning or they most definitely would loose customers and reputation at this stage. Various options were discussed and some tried - but none of them worked out or were not feasible to implement for an 8:00 start.</p>
+<p>Our final contribution came just before 4:00 where in our sleep deprived states of mind we suggested that if we lowered the network speed to the picking line PC from 100Mbps Full Duplex to 10Mbps Full Duplex we might stretch the bits (the signal) further over the wire and thereby make it less susceptible to noise. It was quickly agreed to try it out; we changed it on the picking line PC while the IT Infrastructure provider changed it on the network switch.</p>
+<p>And&hellip; The problem went away! An hour later and after a couple of cups of tea the problem still hadn&rsquo;t manifested itself again and everyone - not least the customer - breathed a sigh of relief!</p>
+<p>Of course, this was just a workaround. There was still a latent problem involving multiple factors: the UTP cabling (as opposed to STP), the fact that it passed within 15 cm of the motors, the fact that there was no noise filtering and finally the fact that the picking line PC was less than 1 meter from the motor all added up to an underlying flaw in the overall design. But at least the speed drop allowed the customer to resume operation at 8:00 that morning - and hopefully not lose too many customers.</p>
+<h2 id="lessons-learned">
+  Lessons Learned
+  <a class="heading-link" href="#lessons-learned">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Boot note: I will say that I am very happy to have been involved in this troubleshooting experience - and humbled by it too. As an IT worker these days it is such a rare opportunity to troubleshoot &ldquo;on the floor.&rdquo; At the same time, debugging issues at this level is also a very rare experience these days. And it serves as a good reminder never to make any assumptions when troubleshooting - keep an open mind, use the process of elimination, work with isolated test cases where you can - and &ldquo;think outside of the box!&rdquo; is all I can say ;-)</p>
+<h2 id="follow-up">
+  Follow-up
+  <a class="heading-link" href="#follow-up">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Just a quick follow-up to my blog&hellip;</p>
+<p>It would appear that IBM has a patch for the 64 second retransmit problem AIX kernel problem now.</p>
+<p>Check out:</p>
+<p>Minimum Software Versions and Patches Required to Support Oracle Products on IBM Power Systems [ID 282036.1]</p>
+<p>Specifically:</p>
+<p>IV20595 The first retransmit packet may be sent after 64 seconds, (Doc Number=5795)</p>
+<p><a href="http://www-01.ibm.com/support/docview.wss?uid=isg1IV20595"  class="external-link" target="_blank" rel="noopener">http://www-01.ibm.com/support/docview.wss?uid=isg1IV20595</a></p>
+<hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2012/06/tale-from-troubleshooting-department-on.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2012/06/tale-from-troubleshooting-department-on.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

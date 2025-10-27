@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  When Oracle Configuration Assistants, sqlplus, emctl, opmn and even oraenv Start Failing · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+  Background
+  
+    
+    Link to heading
+  
+
+Ok, this is one of those weird things that hopefully I won&rsquo;t ever experience again - now that I&rsquo;m blogging about it&hellip;
+I am currently building virtual machine templates and images using Oracle VirtualBox VM on a laptop in preparation for transferring same images to VMWare ESXi nodes at a customer site in order to reduce the lead time. As some of the images have dependencies (namely, the network) I started using host-only networking as opposed to NAT networking with Oracle VirtualBox. However, one downside to using host-only networking is that it&rsquo;s host-only so no external access per default to the Internet - with the ability to download and update software.">
+<meta name="keywords" content="When, Oracle, Configuration, Assistants,, sqlplus,, emctl,, opmn, even, oraenv, Start">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="When Oracle Configuration Assistants, sqlplus, emctl, opmn and even oraenv Start Failing">
+  <meta name="twitter:description" content="Background Link to heading Ok, this is one of those weird things that hopefully I won’t ever experience again - now that I’m blogging about it…
+I am currently building virtual machine templates and images using Oracle VirtualBox VM on a laptop in preparation for transferring same images to VMWare ESXi nodes at a customer site in order to reduce the lead time. As some of the images have dependencies (namely, the network) I started using host-only networking as opposed to NAT networking with Oracle VirtualBox. However, one downside to using host-only networking is that it’s host-only so no external access per default to the Internet - with the ability to download and update software.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/when-oracle-configuration-assistants-sqlplus-emctl-opmn-and-even-oraenv-start-failing/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="When Oracle Configuration Assistants, sqlplus, emctl, opmn and even oraenv Start Failing">
+  <meta property="og:description" content="Background Link to heading Ok, this is one of those weird things that hopefully I won’t ever experience again - now that I’m blogging about it…
+I am currently building virtual machine templates and images using Oracle VirtualBox VM on a laptop in preparation for transferring same images to VMWare ESXi nodes at a customer site in order to reduce the lead time. As some of the images have dependencies (namely, the network) I started using host-only networking as opposed to NAT networking with Oracle VirtualBox. However, one downside to using host-only networking is that it’s host-only so no external access per default to the Internet - with the ability to download and update software.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2013-05-14T10:33:00+01:00">
+    <meta property="article:modified_time" content="2013-05-14T10:33:00+01:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/when-oracle-configuration-assistants-sqlplus-emctl-opmn-and-even-oraenv-start-failing/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/when-oracle-configuration-assistants-sqlplus-emctl-opmn-and-even-oraenv-start-failing/">
+              When Oracle Configuration Assistants, sqlplus, emctl, opmn and even oraenv Start Failing
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2013-05-14T10:33:00&#43;01:00">
+                May 14, 2013
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              4-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <h2 id="background">
+  Background
+  <a class="heading-link" href="#background">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Ok, this is one of those weird things that hopefully I won&rsquo;t ever experience again - now that I&rsquo;m blogging about it&hellip;</p>
+<p>I am currently building virtual machine templates and images using Oracle VirtualBox VM on a laptop in preparation for transferring same images to VMWare ESXi nodes at a customer site in order to reduce the lead time. As some of the images have dependencies (namely, the network) I started using host-only networking as opposed to NAT networking with Oracle VirtualBox. However, one downside to using host-only networking is that it&rsquo;s host-only so no external access per default to the Internet - with the ability to download and update software.</p>
+<p>So what I did was install the Squid Proxy server on the host and configured it such that it would accept HTTP traffic on the host-only interface and forward to the internet. Only pre-requisite was to set the <code>http_proxy</code> and <code>ftp_proxy</code> environment variables, which I did in an <code>/etc/profile.d/profile.sh</code> script such that it would be inherited by all (Bourne derived) shells. I realise that I could potentially have used Microsoft&rsquo;s Internet Sharing mechanism but with countless interfaces and wonderful and strange configurations I wasn&rsquo;t sure how much that was going to break (ironically&hellip; Do read on.)</p>
+<p>This worked really well and all seemed to function nicely in terms of updating and downloading software.</p>
+<h2 id="the-problem">
+  The Problem
+  <a class="heading-link" href="#the-problem">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Then when I restarted the VMs a few days later things suddenly started breaking. My OEM VM would refuse to start-up the database for no apparent reason. Further investigation showed that manually running <code>oraenv</code> would fail and <code>$ORACLE_BASE</code> would get populated by the string <code>Failed to create XML context, error 54.</code> Turns out that the <code>orabase</code> command would return this string and fail - an <code>strace</code> indicated that it was indeed loading XML file(s) such as <code>oraclehomeproperties.xml</code>.</p>
+<p>Also, I would see errors when trying to stop the OEM middle-tier because OPMN suddenly refused to parse its <code>opmn.xml</code> file (it&rsquo;s still a wonder how it could start the services in the first place):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Output messages of the command :
+</span></span><span style="display:flex;"><span>opmnctl stopall: error parsing /u01/app/oracle/Middleware/gc_inst/WebTierIH1/config/OPMN/opmn/opmn.xml
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>2013-05-14 09:08:17,278 [main] INFO  util.EmctlUtil logp.251 - error messages of the command :
+</span></span><span style="display:flex;"><span>[2013-05-14T09:08:17+01:00] [opmn] [ERROR:1] [107] [internal] XML parser init: error 54.
+</span></span></code></pre></div><p>But hello - same error code (54). So there&rsquo;s a correlation between the two.</p>
+<p>Separately I had another VM configured for Oracle ASM and SQLPLUS would fail (but ASMCA continue) during ASM installation:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>INFO: Read:
+</span></span><span style="display:flex;"><span>INFO: Read: Configuring ASM failed with the following message:
+</span></span><span style="display:flex;"><span>INFO: Read: There is an error in creating the following process:
+</span></span><span style="display:flex;"><span>INFO: Read: /u01/app/grid/product/11.2.0/grid/bin/sqlplus -S -N /NOLOG
+</span></span><span style="display:flex;"><span>INFO: Read: The error is:
+</span></span><span style="display:flex;"><span>INFO: Read: Error 46 initializing SQL*Plus
+</span></span><span style="display:flex;"><span>INFO: Read: HTTP proxy setting has incorrect value
+</span></span><span style="display:flex;"><span>INFO: Read: SP2-1502: The HTTP proxy server specified by http_proxy is not accessible
+</span></span><span style="display:flex;"><span>INFO: Read:
+</span></span><span style="display:flex;"><span>INFO: Read:
+</span></span><span style="display:flex;"><span>INFO: Completed Plugin named: Automatic Storage Management Configuration Assistant
+</span></span><span style="display:flex;"><span>INFO: Automatic Storage Management Configuration Assistant failed.
+</span></span></code></pre></div><h2 id="root-cause">
+  Root Cause
+  <a class="heading-link" href="#root-cause">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Because it had been a few days it took me some time to connect the dots between all these failures - SQLPLUS can load resources from URLs and it would seem that setting <code>http_proxy</code> can make it fail. Also, the XML parsers suddenly started failing when parsing files like <code>opmn.xml</code> and <code>oraclehomeproperties.xml</code> - and could fail because they try to access URL resources too when parsing.</p>
+<h2 id="solution">
+  Solution
+  <a class="heading-link" href="#solution">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>So at this stage I removed the <code>http_proxy</code> and <code>ftp_proxy</code> environment variables so that they are no longer set by default - this solved all my problems.</p>
+<p>So when I need to <code>wget</code> files or <code>yum update</code> I will just need to remember to run a script to set the proxies.</p>
+<h2 id="lesson-learnt">
+  Lesson Learnt
+  <a class="heading-link" href="#lesson-learnt">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Never ever set <code>http_proxy</code> and <code>ftp_proxy</code> when running Oracle software. Whether this is a bug or a feature (by design) is unknown but now at least I know what the problem is&hellip;</p>
+<hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2013/05/when-oracle-configuration-assistants.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2013/05/when-oracle-configuration-assistants.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

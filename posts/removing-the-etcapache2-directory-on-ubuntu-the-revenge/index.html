@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Removing the /etc/apache2 directory on Ubuntu - the revenge! · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+  The Problem
+  
+    
+    Link to heading
+  
+
+Ok, so you decide in your infinite wisdom to remove the /etc/apache2 directory altogether after a failed Chef cookbook attempt to create some new configuration against Apache 2.4 on Ubuntu 13.10 when the cookbook turns out only to support Apache 2.2.
+
+  The Solution
+  
+    
+    Link to heading
+  
+
+That took some serious searching on the web in order to get Ubuntu to reinstate all configuration.">
+<meta name="keywords" content="Removing, /etc/apache2, directory, Ubuntu, revenge!">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Removing the /etc/apache2 directory on Ubuntu - the revenge!">
+  <meta name="twitter:description" content="The Problem Link to heading Ok, so you decide in your infinite wisdom to remove the /etc/apache2 directory altogether after a failed Chef cookbook attempt to create some new configuration against Apache 2.4 on Ubuntu 13.10 when the cookbook turns out only to support Apache 2.2.
+The Solution Link to heading That took some serious searching on the web in order to get Ubuntu to reinstate all configuration.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/removing-the-etcapache2-directory-on-ubuntu-the-revenge/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Removing the /etc/apache2 directory on Ubuntu - the revenge!">
+  <meta property="og:description" content="The Problem Link to heading Ok, so you decide in your infinite wisdom to remove the /etc/apache2 directory altogether after a failed Chef cookbook attempt to create some new configuration against Apache 2.4 on Ubuntu 13.10 when the cookbook turns out only to support Apache 2.2.
+The Solution Link to heading That took some serious searching on the web in order to get Ubuntu to reinstate all configuration.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2014-01-23T21:29:00+00:00">
+    <meta property="article:modified_time" content="2014-01-23T21:29:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/removing-the-etcapache2-directory-on-ubuntu-the-revenge/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/removing-the-etcapache2-directory-on-ubuntu-the-revenge/">
+              Removing the /etc/apache2 directory on Ubuntu - the revenge!
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2014-01-23T21:29:00Z">
+                January 23, 2014
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              One-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <h2 id="the-problem">
+  The Problem
+  <a class="heading-link" href="#the-problem">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Ok, so you decide in your infinite wisdom to remove the <code>/etc/apache2</code> directory altogether after a failed Chef cookbook attempt to create some new configuration against Apache 2.4 on Ubuntu 13.10 when the cookbook turns out only to support Apache 2.2.</p>
+<h2 id="the-solution">
+  The Solution
+  <a class="heading-link" href="#the-solution">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>That took some serious searching on the web in order to get Ubuntu to reinstate all configuration.</p>
+<p><a href="http://askubuntu.com/questions/26228/how-can-i-replace-missing-configuration-files-after-removing-a-package"  class="external-link" target="_blank" rel="noopener">Thank you Jorge Castro &amp; ajmitch!</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get -o DPkg::Options::<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;--force-confmiss&#34;</span> --reinstall install apache2
+</span></span></code></pre></div><h2 id="fixing-the-chef-cookbook">
+  Fixing the Chef Cookbook
+  <a class="heading-link" href="#fixing-the-chef-cookbook">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Anyway, I also fixed up the apache2(.2) cookbook so that it can now run for 2.4. But I do disclaim all liability/warranty - it was simply a quick-fix using new syntax and constructs where warranted&hellip;</p>
+<p><a href="https://github.com/citizenme/chef-repo/tree/master/cookbooks/apache2"  class="external-link" target="_blank" rel="noopener">https://github.com/citizenme/chef-repo/tree/master/cookbooks/apache2</a></p>
+<hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2014/01/removing-etcapache2-directory-on-ubuntu.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2014/01/removing-etcapache2-directory-on-ubuntu.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

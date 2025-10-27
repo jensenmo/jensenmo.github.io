@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  The Cost-Based Optimizer - A Simple Introduction · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+  Introduction
+  
+    
+    Link to heading
+  
+
+I have previously been asked to mentor developers and provide information regarding the Cost-Based Optimizer (CBO) within the Oracle database in work. I therefore decided to put together a simple introduction, which also ended up teaching me more about the CBO.
+This introduction to the CBO is not meant as an all-encompassing guide or book. There are already several good and thorough books on the subject. The guide will however provide some fundamental information that may help developers getting started with, understanding and using the CBO.">
+<meta name="keywords" content="Cost-Based, Optimizer, Simple, Introduction">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The Cost-Based Optimizer - A Simple Introduction">
+  <meta name="twitter:description" content="Introduction Link to heading I have previously been asked to mentor developers and provide information regarding the Cost-Based Optimizer (CBO) within the Oracle database in work. I therefore decided to put together a simple introduction, which also ended up teaching me more about the CBO.
+This introduction to the CBO is not meant as an all-encompassing guide or book. There are already several good and thorough books on the subject. The guide will however provide some fundamental information that may help developers getting started with, understanding and using the CBO.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/the-cost-based-optimizer-a-simple-introduction/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="The Cost-Based Optimizer - A Simple Introduction">
+  <meta property="og:description" content="Introduction Link to heading I have previously been asked to mentor developers and provide information regarding the Cost-Based Optimizer (CBO) within the Oracle database in work. I therefore decided to put together a simple introduction, which also ended up teaching me more about the CBO.
+This introduction to the CBO is not meant as an all-encompassing guide or book. There are already several good and thorough books on the subject. The guide will however provide some fundamental information that may help developers getting started with, understanding and using the CBO.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2010-05-31T19:39:00+01:00">
+    <meta property="article:modified_time" content="2010-05-31T19:39:00+01:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/the-cost-based-optimizer-a-simple-introduction/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/the-cost-based-optimizer-a-simple-introduction/">
+              The Cost-Based Optimizer - A Simple Introduction
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2010-05-31T19:39:00&#43;01:00">
+                May 31, 2010
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              57-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <h2 id="introduction">
+  Introduction
+  <a class="heading-link" href="#introduction">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>I have previously been asked to mentor developers and provide information regarding the Cost-Based Optimizer (CBO) within the Oracle database in work. I therefore decided to put together a simple introduction, which also ended up teaching me more about the CBO.</p>
+<p>This introduction to the CBO is not meant as an all-encompassing guide or book. There are already several good and thorough books on the subject. The guide will however provide some fundamental information that may help developers getting started with, understanding and using the CBO.</p>
+<p>With the advent of the Oracle Cost-Based Optimizer (CBO) since Oracle 7 and with the de-support of the Rule-Based Optimizer (RBO) from Oracle 10g and upwards, it is imperative that SQL code be written to utilise the CBO. This means that RBO constructs should no longer be used and that past RBO assumptions should no longer be made regarding how the Oracle optimizer deals with the planning and execution of SQL statements. Furthermore, over time, any rule-based SQL identified in existing code and scripts should be altered to take advantage of the CBO.</p>
+<p>Apart from my own work with the CBO, this guide is largely based on available Oracle 9i Release 2 and 10g Release 2 documentation, as well as the invaluable book <strong>Cost-Based Oracle Fundamentals</strong> written by Jonathan Lewis [1]. It also references a significant amount of Oracle Support notes, which the reader is encouraged to read - assuming that the reader does have access to My Oracle Support (<a href="https://support.oracle.com/%29"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/)</a>.</p>
+<p>This guide will first brush on the subject of the RBO and why it should no longer be used. Then it will describe how the CBO works, how to use it and what to look out for. Finally the guide will provide some best-practice information and tips and tricks.</p>
+<p>For simplicity, the examples provided are based on Oracle&rsquo;s HR demo schema. Scripts for creating the demo schemas, including the HR schema, are up until 10g distributed with the database installation. With 11g the examples are distributed separately and can be downloaded from the Oracle Technet web site: <a href="http://www.oracle.com/technology/software/products/database/index.html"  class="external-link" target="_blank" rel="noopener">http://www.oracle.com/technology/software/products/database/index.html</a>. The reader will therefore be able to easily re-create the database environment that the examples have been based on.</p>
+<p>However, bear in mind that due to a wide variety of factors including underlying hardware, operating system, block sizes, gathered system and segment statistics, a wide variety of database instance and session parameters etc it may be possible that results vary from database to database and system to system.</p>
+<p>It is therefore left up to the reader, as an exercise, to verify findings made in this guide and apply critical thinking rather than take anything written at face value - this guide included. Also, of course, nothing beats learning by doing. Also, as I am sure that there are plenty of mistakes and incorrect assumptions in this guide I would encourage anyone finding such occurrences to contact me and let me know, thank you!</p>
+<p>Finally, the examples provided were tested and results collected from the 10g database release (10.2.0.4 to be precise).</p>
+<h2 id="the-rule-based-optimizer">
+  The Rule-Based Optimizer
+  <a class="heading-link" href="#the-rule-based-optimizer">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The rule-based optimizer (RBO) in the Oracle database implemented a very simplistic approach to determining the most optimal access path to a given table being accessed in a SQL statement by checking 15 access path options [2] and their eligibility depending on available indexes etc. The access path options would be ranked in order of preference - the lowest ranked would be preferred over the highest ranked. For instance an access path of <em>single row by rowid</em> (ranked 1) would be preferred over a <em>full tablescan</em> (ranked 15).</p>
+<p>Because data-related statistics (distribution and selectivity of column data) are not available to help determine access paths and join order in the RBO it would have no other way of determining optimal join-order or join-type (e.g. sort-merge, nested loops and hash) than prioritise join-order by preference (rules heuristics) depending on the access path options available for each table.</p>
+<p>For some SQL statements this has caused signficant performance problems because of the static heuristics employed by the RBO, which do not take into consideration data and data distribution. Developers would therefore &ldquo;fix&rdquo; the SQL statements by making index access paths to particular tables &ldquo;impossible&rdquo;, and in the process make other joins orders and types more favourable. This has traditionally been achieved by adding <code>|| ''</code> to string column and <code>+ 0</code> to number column predicates.</p>
+<p>In effect, this meant that the idea of SQL being a declarative language for accessing data, i.e. that the developer would specify what to retrieve and from where, but not how, would no longer hold true. A certain amount of &ldquo;programming&rdquo; around performance issues would be required by using the previously mentioned constructs in predicates.</p>
+<p>Furthermore, as the Oracle database and the CBO evolved, many newly added access paths would be usable only by the CBO. The RBO would therefore not be able to take advantage of an increasing amount of new optimisation features employed in later database releases.</p>
+<h2 id="the-cost-based-optimizer">
+  The Cost-Based Optimizer
+  <a class="heading-link" href="#the-cost-based-optimizer">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<h3 id="background">
+  Background
+  <a class="heading-link" href="#background">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>The RBO was previously described as following a strict and simplistic set of rules for determining the access paths, join types and join orders used to run a SQL statement. The cost-based optimizer determines the access paths, join types and join order by costing.</p>
+<p>But how does the CBO function - and what does &ldquo;costing&rdquo; mean? Put simply, cost represents the optimizer&rsquo;s best estimate of the amount of time it will take to execute a statement.</p>
+<p>In order to provide an estimate of the amount of time a statement takes, the database will need to know how much I/O is required to satisfy a given statement. After all, I/O is typically the slowest performing component of computer architectures today - as opposed to access to data in main memory and cache.</p>
+<p>To determine the amount of I/O required, the optimizer will need to have some kind of idea of how much data to bring back from tables because the amount of data directly impacts the amount of I/O required. This is where table and index statistics come in. Statistics help to determine the selectivity of data in individual tables, which in turn is dependent on cardinality. For instance, if we have a query that selects a particular department in a <code>DEPARTMENTS</code> table by a department identifier we can be reasonably sure that at most one row will be returned - after all there will likely be a unique index (if not primary key) on the department id column, which prevents multiple occurrences of a department id in the same table. Conversely, if we wish to look-up employees by department id in an <code>EMPLOYEES</code> table we may quite reasonably expect to have potentially many rows returned, i.e. all employees that work in a particular department.</p>
+<p>Traditionally costing was solely a function of the estimated amount of I/O required in order to execute a statement. However since 9i (release 2) the CBO included CPU costing because a certain amount of CPU time would be required for e.g. tablescans, sorting and joining row sets. I.e. the amount of CPU time estimated to be required to execute a particular SQL statement plan, which can also potentially be quite substantial, could be taken into account as well if CPU costing was enabled. Time in this instance is not necessarily a fixed time unit (like milli-seconds) but depends instead on the underlying hardware platform - time &ldquo;units&rdquo; in terms of CPUs would be dependent on CPU cycles and the average amount of CPU cycles that can be executed per second, which in turn is related to the frequency of the CPUs and numerous other factors, including CPU cache, main memory timings, instruction set etc. However, for the purposes of calculating overall CPU cost, the number of CPU cycles is eventually normalised in accordance with &ldquo;CPU speed&rdquo; when a total cost of a statement is calculated.</p>
+<p>According to the 9i Release 2 documentation [3] on performance tuning the CBO costing model, which takes into account both I/O and CPU costs, is calculated as follows:</p>
+<p><code>*Cost = (#SRds * sreadtim + #MRds * mreadtim + #CPUCycles / cpuspeed ) / sreadtim*</code></p>
+<p>Where:</p>
+<ul>
+<li><code>#SRDs</code> is the number of single block reads</li>
+<li><code>#MRDs</code> is the number of multi block reads</li>
+<li><code>#CPUCycles</code> is the number of CPU Cycles</li>
+<li><code>sreadtim</code> is the single block read time</li>
+<li><code>mreadtim</code> is the multi block read time</li>
+<li><code>cpuspeed</code> is the CPU cycles per second</li>
+</ul>
+<p>In essence, what this formula tells us is that time spent on single-block reads + time spent on multi-block reads + CPU time and divided by single-block read time gives us the estimated cost of a particular statement.</p>
+<p>The formula has since evolved in 10g and also takes into account access to the temporary tablespace for sorting and group-by for instance.</p>
+<p>Since 9i Release 2 DBA&rsquo;s have been advised to gather system statistics in each database in two sets - during normal operation and with a workload. The gathered system statistics can be found by querying internal database tables as follows (as SYSDBA) or by executing the <code>DBMS_STATS.GET_SYSTEM_STATS</code> procedure with each individual statistics attribute name displayed below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SELECT</span> pname, pval1
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">FROM</span> aux_stats$
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">WHERE</span> sname <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;SYSSTATS_MAIN&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>PNAME                               PVAL1
+</span></span><span style="display:flex;"><span><span style="color:#75715e">------------------------------ ----------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>CPUSPEED                             <span style="color:#ae81ff">1095</span>
+</span></span><span style="display:flex;"><span>CPUSPEEDNW                       <span style="color:#ae81ff">1296</span>.<span style="color:#ae81ff">392</span>
+</span></span><span style="display:flex;"><span>IOSEEKTIM                          <span style="color:#ae81ff">11</span>.<span style="color:#ae81ff">211</span>
+</span></span><span style="display:flex;"><span>IOTFRSPEED                       <span style="color:#ae81ff">12764</span>.<span style="color:#ae81ff">76</span>
+</span></span><span style="display:flex;"><span>MAXTHR                            <span style="color:#ae81ff">6528000</span>
+</span></span><span style="display:flex;"><span>MBRC                                    <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>MREADTIM                            <span style="color:#ae81ff">2</span>.<span style="color:#ae81ff">341</span>
+</span></span><span style="display:flex;"><span>SLAVETHR
+</span></span><span style="display:flex;"><span>SREADTIM                            <span style="color:#ae81ff">2</span>.<span style="color:#ae81ff">426</span>
+</span></span></code></pre></div><p>As can be seen, these numbers provide the basis for the CBO costing formula from a system statistics perspective.</p>
+<p>The <code>CPUSPEED</code> is measured in available (million) clock cycles per second (although in reality it is slightly more complex than this), i.e. in this case the system has nearly 1.3 billion CPU cycles per second (incidentally equivalent to 1.3Ghz CPU in this situation). It is worth mentioning that the <code>CPUSPEED</code> is calculated for a single CPU - not the system as a whole if there are multiple CPUs.</p>
+<p>Cost presumably is based only on a single CPU (or core) because a particular Oracle process, which works on behalf of a particular user session, wouldn&rsquo;t parallelise a given operation (SQL statement execution) - although this does not necessarily hold true with parallel execution slave processes.</p>
+<p>The figures above state that average I/O seek time (i.e. time to find the data on the underlying I/O sub-system) is approximately 11.2ms, average <code>MREADTIM</code> (multi-block read time) is 2.3ms and average <code>SREADTIM</code> (single-block read time) is 2.4ms. The <code>MBRC</code> (multi-block read count) is a measure of the average number of blocks read during multi-block reads while system statistics were gathered. Incidentally this figure equals the <code>db_file_multiblock_read_count</code> parameter in this situation, which determines the maximum amount of blocks that can be read into the buffer cache at a time with a multi-block read.</p>
+<p>The <code>IOTFRSPEED</code> indicates amount of bytes per milli-second that can be transferred (gathered during the system statistics gathering process). It would therefore seem that the transfer speed would be 12.7MB/s, which does seem rather low in the case of this particular system.</p>
+<p>It is also interesting to note that in this instance multi-block read counts appear (slightly) faster than single-block read counts. This is probably down to other activity on the system while system statistics were collected. However it was never verified 100%.</p>
+<p>So, how does the database decide on a particular plan given that there can be a significant amount of access paths to consider on a per-table basis, while taking into account the fact that there is the table join types and order to determine as well?</p>
+<p>Before determining a particular plan, the database first attempts to simplify the statement through a transformation phase during parsing. The goal of this transformation is a simplification of the plan in order to make more access paths available to the CBO. This in turn will allow the optimizer to find a potentially more optimal plan out of a greater execution plan search space (plan permutations). The simplification process will typically result in a statement that consists of a straight joins between tables. This means that the database may &ldquo;fold&rdquo; sub-queries and merge views into the main SQL statement, while potentially also performing unnesting and star transformations.</p>
+<p>How to execute the statement will then be evaluated by the CBO before actual execution in the parsing phase. This is achieved by determining and evaluating a number of different execution plans, which involves running through options for access paths, table join types and join orders. A cost is determined for each evaluated plan. The plan with the smallest estimated cost, as determined by the CBO heuristics and underlying statistics, ultimately wins. The hidden parameter <code>_optimizer_max_permutations</code> determines the maximum amount of execution plan permutations that are considered before the optimizer stops evaluating any more plans. This parameter exists to make a trade-off between parse time and finding the most optimal plan.</p>
+<p>As a result, this parameter may impact SQL statement parse time. Over time the CBO has improved to make more intelligent choices in determining valid and good execution plan candidates to evaluate in order to reduce the amount of considered permutations. This reduces CPU workload and SQL statement parse time. For instance, between Oracle versions 8 and 9 the parameter&rsquo;s default value was reduced from 80.000 to 2.000. When below 80.000 the CBO will also make certain heurestical choices regarding what plan permutations are checked.</p>
+<p>Furthermore the amount of tables that are joined in a SQL statement have a direct impact on the amount of potential permutations that exist, which the CBO must evaluate. For this very reason the optimizer may therefore only check a sub-set of potential candidates, as controlled by the <code>_optimizer_max_permutations</code> parameter before it stops the search. This could mean that while better plans exist a sub-optimal plan is chosen because there simply isn&rsquo;t enough time to evaluate the full set of potential execution plans. It is therefore potentially in circumstances of complex queries and extensive sets of joins that it may be necessary to use hints to help the optimizer determine a more optimal plan than those it would otherwise evaluate.</p>
+<p>More information regarding the CBO and parameters that control its search for potential execution plan candidates can be found in the following Oracle Support notes: <strong>Init.ora Parameter &ldquo;OPTIMIZER_MAX_PERMUTATIONS&rdquo;</strong> [4], <strong>Relationship between OPTIMIZER_MAX_PERMUTATIONS and OPTIMIZER_SEARCH_LIMIT</strong> [5] and <strong>Limitations of the Oracle Cost Based Optimizer</strong> [6].</p>
+<h3 id="segment-statistics">
+  Segment Statistics
+  <a class="heading-link" href="#segment-statistics">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>Statistics on indexes and tables (commonly referred to as segments) enable the CBO to estimate how much data needs to be accessed from a given table or index in order to satisfy the predicate conditions. Statistics are stored on tables, indexes and individual columns in each table. Columns may in turn also have value distribution histograms associated with them. The automated statistics job per default automatically determines which columns are eligible for histograms based on data skewing.</p>
+<p>Segment statistics are required in order for the CBO to estimate the cost of running a SQL statement. Before 10g the default behaviour would generally be to use the rule-based optimizer if statistics on objects satisfying a particular SQL statement didn&rsquo;t exist. Per default in 10g (and with parameter changes in 9i release 2) the database can auto-sample small chunks of data in the segments on behalf of the CBO for segments that have no statistics. This enables the CBO to do its job. The resulting statistics however may not be entirely accurate due to the sample size, which may result in the CBO making mis-informed conclusions when considering data skewing, number of rows and high water marks.</p>
+<p>In 10g segment statistics are automatically gathered by an automated job on a nightly basis. The execution happens during a database-defined maintenance window. DBAs therefore generally no longer need to manually cater for collection of statistics. The job will automatically collect statistics on tables that have no statistics or where more than 10% of data in the table has changed: <code>(INSERTs + UPDATEs + DELETEs) / NUM_ROWS &gt;= 10%</code> [20]. The information is provided in the <code>DBA_TAB_MODIFICATIONS</code> view and underlying internal tables.</p>
+<p>In 9i segment monitoring could be manually enabled on a per-segment basis. In 10g segment monitoring is enabled by default when the <code>STATISTICS_LEVEL</code> parameter is set to <code>TYPICAL</code> or <code>ALL</code>.</p>
+<p>The automated job-based or manually gathered segment statistics (<code>DBMS_STATS</code> package) are available from a variety of sources as described below. Bear in mind that this information is only available if a particular segment has been analysed. Otherwise segment and columns statistic values will generally be <code>NULL</code> and no histograms will exist. Furthermore the information is unlikely to be 100% accurate. For instance if statistics have been gathered on a table and rows have been inserted or deleted, the row count etc. will not have been updated by this action. Only a new analysis of the table would correct this. Furthermore, the statistics gathering job may estimate the statistics by only visiting a sample of data within the segments in order to reduce analysis time considerably, which means that the information provided is often only an estimate. This can potentially lead to inaccuracies that may have impact on plans.</p>
+<p>As previously mentioned the automated database statistics gathering job creates histograms on columns where data is determined to be sufficiently skewed to warrant this. The statistics provide information such as number of distinct values and low and high values, data skewing in columns (recorded in so-called buckets in a histogram), which provide individual values or sets of values in a range and amount of occurrences (cumulatively).</p>
+<p>The following sections provide details regarding the data dictionary views where statistics information on tables, indexes, individual columns and histograms can be found. The sections also describe each relevant statistics column in the views.</p>
+<p><strong>Tables -&gt; relevant ALL_TABLES statistics columns:</strong></p>
+<ul>
+<li><code>NUM_ROWS</code>: Number of rows in table.</li>
+<li><code>BLOCKS</code>: Number of USED data blocks in table.</li>
+<li><code>EMPTY_BLOCKS</code>: Number of empty data blocks in table.</li>
+<li><code>AVG_SPACE</code>: Average number of free space in a table data block.</li>
+<li><code>CHAIN_CNT</code>: Number of chained and migrated rows in the table.</li>
+<li><code>AVG_ROW_LEN</code>: Average row length measured in bytes in the table.</li>
+<li><code>LAST_ANALYZED</code>: The last time the table was analysed and statistics recorded.</li>
+<li><code>USER_STATS</code>: Indicates whether statistics were set by a user (YES) or gathered through analysis (NO).</li>
+</ul>
+<p><strong>Indexes -&gt; relevant ALL_INDEXES statistics columns:</strong></p>
+<ul>
+<li><code>BLEVEL</code>: B*-Tree level: depth of the index from its root block to its leaf blocks. A depth of 0 indicates that the root block and leaf block are the same.</li>
+<li><code>LEAF_BLOCKS</code>: Number of leaf blocks in the index.</li>
+<li><code>DISTINCT_KEYS</code>: Number of distinct indexed values. Would be the same as number of rows if index is unique.</li>
+<li><code>AVG_LEAF_BLOCKS_PER_KEY</code>: Average number of leaf blocks in which each distinct value in the index appears. For unique indexes this is exactly 1.</li>
+<li><code>AVG_DATA_BLOCKS_PER_KEY</code>: Average number of data blocks in the table that are pointed to by a distinct value in the index.</li>
+<li><code>CLUSTERING_FACTOR</code>: Indicates the order of data in the table versus the index order. If the number is near the amount of blocks in the index it means that each index leaf block&rsquo;s table row id&rsquo;s point to a small number of blocks. If the number is significantly higher it means that each index leaf block row id&rsquo;s point to a significant number of blocks. In essence this number indicates the amount of data blocks in a table that would need to be visited if all row id&rsquo;s in an index leaf block needed to be visited.</li>
+<li><code>LAST_ANALYZED</code>: The last time the index was analysed and statistics recorded.</li>
+<li><code>USER_STATS</code>: Indicates whether statistics were set by a user (YES) or gathered through analysis (NO).</li>
+</ul>
+<p><strong>Columns -&gt; relevant ALL_TAB_COLUMNS statistics columns:</strong></p>
+<ul>
+<li><code>NUM_DISTINCT</code>: Number of distinct values in column.</li>
+<li><code>LOW_VALUE</code>: Low value in the column. This is a RAW representation of the data - only the first 32 characters are stored for CHAR data.</li>
+<li><code>HIGH_VALUE</code>: Low value in the column. This is a RAW representation of the data - only the first 32 characters are stored for CHAR data.</li>
+<li><code>DENSITY</code>: The density of the column, which is generally is calculated as <code>1 / NUM_DISTINCT</code> (ignoring NULLs) although if a histogram on the column is necessary, then this may not necessarily be the case.</li>
+<li><code>NUM_NULLS</code>: Number of NULL occurences that exist in the column.</li>
+<li><code>NUM_BUCKETS</code>: Number of buckets in the histogram for the column. If NULL, then no histograms exist.</li>
+<li><code>LAST_ANALYZED</code>: The last time the column was analysed and statistics recorded.</li>
+<li><code>SAMPLE_SIZE</code>: The amount of data sampled when the column was analysed.</li>
+<li><code>GLOBAL_STATS</code>: Populated for partitioned tables to indicate whether statistics have been generated on the table as a whole or on a per-partition basis.</li>
+<li><code>USER_STATS</code>: Indicates whether statistics were set by a user (YES) or gathered through analysis (NO).</li>
+<li><code>HISTOGRAM</code>: Indicates existence and type of histogram. Possible values are: NONE, FREQUENCY and HEIGHT BALANCED.</li>
+</ul>
+<p><strong>Column Histograms -&gt; relevant ALL_TAB_HISTOGRAMS statistics columns:</strong></p>
+<ul>
+<li><code>ENDPOINT_NUMBER</code>: The histogram bucket number. Signifies the end-point for a particular value or set of values that make up a bucket. It is important to understand that the buckets are allocated in value-order. For instance VARCHAR2 columns are sorted in alphanumeric order and NUMBER columns are sorted in natural number order. The end-point essentially records the cumulative number of rows for each bucket in the order of the values.</li>
+<li><code>ENDPOINT_VALUE</code>: Normalised representation of the endpoint as a number.</li>
+<li><code>ENDPOINT_ACTUAL_VALUE</code>: String representation of actual value of endpoint - according to Oracle Support note <strong>How to Get Actual Bucket Point Value for Date Column from dba_histograms</strong> [7] this only happens when there is a clash between normalised representations of data, i.e. that two different values result in the same normalised &ldquo;hash&rdquo; value.</li>
+</ul>
+<p>One thing to note is that with 10g the creation and rebuild of indexes automatically gathers statistics for the index. This also means that the <code>COMPUTE STATISTICS</code> option of the <code>CREATE INDEX</code> statement is now deprecated. It is therefore no longer necessary to gather statistics on indexes separately unless custom analysis parameters are required or if statistics are outdated (e.g. due to large DML operations) and haven&rsquo;t yet been gathered by the automated job.</p>
+<h3 id="hints">
+  Hints
+  <a class="heading-link" href="#hints">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>With the CBO came Oracle&rsquo;s realization that the optimizer would not always make the right decisions on execution plans for a number of different reasons. There would be times where the developer would have a better understanding of the underlying data and optimal access paths. Oracle therefore introduced database hints as a means to provide the developer with the ability to hint to the CBO to consider an alternative access path, join type, join order - or a combination of these hints.</p>
+<p>However, Oracle is free to ignore hints - some hints may result in plans that are not possible in reality. The optimizer may also decide that what the developer is hinting at is unfeasible. It is important to remember this when considering answers to questions like <em>why doesn&rsquo;t the database do as I tell it to</em>?</p>
+<p>Furthermore, hints should generally be considered only as a last resort for plan stability. There are other ways of &ldquo;hinting&rdquo; the CBO. One obvious choice is to ensure that statistics are current and provide a sufficiently correct and detailed picture of the data in order to ensure that the CBO arrives at the best plan - this could include introducing histograms on columns etc.</p>
+<p>Another way is to store a SQL profile for particular statement, which can assist the CBO in determining relationships between column data and thereby make better decisions about plans. SQL profiles are generally generated using the SQL Tuning Advisor and associated with a SQL statement once the SQL profile has been accepted by the DBA or developer. Please refer to the Oracle article <strong>The Top 20 Features for DBAs: Week 18</strong> [8] for more information on how to use this feature in 10g.</p>
+<p>In 11g the idea of a SQL profile has been considerably expanded upon and there are a host of new options including SQL plan history, SQL plan baseline (consisting of potentially many accepted profiles) and the SQL Performance Analyzer.</p>
+<p>There is a another reason not to use hints wherever possible; as the CBO evolves and more access paths are introduced hints that were meant to &ldquo;fix&rdquo; issues in older Oracle releases may have a detrimental effect on the way Oracle utilises the new and improved access paths in future releases.</p>
+<p>The Oracle documentation on <strong>Using Optimizer Hints</strong> [9] provides an excellent overview of the available hints within the Oracle database.</p>
+<h3 id="execution-plans">
+  Execution Plans
+  <a class="heading-link" href="#execution-plans">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>It is possible for developers and DBA&rsquo;s to get an insight into how the CBO plans to execute a SQL statement. This ability provides a powerful tool to help determine whether an optimal execution plan is used or whether potential improvements can be made to the statement or execution environment (such as better statistics).</p>
+<p>It is possible to explain the planned execution plan in SQL*PLUS. This is achieved by pre-fixing the SQL statement with <code>EXPLAIN PLAN FOR</code> as follows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SQL</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">explain</span> plan <span style="color:#66d9ef">for</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">2</span>  <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">3</span>    <span style="color:#66d9ef">from</span> HR.employees
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">4</span>   <span style="color:#66d9ef">where</span> employee_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">105</span>;
+</span></span></code></pre></div><p>The statement stores the planned execution plan in a table called <code>PLAN_TABLE</code>. It is common to create only one plan table for the whole database, which developers have been granted privileges to access. This means that there could be explain plans for many statements from many different developers in the table. There are 3 choices - create the <code>PLAN_TABLE</code> as a temporary table (the new script <code>?/rdbms/admin/catplan</code> does this), delete all contents in the table before explaining or, if others are currently using the plan table, to identify the plan that has just been explained. As it happens, the plan that has just been explained and stored in the <code>PLAN_TABLE</code> has a <code>NULL</code> statement id.</p>
+<p>We can therefore now explain the plan easily as follows (the <code>NULL</code> provided in the call is the statement id):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> plan_table_output
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> <span style="color:#66d9ef">table</span>(dbms_xplan.display(<span style="color:#e6db74">&#39;PLAN_TABLE&#39;</span>,<span style="color:#66d9ef">null</span>,<span style="color:#e6db74">&#39;TYPICAL&#39;</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>                   <span style="color:#f92672">|</span> Name          <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">0</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">STATEMENT</span>            <span style="color:#f92672">|</span>               <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>    <span style="color:#ae81ff">76</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">INDEX</span> ROWID<span style="color:#f92672">|</span> EMPLOYEES     <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>    <span style="color:#ae81ff">76</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">2</span> <span style="color:#f92672">|</span>   <span style="color:#66d9ef">INDEX</span> <span style="color:#66d9ef">UNIQUE</span> SCAN         <span style="color:#f92672">|</span> EMP_EMP_ID_PK <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------------------------------------------------
+</span></span></span></code></pre></div><p>It is also possible to set the statement id of the explain plan by using <code>EXPLAIN PLAN SET STATEMENT_ID='statement_id' FOR</code> and then to execute <code>DBMS_XPLAN.DISPLAY('PLAN_TABLE','statement_id','TYPICAL'))</code>.</p>
+<p>The explain plan provides the developer with invaluable information regarding how the CBO plans the execute a statement, the estimated time and costs in doing so and also how many rows the CBO expects to retrieve. The plan also includes an explanation of the operations involved. In this example the first line of execution is a unique scan of an index <code>EMP_EMP_ID_PK</code> to find a given employee and thereby satisfy the predicate <code>EMPLOYEE_ID=105</code>. The second line executed is to access row(s) by row id in the table based on the results (row id) from the index search. The final top line provides a place holder for the statement as a whole (a <code>SELECT</code>) that projects the results that would have followed from actually running the query.</p>
+<p>Reading the explain plan may seem somewhat counter-intuitive. The plan is a tree and the execution order is from the bottom leafs of the tree and up through the branches to the top branch. However it should seem obvious that in order for the database to find data in a table and using an index to do so, the index must first be searched for row id&rsquo;s in the table that satisfy the criteria, i.e. leafs in the tree will first be executed in order to satisfy the branches above. The final step is the projection of results from the execution of the SQL statement - in this example the <code>SELECT</code> statement itself.</p>
+<p>A more elaborate example of what is meant by the bottom of the tree is provided below. The example joins two tables <code>DEPARTMENTS</code> and <code>EMPLOYEES</code> by <code>DEPARTMENT_ID</code>. and uses the <code>LOCATION_ID</code> column of the department as a filter. The predicate filters rows of the DEPARTMENTS table with a <code>LOCATION_ID</code> of <code>1700</code>. In this example it would seem reasonable to expect that the CBO will first do a lookup on the <code>DEPARTMENTS</code> table to find a set of departments that are located in a particular location by using the <code>DEPT_LOCATION_IX</code> index. The set of departments that satisfy this criteria can then be used to lookup rows in the <code>EMPLOYEES</code> table for employees that work in departments in the particular location via a join. Because the CBO estimates that a signficant amount of departments are returned from the particular location it decides that it also needs to retrieve a significant number of employees resulting in a full tablescan of the <code>EMPLOYEES</code> table before a hash join is used to join the results.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> hr.employees e, hr.departments d
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> e.department_id <span style="color:#f92672">=</span> d.department_id
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> d.location_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">1700</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>                    <span style="color:#f92672">|</span> Name             <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">0</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">STATEMENT</span>             <span style="color:#f92672">|</span>                  <span style="color:#f92672">|</span>   <span style="color:#ae81ff">106</span> <span style="color:#f92672">|</span> <span style="color:#ae81ff">10176</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">4</span>  (<span style="color:#ae81ff">25</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  HASH <span style="color:#66d9ef">JOIN</span>                   <span style="color:#f92672">|</span>                  <span style="color:#f92672">|</span>   <span style="color:#ae81ff">106</span> <span style="color:#f92672">|</span> <span style="color:#ae81ff">10176</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">4</span>  (<span style="color:#ae81ff">25</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">2</span> <span style="color:#f92672">|</span>   <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">INDEX</span> ROWID<span style="color:#f92672">|</span> DEPARTMENTS      <span style="color:#f92672">|</span>    <span style="color:#ae81ff">21</span> <span style="color:#f92672">|</span>   <span style="color:#ae81ff">420</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">3</span> <span style="color:#f92672">|</span>    <span style="color:#66d9ef">INDEX</span> RANGE SCAN          <span style="color:#f92672">|</span> DEPT_LOCATION_IX <span style="color:#f92672">|</span>    <span style="color:#ae81ff">21</span> <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">4</span> <span style="color:#f92672">|</span>   <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">FULL</span>          <span style="color:#f92672">|</span> EMPLOYEES        <span style="color:#f92672">|</span>   <span style="color:#ae81ff">107</span> <span style="color:#f92672">|</span>  <span style="color:#ae81ff">8132</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> <span style="color:#66d9ef">access</span>(<span style="color:#e6db74">&#34;E&#34;</span>.<span style="color:#e6db74">&#34;DEPARTMENT_ID&#34;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#34;D&#34;</span>.<span style="color:#e6db74">&#34;DEPARTMENT_ID&#34;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span> <span style="color:#f92672">-</span> <span style="color:#66d9ef">access</span>(<span style="color:#e6db74">&#34;D&#34;</span>.<span style="color:#e6db74">&#34;LOCATION_ID&#34;</span><span style="color:#f92672">=</span><span style="color:#ae81ff">1700</span>)
+</span></span></code></pre></div><p>It is important to understand that the SQL statement is not executed as part of the explain plan - it is only explained in terms of what the CBO <em>intends</em> to do. There can be differences between the explain plan and the actual execution plan used when executing the statement, which can depend on a number of factors. What this means is that there are occasions where the runtime engine may decide to use a different execution plan than the explain plan. If the developer or DBA finds that plans are indeed different the actual execution plan used can be identified.</p>
+<p>In the past Oracle provided scripts to display a readable version of the plan from the <code>PLAN_TABLE</code> in SQL*PLUS. Later versions of the database also shipped scripts to do so: <code>?/rdbms/admin/utlxpls</code> (serial execution) and <code>?/rdbms/admin/utlxplp</code> (parallel execution) to do so. Queries and scripts have now been joined by the package <code>DBMS_XPLAN</code> and the <code>SQLTXPLAIN</code> tool.</p>
+<p>For more information on using explain plan refer to Oracle Support notes <strong>Methods for Obtaining a Formatted Explain Plan</strong> [10], <strong>Display Execution plans from Statement&rsquo;s in V$SQL_PLAN</strong> [11] and <strong>SQLT (SQLTXPLAIN) - Tool that helps to diagnose SQL statements performing poorly</strong> [12]. Furthermore there is extensive documentation on the <code>DBMS_XPLAN</code> package in the package specification stored in the database.</p>
+<p>Tools such as TOAD and SQL Developer support explain plan functionality out-of-the-box and typically provide a nice graphical view of the explain plan. To obtain an explain plan in SQL Developer highlight the full SQL statement and press the F10 button - or right-click on the highlighted SQL statement region and choose the &ldquo;Explain Plan&hellip;&rdquo; option.</p>
+<p>The following image is an example taken from SQL Developer for the same plan displayed above:</p>
+<p><img src="images/sql_developer_explain_plan_example.png" alt="SQL Developer Explain Plan Example"></p>
+<h3 id="cardinality-selectivity-and-density">
+  Cardinality, Selectivity and Density
+  <a class="heading-link" href="#cardinality-selectivity-and-density">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>Cardinality is a concept in mathematical set theory and refers to the number of elements in a set [13].</p>
+<p>In the Relational Database Management System (RDBMS) world cardinality also refers to the number of elements of a set albeit not in purely mathematical terms. A set can in this case be the estimated number of returned rows from an operation such as a predicate filter or a join operation within the execution/explain plan. The cardinality of individual operations (leafs) then get rolled up into combined/branch operations above. At the top of the plan the SQL statement projection will hold the total estimated cardinality of the statement, i.e. the estimated number of rows that will be returned by the statement.</p>
+<p>The estimated cardinality of individual operations is a major contributor for the CBO to select access paths such as indexes versus table scans and join orders etc. For this reason the estimated cardinality in an explain plan should in an ideal world be close to or equal to the amount of rows actually returned by the SQL statement when it is executed. However, this is far from always the case because the CBO relies on statistics that provide a coarse-grained picture based on the collected index, table and table column statistics. Furthermore the CBO is just a piece of software containing heuristics that does not possess the necessary intuition to make various assumptions and connections regarding the data that humans such as users, DBAs and developers can.</p>
+<p>By comparing the CBO&rsquo;s estimates with those of the statement it is possible to get an insight into how well (or badly) the CBO estimates the amount of rows that will be fetched from each table access path, join etc in the plan.</p>
+<p>An example SQL statement, explain plan and relevant statistics are provided below:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> hr.employees e, hr.departments d
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> e.department_id <span style="color:#f92672">=</span> d.department_id
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> d.location_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">1700</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">table_name</span>, NUM_ROWS
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> all_tables
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> <span style="color:#66d9ef">owner</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;HR&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> <span style="color:#66d9ef">table_name</span> <span style="color:#66d9ef">IN</span> (<span style="color:#e6db74">&#39;DEPARTMENTS&#39;</span>, <span style="color:#e6db74">&#39;EMPLOYEES&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">TABLE_NAME</span>                     NUM_ROWS
+</span></span><span style="display:flex;"><span><span style="color:#75715e">----------------------------- ---------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>EMPLOYEES                      <span style="color:#ae81ff">107</span>
+</span></span><span style="display:flex;"><span>DEPARTMENTS                    <span style="color:#ae81ff">27</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">table_name</span>, <span style="color:#66d9ef">column_name</span>, NUM_DISTINCT, num_nulls, num_buckets, histogram
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> all_tab_columns
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> <span style="color:#66d9ef">owner</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;HR&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> <span style="color:#66d9ef">table_name</span> <span style="color:#66d9ef">IN</span> (<span style="color:#e6db74">&#39;DEPARTMENTS&#39;</span>, <span style="color:#e6db74">&#39;EMPLOYEES&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> <span style="color:#66d9ef">column_name</span> <span style="color:#66d9ef">IN</span> (<span style="color:#e6db74">&#39;LOCATION_ID&#39;</span>, <span style="color:#e6db74">&#39;DEPARTMENT_ID&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">TABLE_NAME</span>  <span style="color:#66d9ef">COLUMN_NAME</span>   NUM_DISTINCT NUM_NULLS NUM_BUCKETS HISTOGRAM
+</span></span><span style="display:flex;"><span><span style="color:#75715e">----------- ------------- ------------ --------- ----------- ---------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>DEPARTMENTS DEPARTMENT_ID <span style="color:#ae81ff">27</span>           <span style="color:#ae81ff">0</span>         <span style="color:#ae81ff">1</span>           <span style="color:#66d9ef">NONE</span>
+</span></span><span style="display:flex;"><span>DEPARTMENTS LOCATION_ID   <span style="color:#ae81ff">7</span>            <span style="color:#ae81ff">0</span>         <span style="color:#ae81ff">7</span>           FREQUENCY
+</span></span><span style="display:flex;"><span>EMPLOYEES   DEPARTMENT_ID <span style="color:#ae81ff">11</span>           <span style="color:#ae81ff">1</span>         <span style="color:#ae81ff">11</span>          FREQUENCY
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> endpoint_number, endpoint_value
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> all_histograms
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> <span style="color:#66d9ef">owner</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;HR&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> <span style="color:#66d9ef">table_name</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;DEPARTMENTS&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> <span style="color:#66d9ef">column_name</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;LOCATION_ID&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">order</span> <span style="color:#66d9ef">by</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ENDPOINT_NUMBER        ENDPOINT_VALUE
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------- ----------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span>                      <span style="color:#ae81ff">1400</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span>                      <span style="color:#ae81ff">1500</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">23</span>                     <span style="color:#ae81ff">1700</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">24</span>                     <span style="color:#ae81ff">1800</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">25</span>                     <span style="color:#ae81ff">2400</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">26</span>                     <span style="color:#ae81ff">2500</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">27</span>                     <span style="color:#ae81ff">2700</span>
+</span></span></code></pre></div><p>The example above shows that the CBO can only estimate the cardinality based on the statistics that have been gathered on the relevant columns in the two tables.</p>
+<p>While the discrepancy between estimated cardinality and actual cardinality probably wouldn&rsquo;t impact the cost of the chosen access paths and join orders of this particular statement considerably (in terms of execution time) given the small amount of data in the two tables there are other situations where the outcome could have a big impact.</p>
+<p>But how does the CBO arrive at these cardinality figures?</p>
+<p>If we select the distinct number of rows in the <code>DEPARTMENTS</code> table that satisfy the predicate <code>LOCATION_ID=1700</code> we get 21 rows, i.e. 21 departments in a given location. The statistics also match this view. The CBO arrived at this figure by looking up the histogram on the <code>LOCATION_ID</code> column, which has been automatically generated during statistics gathering due to the relatively large skewing of the column data. The CBO has correctly estimated that the cummulative <code>ENDPOINT_NUMBER</code> (23) for value 1700 minus the <code>ENDPOINT_NUMBER</code> (2) for 1500 is indeed 21 in the frequency-based histogram.</p>
+<p>If we count the amount of returned rows by the query we get 18 rows - from the <code>EMPLOYEES</code> table. However, the CBO estimates that a total of 106 rows would be returned by the SQL projection if the statement was executed. The CBO has estimated that all bar one row, i.e. 106 out of 107, in the <code>EMPLOYEES</code> table are returned by the join between the two tables after a full tablescan of the <code>EMPLOYEES</code> table.</p>
+<p>It is also interesting to note how the histograms impact the CBO with regards to choosing a particular plan. If, for instance, we were to lookup <code>LOCATION_ID=1500</code> (or indeed <code>1400</code>, <code>1800</code>, <code>2700</code> etc), the CBO correctly identifies that only one row is required from the <code>DEPARTMENTS</code> table. On the basis of this one row the CBO determines that it only needs to lookup 10 rows from the <code>EMPLOYEES</code> table regardless of which of the abovementioned <code>LOCATION_ID</code> values are used. This seems to indicate that although a histogram also exists on the <code>DEPARTMENT_ID</code> column on the <code>EMPLOYEES</code> table, it doesn&rsquo;t seem to be used by the CBO in this particular instance.</p>
+<p>The one estimated row from the <code>DEPARTMENTS</code> table in turn prompts the CBO to alter the plan such that the <code>EMPLOYEES</code> table is now an index lookup on the <code>EMP_DEPARTMENT_IX</code> index - rather than a full tablescan. However, in actual fact the amount of <code>EMPLOYEES</code> for a particular department with <code>LOCATION_ID=1500</code> is 45, which is more than twice the amount of those rows returned where <code>LOCATION_ID=1700</code>. The conclusion is that the CBO can only make estimates of cardinality based on the available statistics and the internal heuristics (which doesn&rsquo;t use histograms all the time) - and it does get things wrong.</p>
+<p>The explanation for these estimated cardinalities versus the real world must be found in the way that the CBO calculates cardinality for joins when it believes that a significant amount of rows in the driving table of the join must be joined to the other table with a full tablescan. Oracle support notes <strong>How ORACLE CBO Calculate Join Cardinality with Join Elimination Filter?</strong> [14] and <strong>Predicate Selectivity</strong> [15] provide more information on join cardinality. According to the information provided the following formula is used:</p>
+<p><code>Sel = 1/max[NDV(t1.c1),NDV(t2.c2)] * ( (Card t1 - # t1.c1 NULLs) / Card t1) * ( (Card t2 - # t2.c2 NULLs) / Card t2)</code></p>
+<p>Where:</p>
+<ul>
+<li><em>NDV</em>: Number of Distinct Values</li>
+<li><em>Cardinality</em>: Number of rows</li>
+<li><em>Selectivity</em>: Proportion of a dataset returned by a particular predicate (or group of predicates)</li>
+</ul>
+<p>So the formula, based on the statistics provided earlier, would read:</p>
+<p><code>Sel = 1/max[27, 11] * ((27 - 0) / 27) * (( 107 - 1) / 107) = 0.991</code></p>
+<p>Based on this selectivity the number of rows returned from the join operation is estimated to be:</p>
+<p><code>107 * 0.991 = 106</code> rows.</p>
+<p>The abovementioned formula also demonstrates what is meant by selectivity (Sel). The selectivity is basically a fractional proportion of rows from the row source (originating operation such as a tablescan, index lookup etc) that the CBO expects to operate on.</p>
+<p>Another concept is that of density. As previously mentioned, the density is generally calculated as <code>1 / NUM_DISTINCT</code> when no histograms are involved. So in effect the density represents the fractional amount of distinct values in a particular column. The density provides a means to calculate the selectivity for one of more predicates on a given table.</p>
+<p>Say for instance that a query on the <code>EMPLOYEES</code> table has a predicate <code>GENDER='F'</code> for female. Assuming an equal distribution of males and females and that no histogram exists on the column it would seem reasonable to assume that the density of the column is 1/2 = 0.5. Assuming that no employees exist without a gender (or assuming that a gender is always recorded) it would also seem prudent to assume that the selectivity of a distinct value &lsquo;M&rsquo; or &lsquo;F&rsquo; is exactly 0.5. However, if 10% of the rows have no <code>GENDER</code> recorded and are <code>NULL</code> the selectivity would conceivably be different than the density by a margin of 10%: <code>90%/100% * 0.5 = 0.45</code>.</p>
+<p>The following example SQL demonstrates this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">alter</span> <span style="color:#66d9ef">table</span> hr.employees <span style="color:#66d9ef">add</span> (gender CHAR(<span style="color:#ae81ff">1</span>));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-- Nice even pseudo-random distribution of 53-54 females/males
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">-- to stop the database from generating a histogram
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">begin</span>
+</span></span><span style="display:flex;"><span>  dbms_random.<span style="color:#66d9ef">initialize</span>(<span style="color:#ae81ff">3</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">update</span> hr.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">set</span> gender <span style="color:#f92672">=</span> decode(<span style="color:#66d9ef">abs</span>(<span style="color:#66d9ef">mod</span>(dbms_random.random, <span style="color:#ae81ff">2</span>)), <span style="color:#ae81ff">0</span>, <span style="color:#e6db74">&#39;M&#39;</span>, <span style="color:#ae81ff">1</span>, <span style="color:#e6db74">&#39;F&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">commit</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> gender, <span style="color:#66d9ef">count</span>(<span style="color:#f92672">*</span>) <span style="color:#66d9ef">from</span> hr.employees <span style="color:#66d9ef">group</span> <span style="color:#66d9ef">by</span> gender;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>GENDER CNT
+</span></span><span style="display:flex;"><span><span style="color:#75715e">------ ---
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>M      <span style="color:#ae81ff">54</span>
+</span></span><span style="display:flex;"><span>F      <span style="color:#ae81ff">53</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">begin</span>
+</span></span><span style="display:flex;"><span>  dbms_stats.gather_table_stats(ownname<span style="color:#f92672">=&gt;</span><span style="color:#e6db74">&#39;HR&#39;</span>, <span style="color:#66d9ef">cascade</span><span style="color:#f92672">=&gt;</span><span style="color:#66d9ef">false</span>, tabname<span style="color:#f92672">=&gt;</span><span style="color:#e6db74">&#39;EMPLOYEES&#39;</span> );
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">explain</span> plan <span style="color:#66d9ef">for</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> hr.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> gender<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;F&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>         <span style="color:#f92672">|</span> Name      <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------|   0 | SELECT STATEMENT  |           |    54 |  3780 |     2   (0)| 00:00:01 |
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">FULL</span><span style="color:#f92672">|</span> EMPLOYEES <span style="color:#f92672">|</span>    <span style="color:#ae81ff">54</span> <span style="color:#f92672">|</span>  <span style="color:#ae81ff">3780</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> filter(<span style="color:#e6db74">&#34;GENDER&#34;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;F&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">explain</span> plan <span style="color:#66d9ef">for</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> hr.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> gender<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;M&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>         <span style="color:#f92672">|</span> Name      <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">0</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">STATEMENT</span>  <span style="color:#f92672">|</span>           <span style="color:#f92672">|</span>    <span style="color:#ae81ff">54</span> <span style="color:#f92672">|</span>  <span style="color:#ae81ff">3780</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">FULL</span><span style="color:#f92672">|</span> EMPLOYEES <span style="color:#f92672">|</span>    <span style="color:#ae81ff">54</span> <span style="color:#f92672">|</span>  <span style="color:#ae81ff">3780</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> filter(<span style="color:#e6db74">&#34;GENDER&#34;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;M&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">update</span> hr.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">set</span> gender<span style="color:#f92672">=</span><span style="color:#66d9ef">null</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> employee_id <span style="color:#66d9ef">in</span> (<span style="color:#66d9ef">select</span> employee_id <span style="color:#66d9ef">from</span> hr.employees <span style="color:#66d9ef">where</span> rownum <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">11</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">commit</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> gender, <span style="color:#66d9ef">count</span>(<span style="color:#f92672">*</span>) cnt <span style="color:#66d9ef">from</span> hr.employees <span style="color:#66d9ef">group</span> <span style="color:#66d9ef">by</span> gender;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>GENDER CNT
+</span></span><span style="display:flex;"><span><span style="color:#75715e">------ ----------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>       <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>M      <span style="color:#ae81ff">50</span>
+</span></span><span style="display:flex;"><span>F      <span style="color:#ae81ff">47</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">begin</span>
+</span></span><span style="display:flex;"><span>  dbms_stats.gather_table_stats(ownname<span style="color:#f92672">=&gt;</span><span style="color:#e6db74">&#39;HR&#39;</span>, <span style="color:#66d9ef">cascade</span><span style="color:#f92672">=&gt;</span><span style="color:#66d9ef">false</span>, tabname<span style="color:#f92672">=&gt;</span><span style="color:#e6db74">&#39;EMPLOYEES&#39;</span> );
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">end</span>;
+</span></span><span style="display:flex;"><span><span style="color:#f92672">/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">explain</span> plan <span style="color:#66d9ef">for</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> hr.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> gender<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;M&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>         <span style="color:#f92672">|</span> Name      <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">0</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">STATEMENT</span>  <span style="color:#f92672">|</span>           <span style="color:#f92672">|</span>    <span style="color:#ae81ff">49</span> <span style="color:#f92672">|</span>  <span style="color:#ae81ff">3479</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">FULL</span><span style="color:#f92672">|</span> EMPLOYEES <span style="color:#f92672">|</span>    <span style="color:#ae81ff">49</span> <span style="color:#f92672">|</span>  <span style="color:#ae81ff">3479</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> filter(<span style="color:#e6db74">&#34;GENDER&#34;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;F&#39;</span>)
+</span></span></code></pre></div><p>Initially, because there is no histogram and no <code>NULL</code> values on the <code>GENDER</code> column the CBO assumes that there is an even distribution of values &lsquo;M&rsquo; and &lsquo;F&rsquo; based on the stored tables statistics, which specifies 107 rows and 2 distinct values in the <code>GENDER</code> column. The density is calculated as: <code>1 / NUM_DISTINCT = 1 / 2 = 0.5</code>. Because there are no <code>NULL</code>s the selectivity is equal to the density. The cardinality is therefore calculated as <code>ROUND(107 * 0.5) = ROUND(53.5) = 54</code>.</p>
+<p>When 10 <code>NULL</code> values are added to the mix, which represents roughly 10% of the rows, the CBO rightly adjusts the selectivity accordingly to cater for the <code>NULL</code> values and ends up with a selectivity estimate of: <code>DENSITY * (NUM_ROWS - NUM_NULLS) / NUM_ROWS = 0.5 * (107 - 10) / 107 = 0.4533</code>. Cardinality is therefore calculated as: <code>(107 * 0.4533) = 48.5</code>, which is finally rounded up to 49.</p>
+<p>Selectivity is furthermore used to calculate cardinality and ultimately cost of IN lists and when using multiple predicates on the same table in a statement. The selectivity is based on probability theory and the notion of independent events [10]. The formulas are:</p>
+<p><code>Selectivity of (predicate1 AND predicate2) = Selectivity of (predicate1) * Selectivity of (predicate2)</code></p>
+<p><code>Selectivity of (predicate1 OR predicate2) = Selectivity of (predicate1) + Selectivity of (predicate2) - Selectivity of (predicate1) * Selectivity of (predicate2)</code></p>
+<p>The subtraction in the OR formula is to eliminate a potential overlap between results of <code>predicate1</code> and <code>predicate2</code>.</p>
+<p><code>Selectivity of (NOT predicate1) = 1 - Selectivity of (predicate1)</code></p>
+<p>One interesting point to mention with regards to calculating the selectivity of multiple columns is the assumption that column values are truly independent. However this is not always the case and does result in some significant deviations of selectivity estimates compared to actual selectivity. An example is the two <code>EMPLOYEES</code> table columns <code>JOB_ID</code> and <code>DEPARTMENT_ID</code>. It would seem reasonable to assume that a particular department such as <code>SHIPPING</code> would hire a number of shipping clerks. On the other hand it is probably unlikely that one will find shipping clerks in other departments of an organisation. So there is a potential hidden dependency between job holders and the departments they work in.</p>
+<p>The following explain plan demonstrates this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">explain</span> plan <span style="color:#66d9ef">for</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> hr.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> job_id <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;SH_CLERK&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> department_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">50</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>                   <span style="color:#f92672">|</span> Name       <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">0</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">STATEMENT</span>            <span style="color:#f92672">|</span>            <span style="color:#f92672">|</span>     <span style="color:#ae81ff">8</span> <span style="color:#f92672">|</span>   <span style="color:#ae81ff">576</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">INDEX</span> ROWID<span style="color:#f92672">|</span> EMPLOYEES  <span style="color:#f92672">|</span>     <span style="color:#ae81ff">8</span> <span style="color:#f92672">|</span>   <span style="color:#ae81ff">576</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">2</span> <span style="color:#f92672">|</span>   <span style="color:#66d9ef">INDEX</span> RANGE SCAN          <span style="color:#f92672">|</span> EMP_JOB_IX <span style="color:#f92672">|</span>    <span style="color:#ae81ff">20</span> <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> filter(<span style="color:#e6db74">&#34;DEPARTMENT_ID&#34;</span><span style="color:#f92672">=</span><span style="color:#ae81ff">50</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#66d9ef">access</span>(<span style="color:#e6db74">&#34;JOB_ID&#34;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;SH_CLERK&#39;</span>)
+</span></span></code></pre></div><p>The CBO correctly identifies that there are a total of 20 <code>SH_CLERK</code>s in the company because there is a histogram on the <code>JOB_ID</code> column. However the CBO then goes on to estimate that only 8 <code>SH_CLERK</code>s work in department 50 (Shipping). In actual fact all 20 <code>SH_CLERK</code>s in the organisation work in this department, which employs a total of 45. This is an example of where the assumption that columns are fully independent from a probability (and thereby selectivity) perspective is proving wrong and can result in a significant difference between the estimated cardinality and actual cardinality.</p>
+<p>Because there happens to be a histogram on the <code>DEPARTMENT_ID</code> column, which enables the CBO to estimate that there are 45 employees in department 50, it would seem that the formula employeed by the CBO to calculate the estimated selectivity isn&rsquo;t far off the following calculation, which is based on the previously mentioned AND formula: <code>20/107 * 45/107 = 0.1869 * 0.4206 45 = 0.0786</code>. The cardinality would therefore be calculated as: <code>107 * 0.0786 = 8.4113</code> employees in department 50 with job id of SH_CLERK, which is then presumably rounded down to 8.</p>
+<p>A final point to make is that although we know that there are no <code>SH_CLERK</code>s in department 30 (Purchasing) the CBO still estimates a cardinality larger than 0. It does not make the connection that there are no <code>SH_CLERK</code>s in the Purchasing department.</p>
+<p>Oracle has realised that this potential dependency between columns can give rise to significant performance issues because the CBO doesn&rsquo;t know of such relationships. Oracle has therefore introduced the ability to also gather statistics on groups of columns within a table from 11g. This is not done automatically and said column groups have to be registered and statistics gathered through for instance the <code>DBMS_STATS</code> package. This approach will enable the database to make better estimates of selectivity and cardinality in situations where there are multiple predicates in a statement that filters a group of columns on a table.</p>
+<p>There are a number of interesting articles and forums discussing the CBO, cardinality and selectivity on the Internet. This includes Thomas Kyte&rsquo;s Ask Tom forum, which includes an interesting article on cardinality [17].</p>
+<p>As a side-note, cardinality numbers are provided by default with the SQL*Plus <code>AUTOTRACE</code> feature (the Rows column) when plans are included in the output. The same goes for <code>DBMS_XPLAN</code>. However, in SQL Developer the cardinality column is disabled by default and will therefore need to be enabled. This is achieved by choosing the <code>Tools-&gt;Preferences</code> menu item, then drilling down to the <code>Database-&gt;Autotrace/Explain Plan</code> screen and ticking the <code>Cardinality</code> column under both the <code>Explain Plan</code> and <code>Autotrace</code> sections.</p>
+<h3 id="retrieving-runtime-statistics-on-executed-statements-auto-trace">
+  Retrieving Runtime Statistics on Executed Statements: Auto Trace
+  <a class="heading-link" href="#retrieving-runtime-statistics-on-executed-statements-auto-trace">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>As previously explained, it is possible to retrieve the actual execution plan that was used to execute a statement.</p>
+<p>However, the plan alone may not provide necessary detail in order to understand whether or why a SQL statement is not performing optimally. For instance differences in amounts of data (between test and production for example) may utilise the same plan but execution time may be considerably different.</p>
+<p>One way of to determine what is going on is to trace the SQL statement. Tools such as SQL*Plus, SQL Developer and Toad achieve this by using a feature that enables a database client to run multiple sessions over the same connection and using the same server process on the database instance side. The tool can thereby in a separate session (over the same connection and using the same server process) read information pertaining to the traced session without polluting the runtime statistics.</p>
+<p>In SQL*Plus this is achieved by running the <code>SET AUTOTRACE</code> command before statement execution:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SQL</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">set</span> autotrace <span style="color:#66d9ef">on</span> <span style="color:#66d9ef">statistics</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">SQL</span><span style="color:#f92672">&gt;</span> <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">2</span>    <span style="color:#66d9ef">from</span> HR.employees
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">3</span>   <span style="color:#66d9ef">where</span> employee_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">105</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">Statistics</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">----------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#ae81ff">0</span>  <span style="color:#66d9ef">recursive</span> calls
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  db block gets
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">2</span>  consistent gets
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  physical <span style="color:#66d9ef">reads</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  redo <span style="color:#66d9ef">size</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#ae81ff">1319</span>  bytes sent via <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net <span style="color:#66d9ef">to</span> client
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">492</span>  bytes received via <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net <span style="color:#66d9ef">from</span> client
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">2</span>  <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net roundtrips <span style="color:#66d9ef">to</span><span style="color:#f92672">/</span><span style="color:#66d9ef">from</span> client
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  sorts (memory)
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  sorts (disk)
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">1</span>  <span style="color:#66d9ef">rows</span> processed
+</span></span></code></pre></div><p>In this case the statement resulted in 2 consistent gets (found in the database buffer cache because the execution didn&rsquo;t result in any physical reads). Here it is reasonable to assume that the first consistent get was required to access the index structure to find a policy that satisfies the predicate and the final consistent get was the lookup into the table by row id. Also interesting to note is that each consistent get is a visit to a database block (typically 8KB in size).</p>
+<p>Without the word <code>STATISTICS</code> in the <code>AUTOTRACE</code> command SQL*Plus would also display an execution plan. But in this case we are interested only in the statistics.</p>
+<p>SQL Developer can also trace statements. This is achieved by highlighting the statement and either pressing F6 or right-clicking on the highlighted statement area and choosing the menu item <code>Autotrace...</code>, which produces the actual <strong>execution plan</strong> and accompanying <strong>runtime statistics</strong>:</p>
+<p><img src="images/sql_developer_real_exec_plan_autotrace_stats.png" alt="SQL Developer Real Execution Plan Autotrace Stats"></p>
+<h2 id="environment">
+  Environment
+  <a class="heading-link" href="#environment">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>This section will explain general Oracle database concepts pertaining to the environment in which the database is running, which are indirectly related to the CBO.</p>
+<h3 id="io-and-the-buffer-cache">
+  I/O and the Buffer Cache
+  <a class="heading-link" href="#io-and-the-buffer-cache">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>I/O relates to the persistent storage sub-system used for storing and accessing Oracle database files - in other words the disks, controllers, buses, operating system drivers etc. Generally, the I/O sub-system is the slowest component of the database server stack.</p>
+<p>Contrary to system memory, which measures access time to data in nano-seconds (1 billionth), access to data via I/O is typically measured in milli-seconds (1 thousandth), which means that accessing data in memory is a significant order of magnitude faster than on disk. On the other hand memory is a great deal more expensive than disk space. Today, 1GB of disk space can be purchased for less than 10 pence whereas 1GB of memory could easily be a thousand to tens of thousands times more expensive.</p>
+<p>It would therefore seem logical to provide a buffer in memory for often-used data, which would help reduce the amount of I/O required and thereby potentially reduce execution time by a considerable factor. At the same time there is typically a cost/benefit (and budgetary) equation involved in determining the size of this buffer.</p>
+<p>The database provides the means by which to set-up a so-called database buffer cache in which often-accessed segment (index or data) blocks (dependent on database block size, typically 8KB - but check instance parameter <code>db_block_size</code>) are stored while operations are accessing said data in the blocks. Oracle uses a Least-Recently-Used (LRU) algorithm to determine what data stays in the buffer cache after first access and load of the data blocks. Infrequently used data blocks will quickly be aged out as the demand for block buffers in the buffer cache for other data blocks occur over time.</p>
+<p>The observant reader may have noticed that the previously mentioned formula used for calculating cost is measuring the cost by including actual I/O timings, which means physical reads. The CBO, in this formula, is therefore ignoring the fact that often-used data blocks required for the execution of a SQL statement may already exist in the buffer on a regular basis. In essence it would therefore appear that the cost is a worst-case scenario cost.</p>
+<p>It does however not seem like the current 10g database release of the database incorporates any special consideration regarding using caching statistics on individual segments despite the existence of <code>V$SEGSTAT</code> and certain other tables and parameters.</p>
+<p>Running an auto trace on statements will provide I/O related statistics information pertaining to the execution of the statement. If data pertaining to the statement isn&rsquo;t cached, the execution will necessarily result in physical I/O as the following example shows:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">SQL</span><span style="color:#f92672">&gt;</span>  <span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">2</span>    <span style="color:#66d9ef">from</span> HR.employees
+</span></span><span style="display:flex;"><span>  <span style="color:#ae81ff">3</span>   <span style="color:#66d9ef">where</span> employee_id <span style="color:#f92672">=</span> <span style="color:#ae81ff">105</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">Statistics</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">----------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#ae81ff">8</span>  <span style="color:#66d9ef">recursive</span> calls
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  db block gets
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">4</span>  consistent gets
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">3</span>  physical <span style="color:#66d9ef">reads</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  redo <span style="color:#66d9ef">size</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#ae81ff">1319</span>  bytes sent via <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net <span style="color:#66d9ef">to</span> client
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">492</span>  bytes received via <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net <span style="color:#66d9ef">from</span> client
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">2</span>  <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net roundtrips <span style="color:#66d9ef">to</span><span style="color:#f92672">/</span><span style="color:#66d9ef">from</span> client
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  sorts (memory)
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  sorts (disk)
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">1</span>  <span style="color:#66d9ef">rows</span> processed
+</span></span></code></pre></div><p>If we were to run the statement again we would reasonably expect a reduction in physical I/O because the data should already be cached:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">Statistics</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">----------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#ae81ff">0</span>  <span style="color:#66d9ef">recursive</span> calls
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  db block gets
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">2</span>  consistent gets
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  physical <span style="color:#66d9ef">reads</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  redo <span style="color:#66d9ef">size</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#ae81ff">1319</span>  bytes sent via <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net <span style="color:#66d9ef">to</span> client
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">492</span>  bytes received via <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net <span style="color:#66d9ef">from</span> client
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">2</span>  <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net roundtrips <span style="color:#66d9ef">to</span><span style="color:#f92672">/</span><span style="color:#66d9ef">from</span> client
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  sorts (memory)
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  sorts (disk)
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">1</span>  <span style="color:#66d9ef">rows</span> processed
+</span></span></code></pre></div><p>As can be seen from the runtime statistics the physical reads were reduced to 0 on the second execution. The database was able to pull all data from the buffer cache in order to satisfy the query.</p>
+<p>The consistent gets relate to the amount blocks that have been visited in the buffer cache in order to satisfy the execution of the query. It is interesting to note that if we were to run an update on the same data (without commiting) in a separate session and then re-query the data we find a different figure:</p>
+<p>Update but leave transaction uncommited:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">update</span> hr.employees <span style="color:#66d9ef">set</span> salary<span style="color:#f92672">=</span>salary<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+</span></span></code></pre></div><p>Re-query:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">Statistics</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">----------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>          <span style="color:#ae81ff">8</span>  <span style="color:#66d9ef">recursive</span> calls
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  db block gets
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">4</span>  consistent gets
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  physical <span style="color:#66d9ef">reads</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  redo <span style="color:#66d9ef">size</span>
+</span></span><span style="display:flex;"><span>       <span style="color:#ae81ff">1320</span>  bytes sent via <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net <span style="color:#66d9ef">to</span> client
+</span></span><span style="display:flex;"><span>        <span style="color:#ae81ff">492</span>  bytes received via <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net <span style="color:#66d9ef">from</span> client
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">2</span>  <span style="color:#66d9ef">SQL</span><span style="color:#f92672">*</span>Net roundtrips <span style="color:#66d9ef">to</span><span style="color:#f92672">/</span><span style="color:#66d9ef">from</span> client
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  sorts (memory)
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">0</span>  sorts (disk)
+</span></span><span style="display:flex;"><span>          <span style="color:#ae81ff">1</span>  <span style="color:#66d9ef">rows</span> processed
+</span></span></code></pre></div><p>As can be seen the consistent gets effectivly double in this case. The reason for this is that actual data blocks containing the <code>EMPLOYEES</code> table data have been changed as part of the update. Because the data was not commited prior to the query executing, the database has to reconstruct the original pre-update data by visiting the relevant undo segment storing the transaction undo information. The database effectively undoes the <code>UPDATE</code> in order to provide a read-consistent view of the data. Undo segments, as it happens, are segments just like tables and indexes and are cached in the buffer cache as well. That is why the value of the consistent gets increases when update and delete transactions on data are ongoing and uncommited while queries are run against that same data.</p>
+<h3 id="cpu-and-memory">
+  CPU and Memory
+  <a class="heading-link" href="#cpu-and-memory">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>The CPU provides the computational power to access and manipulate data in memory. However before data can be accessed and manipulated by the CPU it needs to be read into main memory. This is achieved by the I/O sub-system and involves reading relevant blocks of data to satisfy a particular operation such as a SELECT statement from the data files comprising the database.</p>
+<p>Once data blocks have been read into main memory the database instance will retain the data blocks that it can in memory in accordance with the previously discussed LRU mechanism. This means that main memory acts as a cache and that the ultimate goal of the cache is store the most recently used data in a bid to reduce I/O (both reads and writes) because I/O is so expensive in terms of time when compared to memory access.</p>
+<p>The database instance parameter <code>db_cache_size</code> provides the value of the current amount of main memory that can be used for caching data blocks from the data files.</p>
+<p>Once the data is in memory the CPU can directly access and manipulate the data based on the executed SQL statements. This is where CPU costing comes in. Depending on factors such as the speed of the CPU, the speed of memory access etc the CPU can execute ever so many CPU instructions that make up the required operations to support SQL and PL/SQL execution. Different types of row set operations such as joins, sorts, calculations, functions and data access in general require CPU time to execute. It therefore seems sensible to take this cost into consideration before deciding on a SQL statement execution plan. Different operations provide different costs and therefore this can also affect the CBO&rsquo;s decision on the most optimal execution plan.</p>
+<p>Incidentally, with 11g there is both a client and server result set cache, which store the actual results of particular operations (such as queries and functions). These caches are different from the buffer cache, which stores database data file blocks in the buffer cache. A similar cost deficiency, comparable to that of I/O costing ignoring the buffer cache as previously mentioned could therefore arise from a CPU costing perspective when it comes to calculating the cost of finding rows of data in buffered data blocks or executing a function. The CBO may calculate a worst-case scenario of CPU cost while not taking into consideration the fact that results or partial results already exist in the new result set caches (such as function return values based on a query). It remains to be seen if and how this new result cache will affect plans for better or worse.</p>
+<h2 id="best-practises">
+  Best Practises
+  <a class="heading-link" href="#best-practises">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<h3 id="avoid-using-the-rbo">
+  Avoid Using the RBO
+  <a class="heading-link" href="#avoid-using-the-rbo">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>It is imperative to no longer use the RBO because it is no longer supported by Oracle.</p>
+<p>For instance the RULE hint or setting the optimizer_mode to RULE for a session should no longer be done.</p>
+<p>Furthermore, it is imperative that constructs such as <code>|| ''</code> and <code>+ 0</code> are no longer used. Such rule-based constructs often prevent the CBO from making more optimal access path choices, resulting in sub-optimal SQL plans.</p>
+<h3 id="indexing">
+  Indexing
+  <a class="heading-link" href="#indexing">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>The most commonly used index type within the database is the balanced B-Tree implementation (as opposed to bitmap and domain indexes). The inner workings of the B-Tree index is described in Oracle support note <strong>How Btree Indexes Are Maintained</strong> [18]. Indexes do under certain conditions enable the Oracle database to identify rows in tables based on predicates much faster than by doing full tablescans.</p>
+<p>The idea behind indexes is to store keys from originating table column(s) in the index and to link to said keys a list of table row id&rsquo;s for rows where the indexed column(s) match the key. Table row id&rsquo;s provide an addressing mechanism that will enable the database to efficiently find a particular row in a block (that gets read into the buffer cache) by means of the following information: Data Object Id, Relative File No, Block Number and Row Number (slot in block) [19].</p>
+<p>However it is important to understand that the higher the fractional selectivity (and thereby cardinality) of predicates in a SQL statement the higher the cost of using indexes - there comes a threshold (cost of a tablescan operation versus cost for an index-based operation) where the CBO will choose a full tablescan over an index lookup. The reason for this is that the index structure is hierarchical (on a per-block level) and therefore requires multiple reads to go through the index hierarchy and ultimately read the database block(s). The database will first lookup the root block of an index and based on this block will traverse a number of branch blocks before it reads a number of leaf blocks - eventually the database will then have identified and read the relevant table block(s). So for each index lookup there is potentially a number of reads involved. Obviously unique indexes (and thereby primary keys) will be preferred where possible because a unique index lookup will result in at most one row.</p>
+<p>For this very reason it is important to understand that where a significant amount of rows are returned for a predicate that can be satisfied by an index, a full tablescan may still ensue. A prime example of this is an index on the GENDER column of the EMPLOYEES table because the column stores only two unique values and null:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">index</span> hr.emp_gender_ix <span style="color:#66d9ef">on</span> hr.employees (gender);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> HR.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> gender <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;M&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>         <span style="color:#f92672">|</span> Name      <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">0</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">STATEMENT</span>  <span style="color:#f92672">|</span>           <span style="color:#f92672">|</span>    <span style="color:#ae81ff">49</span> <span style="color:#f92672">|</span>  <span style="color:#ae81ff">3724</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">FULL</span><span style="color:#f92672">|</span> EMPLOYEES <span style="color:#f92672">|</span>    <span style="color:#ae81ff">49</span> <span style="color:#f92672">|</span>  <span style="color:#ae81ff">3724</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> filter(<span style="color:#e6db74">&#34;GENDER&#34;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;M&#39;</span>)
+</span></span></code></pre></div><p>It may be possible to reduce the selectivity on indexes by using concatened (i.e. multi-column) indexes on a table if the table is typically queried using multiple filter predicates. The following example, which creates a concatenated index on GENDER and HIRE_DATE, will demonstrate this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">index</span> hr.emp_gender_hire_date_ix <span style="color:#66d9ef">on</span> hr.employees (gender, hire_date);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> HR.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> gender <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;M&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> hire_date <span style="color:#f92672">&gt;=</span> TO_DATE(<span style="color:#e6db74">&#39;01-JAN-95&#39;</span>, <span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> hire_date <span style="color:#f92672">&lt;</span>  TO_DATE(<span style="color:#e6db74">&#39;01-JAN-97&#39;</span>, <span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">--------------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>                    <span style="color:#f92672">|</span> Name                    <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">--------------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">0</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">STATEMENT</span>             <span style="color:#f92672">|</span>                         <span style="color:#f92672">|</span>     <span style="color:#ae81ff">7</span> <span style="color:#f92672">|</span>   <span style="color:#ae81ff">532</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  FILTER                      <span style="color:#f92672">|</span>                         <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>            <span style="color:#f92672">|</span>          <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">2</span> <span style="color:#f92672">|</span>   <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">INDEX</span> ROWID<span style="color:#f92672">|</span> EMPLOYEES               <span style="color:#f92672">|</span>     <span style="color:#ae81ff">7</span> <span style="color:#f92672">|</span>   <span style="color:#ae81ff">532</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">3</span> <span style="color:#f92672">|</span>    <span style="color:#66d9ef">INDEX</span> RANGE SCAN          <span style="color:#f92672">|</span> EMP_GENDER_HIRE_DATE_IX <span style="color:#f92672">|</span>     <span style="color:#ae81ff">7</span> <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">--------------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> filter(TO_DATE(<span style="color:#e6db74">&#39;01-JAN-95&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)<span style="color:#f92672">&lt;</span>TO_DATE(<span style="color:#e6db74">&#39;01-JAN-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span> <span style="color:#f92672">-</span> <span style="color:#66d9ef">access</span>(<span style="color:#e6db74">&#34;GENDER&#34;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;M&#39;</span> <span style="color:#66d9ef">AND</span> <span style="color:#e6db74">&#34;HIRE_DATE&#34;</span><span style="color:#f92672">&gt;=</span>TO_DATE(<span style="color:#e6db74">&#39;01-JAN-95&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>) <span style="color:#66d9ef">AND</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;HIRE_DATE&#34;</span><span style="color:#f92672">&lt;</span>TO_DATE(<span style="color:#e6db74">&#39;01-JAN-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>))
+</span></span></code></pre></div><p>However it is important to understand that the order of columns in the index has a significant impact as well. Again, the reason is that the index is logically represented as a hierarchy and the order of the hierarchy is that of column <code>1</code>, column <code>2</code> &hellip; column <code>n</code>. Therefore having a predicate only on column <code>2</code> in a statement is unlikely to persuade the CBO to use the index because it would effectively have to scan the full index because it would have to run through all values of column <code>1</code>. The following query will demonstrate this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> HR.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> hire_date <span style="color:#f92672">&gt;=</span> TO_DATE(<span style="color:#e6db74">&#39;01-JAN-95&#39;</span>, <span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> hire_date <span style="color:#f92672">&lt;</span>  TO_DATE(<span style="color:#e6db74">&#39;01-JAN-97&#39;</span>, <span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">--------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>          <span style="color:#f92672">|</span> Name      <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">--------------------------------------------------------------------------------|   0 | SELECT STATEMENT   |           |    15 |  1140 |     2   (0)| 00:00:01 |
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  FILTER            <span style="color:#f92672">|</span>           <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>            <span style="color:#f92672">|</span>          <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">2</span> <span style="color:#f92672">|</span>   <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">FULL</span><span style="color:#f92672">|</span> EMPLOYEES <span style="color:#f92672">|</span>    <span style="color:#ae81ff">15</span> <span style="color:#f92672">|</span>  <span style="color:#ae81ff">1140</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">--------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> filter(TO_DATE(<span style="color:#e6db74">&#39;01-JAN-95&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)<span style="color:#f92672">&lt;</span>TO_DATE(<span style="color:#e6db74">&#39;01-JAN-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> filter(<span style="color:#e6db74">&#34;HIRE_DATE&#34;</span><span style="color:#f92672">&lt;</span>TO_DATE(<span style="color:#e6db74">&#39;01-JAN-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>) <span style="color:#66d9ef">AND</span>
+</span></span><span style="display:flex;"><span>           <span style="color:#e6db74">&#34;HIRE_DATE&#34;</span><span style="color:#f92672">&gt;=</span>TO_DATE(<span style="color:#e6db74">&#39;01-JAN-95&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>))
+</span></span></code></pre></div><p>As can be seen, this resulted in a full tablescan because the cost of doing an index scan is higher than doing a full tablescan.</p>
+<p>If, however, the statement was altered to only return the HIRE_DATE in the projection then the index may still be used as the following example demonstrates. The reason for this is that the CBO rightly determines that the query can be satisfied by the index alone (because the HIRE_DATE is the only returned column) - no table access is involved in the explain plan at all:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> hire_date
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> HR.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> hire_date <span style="color:#f92672">&gt;=</span> TO_DATE(<span style="color:#e6db74">&#39;01-JAN-95&#39;</span>, <span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> hire_date <span style="color:#f92672">&lt;</span>  TO_DATE(<span style="color:#e6db74">&#39;01-JAN-97&#39;</span>, <span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">--------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>         <span style="color:#f92672">|</span> Name             <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">--------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">0</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">STATEMENT</span>  <span style="color:#f92672">|</span>                  <span style="color:#f92672">|</span>    <span style="color:#ae81ff">15</span> <span style="color:#f92672">|</span>   <span style="color:#ae81ff">120</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  FILTER           <span style="color:#f92672">|</span>                  <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>            <span style="color:#f92672">|</span>          <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">2</span> <span style="color:#f92672">|</span>   <span style="color:#66d9ef">INDEX</span> RANGE SCAN<span style="color:#f92672">|</span> EMP_HIRE_DATE_IX <span style="color:#f92672">|</span>    <span style="color:#ae81ff">15</span> <span style="color:#f92672">|</span>   <span style="color:#ae81ff">120</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">--------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> filter(TO_DATE(<span style="color:#e6db74">&#39;01-JAN-95&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)<span style="color:#f92672">&lt;</span>TO_DATE(<span style="color:#e6db74">&#39;01-JAN-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>))
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#66d9ef">access</span>(<span style="color:#e6db74">&#34;HIRE_DATE&#34;</span><span style="color:#f92672">&gt;=</span>TO_DATE(<span style="color:#e6db74">&#39;01-JAN-95&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>) <span style="color:#66d9ef">AND</span>
+</span></span><span style="display:flex;"><span>           <span style="color:#e6db74">&#34;HIRE_DATE&#34;</span><span style="color:#f92672">&lt;</span>TO_DATE(<span style="color:#e6db74">&#39;01-JAN-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>))
+</span></span></code></pre></div><p>Another point to consider is the type of table access patterns that will be required in order to support functional requirements. It is therefore necessary to understand said requirements in order to determine the most useful/optimal indexes required. One example would be a <code>TRANSACTIONS</code> table. The business may for instance find it quite reasonable to be able to query transactions for a particular date or date range - this approach is often used for reporting. The same goes for supporting batch and ETL processes, which may often operate only on a limited set of transactions for the purposes of reporting and data warehousing. It is therefore often a logical choice from the onset to have an index on a transaction date column when dealing with transaction style applications.</p>
+<p>The developer and DBAs must for all these reasons understand the underlying functional business domain and requirements in order to determine the most optimal index strategy in a schema. They must also test the strategy to ensure that indexes are indeed used where it makes sense.</p>
+<h3 id="using-functions">
+  Using Functions
+  <a class="heading-link" href="#using-functions">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>Where predicates contain functions such as <code>TO_CHAR</code> and <code>TRUNC</code> on table columns or even a concatenation of columns, ordinary indexes are generally not used.</p>
+<p>The following explain plan of a select statement, which uses TRUNC to find employees hired on a particular day, will demonstrate this point:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">explain</span> plan <span style="color:#66d9ef">for</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> HR.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> trunc(hire_date) <span style="color:#f92672">=</span> TO_DATE(<span style="color:#e6db74">&#39;30-SEP-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>         <span style="color:#f92672">|</span> Name      <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------|   0 | SELECT STATEMENT  |           |     1 |    72 |     2   (0)| 00:00:01 |
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">FULL</span><span style="color:#f92672">|</span> EMPLOYEES <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>    <span style="color:#ae81ff">72</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> filter(TRUNC(INTERNAL_FUNCTION(<span style="color:#e6db74">&#34;HIRE_DATE&#34;</span>))<span style="color:#f92672">=</span>TO_DATE(<span style="color:#e6db74">&#39;30-SEP-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>))
+</span></span></code></pre></div><p>The reason for the index not being used is that the CBO doesn&rsquo;t understand the outcome of what TRUNCing a date is in terms of comparing it to another date in terms of distribution, selectivity etc. An operation is performed on the column data, which the CBO has no way of verifying the outcome of. This approach therefore results in a full table scan.</p>
+<p>This can be rectified by eliminating the TRUNC function as follows. The CBO will now have an idea of the selectivity and cardinality and will be able to use the index:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">explain</span> plan <span style="color:#66d9ef">for</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> HR.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> hire_date <span style="color:#f92672">&gt;=</span> TO_DATE(<span style="color:#e6db74">&#39;30-SEP-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> hire_date  <span style="color:#f92672">&lt;</span> TO_DATE(<span style="color:#e6db74">&#39;30-SEP-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>                    <span style="color:#f92672">|</span> Name             <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">0</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">STATEMENT</span>             <span style="color:#f92672">|</span>                  <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>    <span style="color:#ae81ff">72</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  FILTER                      <span style="color:#f92672">|</span>                  <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>            <span style="color:#f92672">|</span>          <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">2</span> <span style="color:#f92672">|</span>   <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">INDEX</span> ROWID<span style="color:#f92672">|</span> EMPLOYEES        <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>    <span style="color:#ae81ff">72</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">3</span> <span style="color:#f92672">|</span>    <span style="color:#66d9ef">INDEX</span> RANGE SCAN          <span style="color:#f92672">|</span> EMP_HIRE_DATE_IX <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">-------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">1</span> <span style="color:#f92672">-</span> filter(TO_DATE(<span style="color:#e6db74">&#39;30-SEP-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)<span style="color:#f92672">&lt;</span>TO_DATE(<span style="color:#e6db74">&#39;30-SEP-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">3</span> <span style="color:#f92672">-</span> <span style="color:#66d9ef">access</span>(<span style="color:#e6db74">&#34;HIRE_DATE&#34;</span><span style="color:#f92672">&gt;=</span>TO_DATE(<span style="color:#e6db74">&#39;30-SEP-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>) <span style="color:#66d9ef">AND</span>
+</span></span><span style="display:flex;"><span>           <span style="color:#e6db74">&#34;HIRE_DATE&#34;</span><span style="color:#f92672">&lt;</span>TO_DATE(<span style="color:#e6db74">&#39;30-SEP-97&#39;</span>,<span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><p>In some cases it may not be possible to avoid functions on columns. To performance tune such queries in the past one would often adopt a &ldquo;hidden&rdquo; column on the table, which would contain the outcome of the function of the original column and then index that column. Such columns would come in handy for case-insensitive searches for instance (although Oracle Text often may be more suitable for such endeavours). However with recent database releases it is now also possible to create function-based indexes as long as the function used is deterministic, i.e. that the function yields the same result each time it is called with a particular set of parameters.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">index</span> hr.emp_upper_last_name_ix <span style="color:#66d9ef">on</span> hr.employees (<span style="color:#66d9ef">UPPER</span>(LAST_NAME));
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">explain</span> plan <span style="color:#66d9ef">for</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> hr.employees
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> <span style="color:#66d9ef">UPPER</span>(last_name) <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;ROGERS&#39;</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">------------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span> Id  <span style="color:#f92672">|</span> <span style="color:#66d9ef">Operation</span>                   <span style="color:#f92672">|</span> Name                   <span style="color:#f92672">|</span> <span style="color:#66d9ef">Rows</span>  <span style="color:#f92672">|</span> Bytes <span style="color:#f92672">|</span> Cost (<span style="color:#f92672">%</span>CPU)<span style="color:#f92672">|</span> Time     <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">------------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">0</span> <span style="color:#f92672">|</span> <span style="color:#66d9ef">SELECT</span> <span style="color:#66d9ef">STATEMENT</span>            <span style="color:#f92672">|</span>                        <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>    <span style="color:#ae81ff">76</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|</span>   <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>  <span style="color:#66d9ef">TABLE</span> <span style="color:#66d9ef">ACCESS</span> <span style="color:#66d9ef">BY</span> <span style="color:#66d9ef">INDEX</span> ROWID<span style="color:#f92672">|</span> EMPLOYEES              <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>    <span style="color:#ae81ff">76</span> <span style="color:#f92672">|</span>     <span style="color:#ae81ff">2</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">|*</span>  <span style="color:#ae81ff">2</span> <span style="color:#f92672">|</span>   <span style="color:#66d9ef">INDEX</span> RANGE SCAN          <span style="color:#f92672">|</span> EMP_UPPER_LAST_NAME_IX <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span> <span style="color:#f92672">|</span>       <span style="color:#f92672">|</span>     <span style="color:#ae81ff">1</span>   (<span style="color:#ae81ff">0</span>)<span style="color:#f92672">|</span> <span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">00</span>:<span style="color:#ae81ff">01</span> <span style="color:#f92672">|</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">------------------------------------------------------------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Predicate Information (identified <span style="color:#66d9ef">by</span> <span style="color:#66d9ef">operation</span> id):
+</span></span><span style="display:flex;"><span><span style="color:#75715e">---------------------------------------------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">2</span> <span style="color:#f92672">-</span> <span style="color:#66d9ef">access</span>(<span style="color:#66d9ef">UPPER</span>(<span style="color:#e6db74">&#34;LAST_NAME&#34;</span>)<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;ROGERS&#39;</span>)
+</span></span></code></pre></div><p>It is also possible to base the index on a user-defined function as long as that function has been marked as DETERMINISTIC in the create function clause.</p>
+<p>In 11g it is also possible to create virtual columns that can utilise deterministic functions. It is furthermore possible to create indexes on said virtual columns, as well as gather statistics on them.</p>
+<h2 id="tips--tricks">
+  Tips &amp; Tricks
+  <a class="heading-link" href="#tips--tricks">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<h3 id="decoding-column-statistics---low-and-high-values">
+  Decoding Column Statistics - Low and High Values
+  <a class="heading-link" href="#decoding-column-statistics---low-and-high-values">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>It is interesting to note that it is possible to decode the RAW columns (into <code>VARCHAR2</code> and <code>NUMBER</code>) in the <code>ALL_TAB_COLUMNS</code> view using the <code>UTL_RAW</code> (<code>cast_to_varchar2</code> and <code>cast_to_number</code> functions) package although <code>DATE</code> columns for instance cannot be easily converted. Looking at the stored statistics on the columns enables developers to check for instance what low and high values are recorded. The following query demonstrates this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">owner</span>,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">table_name</span>,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">column_name</span>,
+</span></span><span style="display:flex;"><span>       data_type,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">when</span> data_type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;VARCHAR2&#39;</span> <span style="color:#66d9ef">then</span> utl_raw.cast_to_varchar2(low_value)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">when</span> data_type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;NUMBER&#39;</span> <span style="color:#66d9ef">then</span> TO_CHAR(utl_raw.cast_to_number(low_value))
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span> utl_raw.cast_to_varchar2(low_value)
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">end</span> low_value,
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">case</span> <span style="color:#66d9ef">when</span> data_type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;VARCHAR2&#39;</span> <span style="color:#66d9ef">then</span> utl_raw.cast_to_varchar2(high_value)
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">when</span> data_type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;NUMBER&#39;</span> <span style="color:#66d9ef">then</span> TO_CHAR(utl_raw.cast_to_number(high_value))
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">else</span> utl_raw.cast_to_varchar2(high_value)
+</span></span><span style="display:flex;"><span>       <span style="color:#66d9ef">end</span> high_value
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> all_tab_columns
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> <span style="color:#66d9ef">owner</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;HR&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">order</span> <span style="color:#66d9ef">by</span> <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">OWNER</span> <span style="color:#66d9ef">TABLE_NAME</span>  <span style="color:#66d9ef">COLUMN_NAME</span>     DATA_TYPE LOW_VALUE          HIGH_VALUE
+</span></span><span style="display:flex;"><span><span style="color:#75715e">----- ----------- --------------- --------- ------------------ ------------
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>HR    DEPARTMENTS DEPARTMENT_ID   NUMBER    <span style="color:#ae81ff">10</span>                 <span style="color:#ae81ff">270</span>
+</span></span><span style="display:flex;"><span>HR    DEPARTMENTS DEPARTMENT_NAME VARCHAR2  Accounting         Treasury
+</span></span><span style="display:flex;"><span>HR    DEPARTMENTS LOCATION_ID     NUMBER    <span style="color:#ae81ff">1400</span>               <span style="color:#ae81ff">2700</span>
+</span></span><span style="display:flex;"><span>HR    DEPARTMENTS MANAGER_ID      NUMBER    <span style="color:#ae81ff">100</span>                <span style="color:#ae81ff">205</span>
+</span></span><span style="display:flex;"><span>HR    EMPLOYEES   COMMISSION_PCT  NUMBER    .<span style="color:#ae81ff">1</span>                 .<span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>HR    EMPLOYEES   DEPARTMENT_ID   NUMBER    <span style="color:#ae81ff">10</span>                 <span style="color:#ae81ff">110</span>
+</span></span><span style="display:flex;"><span>HR    EMPLOYEES   EMAIL           VARCHAR2  ABANDA             WTAYLOR
+</span></span><span style="display:flex;"><span>HR    EMPLOYEES   EMPLOYEE_ID     NUMBER    <span style="color:#ae81ff">100</span>                <span style="color:#ae81ff">206</span>
+</span></span><span style="display:flex;"><span>HR    EMPLOYEES   FIRST_NAME      VARCHAR2  Adam               Winston
+</span></span><span style="display:flex;"><span>HR    EMPLOYEES   GENDER          CHAR      F                  M
+</span></span><span style="display:flex;"><span>HR    EMPLOYEES   JOB_ID          VARCHAR2  AC_ACCOUNT         ST_MAN
+</span></span><span style="display:flex;"><span>HR    EMPLOYEES   LAST_NAME       VARCHAR2  Abel               Zlotkey
+</span></span><span style="display:flex;"><span>HR    EMPLOYEES   MANAGER_ID      NUMBER    <span style="color:#ae81ff">100</span>                <span style="color:#ae81ff">205</span>
+</span></span><span style="display:flex;"><span>HR    EMPLOYEES   PHONE_NUMBER    VARCHAR2  <span style="color:#ae81ff">011</span>.<span style="color:#ae81ff">44</span>.<span style="color:#ae81ff">1343</span>.<span style="color:#ae81ff">329268</span> <span style="color:#ae81ff">650</span>.<span style="color:#ae81ff">509</span>.<span style="color:#ae81ff">4876</span>
+</span></span><span style="display:flex;"><span>HR    EMPLOYEES   SALARY          NUMBER    <span style="color:#ae81ff">2100</span>               <span style="color:#ae81ff">24000</span>
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><h3 id="determining-the-real-endpoint-value-for-each-histogram-bucket">
+  Determining the Real Endpoint Value for each Histogram Bucket
+  <a class="heading-link" href="#determining-the-real-endpoint-value-for-each-histogram-bucket">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h3>
+<p>In the statistics view <code>ALL_HISTOGRAMS</code> the <code>ENDPOINT_VALUE</code> column, which represents the real value as an ordered &ldquo;hash&rdquo;, does not give much clue as to how actual values are distributed. However, using the analytical percentile function <code>NTILE</code>, it is possible to calculate the real endpoint value (being the last ordered real value in the bucket set).</p>
+<p>In this example the endpoint values are calculated on the EMAIL column of the <code>EMPLOYEES</code> table. There are a total of 2 buckets (each containing 54 and 53 rows, totalling the 107 NOT NULL values).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">with</span> realvalue <span style="color:#66d9ef">as</span> (
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">select</span> <span style="color:#66d9ef">max</span>(EMAIL) ENDPOINT_REAL_VALUE, tiling <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span> endpoint_number, <span style="color:#66d9ef">count</span>(<span style="color:#f92672">*</span>) cnt
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">from</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">select</span> EMAIL ,ntile(<span style="color:#ae81ff">2</span>) over(<span style="color:#66d9ef">order</span> <span style="color:#66d9ef">by</span> EMAIL) <span style="color:#66d9ef">as</span> tiling
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">from</span> hr.employees
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">where</span> EMAIL <span style="color:#66d9ef">is</span> <span style="color:#66d9ef">not</span> <span style="color:#66d9ef">null</span>
+</span></span><span style="display:flex;"><span>  )
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">group</span> <span style="color:#66d9ef">by</span> tiling
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> h.endpoint_number bucket, h.endpoint_value, e.endpoint_real_value realval, e.cnt
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> all_histograms h, realvalue e
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> <span style="color:#66d9ef">owner</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;HR&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> <span style="color:#66d9ef">table_name</span> <span style="color:#66d9ef">IN</span> (<span style="color:#e6db74">&#39;EMPLOYEES&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> <span style="color:#66d9ef">column_name</span> <span style="color:#66d9ef">IN</span> (<span style="color:#e6db74">&#39;EMAIL&#39;</span>)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">and</span> e.endpoint_number <span style="color:#f92672">=</span> h.endpoint_number
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">order</span> <span style="color:#66d9ef">by</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>BUCKET ENDPOINT_VALUE                       REALVAL  CNT
+</span></span><span style="display:flex;"><span><span style="color:#75715e">------ ------------------------------------ -------- ---
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">338843108891513000000000000000000000</span> KCOLMENA <span style="color:#ae81ff">54</span>
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">1</span>      <span style="color:#ae81ff">453438726566219000000000000000000000</span> WTAYLOR  <span style="color:#ae81ff">53</span>
+</span></span></code></pre></div><p>Knowing how to calculate the real value can help developers determine why the CBO decides a particular access path and also help determine why particular cardinality estimates and costs may be wrong compared to the real-world data due to the assumptions made based on the histograms.</p>
+<h2 id="references">
+  References
+  <a class="heading-link" href="#references">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>[1] Lewis, J. (1 October 2005). <strong>Cost-Based Oracle Fundamentals</strong>. Apress, First Edition. ISBN-13: 978-1590596364.</p>
+<p>[2] Oracle documentation (2002). <strong>Oracle9i Database Performance Tuning Guide and Reference: Chapter 8 - Using the Rule-Based Optimizer</strong>. URL: <a href="http://download-east.oracle.com/docs/cd/A97630_01/server.920/a96533/rbo.htm"  class="external-link" target="_blank" rel="noopener">http://download-east.oracle.com/docs/cd/A97630_01/server.920/a96533/rbo.htm</a>. (Last accessed: 29/01/2010)</p>
+<p>[3] Oracle documentation (2002). <strong>Oracle9i Database Performance Tuning Guide and Reference: Chapter 9 - Using EXPLAIN PLAN</strong>. URL: <a href="http://download.oracle.com/docs/cd/B10501_01/server.920/a96533/ex_plan.htm"  class="external-link" target="_blank" rel="noopener">http://download.oracle.com/docs/cd/B10501_01/server.920/a96533/ex_plan.htm</a>. (Last accessed: 29/01/2010)</p>
+<p>[4] Oracle Support note 62284.1 (09-MAY-2008). <strong>Init.ora Parameter &ldquo;OPTIMIZER_MAX_PERMUTATIONS&rdquo;</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=62284.1"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=62284.1</a>. (Last accessed: 29/01/2010)</p>
+<p>[5] Oracle Support note 66030.1 (27-MAR-2003). <strong>Relationship between OPTIMIZER_MAX_PERMUTATIONS and OPTIMIZER_SEARCH_LIMIT</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=66030.1"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=66030.1</a>. (Last accessed: 29/01/2010)</p>
+<p>[6] Oracle Support note 212809.1 (08-JUN-2009). <strong>Limitations of the Oracle Cost Based Optimizer</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=212809.1"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=212809.1</a>. (Last accessed: 29/01/2010)</p>
+<p>[7] Oracle Support note 422179.1 (11-APR-2007). <strong>How to Get Actual Bucket Point Value for Date Column from dba_histograms</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=422179.1"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=422179.1</a>. (Last accessed: 29/01/2010)</p>
+<p>[8] Nanda, A (no date). <strong>Week 18: Oracle Database 10g - ADDM and SQL Tuning Advisor</strong>. URL: <a href="http://www.oracle.com/technology/pub/articles/10gdba/week18_10gdba.html"  class="external-link" target="_blank" rel="noopener">http://www.oracle.com/technology/pub/articles/10gdba/week18_10gdba.html</a>. (Last accessed: 29/01/2010)</p>
+<p>[9] Oracle documentation (2008). <strong>Oracle Database Performance Tuning Guide 10g Release 2 (10.2): Chapter 16 - Using Optimizer Hints</strong>. URL: <a href="http://download.oracle.com/docs/cd/B19306_01/server.102/b14211/hintsref.htm"  class="external-link" target="_blank" rel="noopener">http://download.oracle.com/docs/cd/B19306_01/server.102/b14211/hintsref.htm</a>. (Last accessed 29/01/2010)</p>
+<p>[10] Oracle Support note 235530.1 (19-JAN-2009). <strong>Methods for Obtaining a Formatted Explain Plan</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=235530.1"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=235530.1</a>. (Last accessed: 29/01/2010)</p>
+<p>[11] Oracle Support note 260942.1 (02-JUL-2009). <strong>Display Execution plans from Statement&rsquo;s in V$SQL_PLAN</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=260942.1"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=260942.1</a>. (Last accessed: 29/01/2010)</p>
+<p>[12] Oracle Support note 215187.1 (04-JAN-2010). <strong>SQLT (SQLTXPLAIN) - Tool that helps to diagnose SQL statements performing poorly</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=215187.1"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=215187.1</a>. (Last accessed: 29/01/2010)</p>
+<p>[13] Wikipedia web site (26 January 2010). <strong>Cardinality</strong>. URL: <a href="http://en.wikipedia.org/wiki/Cardinality"  class="external-link" target="_blank" rel="noopener">http://en.wikipedia.org/wiki/Cardinality</a>. (Last accessed: 29/01/2010)</p>
+<p>[14] Oracle Support note 728004.1 (16-SEP-2008). <strong>How ORACLE CBO Calculate Join Cardinality with Join Elimination Filter?</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=728004.1"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=728004.1</a>. (Last accessed: 29/01/2010)</p>
+<p>[15] Oracle Support note 68992.1 (02-JUN-2009). <strong>Predicate Selectivity</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;id=68992.1&amp;type=NOT"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;id=68992.1&amp;type=NOT</a>. (Last accessed: 29/01/2010)</p>
+<p>[16] Easton, V. J. &amp; McColl, J. H. (no date). <strong>Statistics Glossary - Probability</strong> (University of Glasgow). URL: <a href="http://www.stats.gla.ac.uk/steps/glossary/probability.html#indepevents"  class="external-link" target="_blank" rel="noopener">http://www.stats.gla.ac.uk/steps/glossary/probability.html#indepevents</a>. (Last accessed: 27/01/2010)</p>
+<p>[17] Kyte, T. (4-Sep-2009). <strong>AskTom - Thanks for the question regarding &ldquo;Cardinality&rdquo;, version 9.2.0</strong>. URL: <a href="http://asktom.oracle.com/pls/asktom/f?p=100:11:0::::P11_QUESTION_ID:40230704959128"  class="external-link" target="_blank" rel="noopener">http://asktom.oracle.com/pls/asktom/f?p=100:11:0::::P11_QUESTION_ID:40230704959128</a>. (Last accessed: 29/01/2010)</p>
+<p>[18] Oracle Support note 30405.1 (13-JUN-2007). <strong>How Btree Indexes Are Maintained</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=30405.1"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=30405.1</a>. (Last accessed: 01/02/2010)</p>
+<p>[19] Oracle Support note 399410.1 (29-AUG-2008). <strong>Rowid Structure and Base-64 Conversion</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=399410.1"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;id=399410.1</a>. (Last accessed: 01/02/2010)</p>
+<p>[20] Oracle Support note 252597.1 (18-JUN-2009). <strong>Relation between Table Monitoring and STATISTICS_LEVEL</strong>. URL: <a href="https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;doctype=BULLETIN&amp;id=252597.1"  class="external-link" target="_blank" rel="noopener">https://support.oracle.com/CSP/main/article?cmd=show&amp;type=NOT&amp;doctype=BULLETIN&amp;id=252597.1</a>. (last accessed: 31/05/2010)</p>
+<hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2010/05/cost-based-optimizer-simple.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2010/05/cost-based-optimizer-simple.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

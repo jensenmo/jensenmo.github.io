@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Manually Creating a Basic WebLogic Domain with wlst.sh · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="This is really just a reminder to myself on how to manually create a WebLogic domain using the wlst.sh command line, start the node manager, start the AdminServer, store user configuration for future logins etc. - but it may be useful to others too.
+
+  Reference Resources
+  
+    
+    Link to heading
+  
+
+First of all, there are example scripts of how to create various domains using wlst.sh in the directory: $MW_HOME/wlserver_12.1/common/templates/scripts/wlst. Also, you will find actual domain templates in the $MW_HOME/wlserver_12.1/common/templates/domains directory.">
+<meta name="keywords" content="Manually, Creating, Basic, WebLogic, Domain, wlst.sh">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Manually Creating a Basic WebLogic Domain with wlst.sh">
+  <meta name="twitter:description" content="This is really just a reminder to myself on how to manually create a WebLogic domain using the wlst.sh command line, start the node manager, start the AdminServer, store user configuration for future logins etc. - but it may be useful to others too.
+Reference Resources Link to heading First of all, there are example scripts of how to create various domains using wlst.sh in the directory: $MW_HOME/wlserver_12.1/common/templates/scripts/wlst. Also, you will find actual domain templates in the $MW_HOME/wlserver_12.1/common/templates/domains directory.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/manually-creating-a-basic-weblogic-domain-with-wlstsh/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Manually Creating a Basic WebLogic Domain with wlst.sh">
+  <meta property="og:description" content="This is really just a reminder to myself on how to manually create a WebLogic domain using the wlst.sh command line, start the node manager, start the AdminServer, store user configuration for future logins etc. - but it may be useful to others too.
+Reference Resources Link to heading First of all, there are example scripts of how to create various domains using wlst.sh in the directory: $MW_HOME/wlserver_12.1/common/templates/scripts/wlst. Also, you will find actual domain templates in the $MW_HOME/wlserver_12.1/common/templates/domains directory.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2013-02-24T16:46:00+00:00">
+    <meta property="article:modified_time" content="2013-02-24T16:46:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/manually-creating-a-basic-weblogic-domain-with-wlstsh/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/manually-creating-a-basic-weblogic-domain-with-wlstsh/">
+              Manually Creating a Basic WebLogic Domain with wlst.sh
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2013-02-24T16:46:00Z">
+                February 24, 2013
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              2-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>This is really just a reminder to myself on how to manually create a WebLogic domain using the <code>wlst.sh</code> command line, start the node manager, start the AdminServer, store user configuration for future logins etc. - but it may be useful to others too.</p>
+<h2 id="reference-resources">
+  Reference Resources
+  <a class="heading-link" href="#reference-resources">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>First of all, there are example scripts of how to create various domains using <code>wlst.sh</code> in the directory: <code>$MW_HOME/wlserver_12.1/common/templates/scripts/wlst</code>. Also, you will find actual domain templates in the <code>$MW_HOME/wlserver_12.1/common/templates/domains</code> directory.</p>
+<h2 id="example-script">
+  Example Script
+  <a class="heading-link" href="#example-script">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>But for sake of completeness here&rsquo;s an example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cd
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>export MW_HOME<span style="color:#f92672">=</span>$HOME/app/oracle/MW1211
+</span></span><span style="display:flex;"><span>$MW_HOME/wlserver_12.1/common/bin/wlst.sh
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set various variables based on environment</span>
+</span></span><span style="display:flex;"><span>mwHome<span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>environ[<span style="color:#e6db74">&#34;MW_HOME&#34;</span>]
+</span></span><span style="display:flex;"><span>wlHome<span style="color:#f92672">=</span> mwHome <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/wlserver_12.1&#34;</span>
+</span></span><span style="display:flex;"><span>nmHome<span style="color:#f92672">=</span> wlHome <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/common/nodemanager&#39;</span>
+</span></span><span style="display:flex;"><span>domainName<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;dev&#34;</span>
+</span></span><span style="display:flex;"><span>domainDir <span style="color:#f92672">=</span> mwHome <span style="color:#f92672">+</span> <span style="color:#e6db74">&#34;/user_projects/domains/&#34;</span> <span style="color:#f92672">+</span> domainName
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>createDomain(domainTemplate<span style="color:#f92672">=</span>wlHome <span style="color:#f92672">+</span> <span style="color:#e6db74">&#39;/common/templates/domains/wls.jar&#39;</span>, domainDir<span style="color:#f92672">=</span>domainDir, user<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;weblogic&#39;</span>, password<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;welcome1&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>readDomain(domainDir<span style="color:#f92672">=</span>domainDir)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Set listen address and port, enable SSL and set SSL port</span>
+</span></span><span style="display:flex;"><span>set(<span style="color:#e6db74">&#39;Name&#39;</span>, <span style="color:#e6db74">&#39;dev&#39;</span>)
+</span></span><span style="display:flex;"><span>set(<span style="color:#e6db74">&#39;AdministrationPort&#39;</span>, <span style="color:#e6db74">&#39;9002&#39;</span>)
+</span></span><span style="display:flex;"><span>set(<span style="color:#e6db74">&#39;AdministrationPortEnabled&#39;</span>, <span style="color:#e6db74">&#39;true&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cd(<span style="color:#e6db74">&#39;Server/AdminServer&#39;</span>)
+</span></span><span style="display:flex;"><span>set(<span style="color:#e6db74">&#39;ListenPortEnabled&#39;</span>, <span style="color:#e6db74">&#39;false&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Finally, update domain</span>
+</span></span><span style="display:flex;"><span>updateDomain()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Start Node Manager</span>
+</span></span><span style="display:flex;"><span>startNodeManager(verbose<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;true&#39;</span>, NodeManagerHome<span style="color:#f92672">=</span>nmHome, ListenPort<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;5556&#39;</span>, ListenAddress<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Connect to Node Manager</span>
+</span></span><span style="display:flex;"><span>nmConnect(domainName<span style="color:#f92672">=</span>domainName, domainDir<span style="color:#f92672">=</span>domainDir)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Start AdminServer</span>
+</span></span><span style="display:flex;"><span>nmStart(serverName<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;AdminServer&#34;</span>, domainDir<span style="color:#f92672">=</span>domainDir)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Connect to AdminServer</span>
+</span></span><span style="display:flex;"><span>connect(adminServerName<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;AdminServer&#34;</span>, url<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;t3s://localhost:9002&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Enroll domain in management by Node Manager and download nm_password.properties for authentication</span>
+</span></span><span style="display:flex;"><span>nmEnroll(domainDir<span style="color:#f92672">=</span>domainDir, nmHome<span style="color:#f92672">=</span>nmHome)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Store user configuration file in user $HOME directory containing encrypted weblogic</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># username &amp; password for AdminServer and a key file containing key used for encryption</span>
+</span></span><span style="display:flex;"><span>storeUserConfig()
+</span></span></code></pre></div><p>When prompted by <code>storeUserConfig()</code>, answer: <code>y</code></p>
+<hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2013/02/manually-creating-basic-weblogic-domain.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2013/02/manually-creating-basic-weblogic-domain.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

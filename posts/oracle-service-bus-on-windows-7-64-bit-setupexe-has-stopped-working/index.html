@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Oracle Service Bus on Windows 7 64-bit: &#39;setup.exe has stopped working&#39; · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="This one had me scratching my head for a couple of days before I managed to workaround &ldquo;setup.exe has stopped working&rdquo; every time I started setup.exe in the Oracle Service Bus 11.1.1.6 distribution on 64-bit Windows 7 for development purposes (ofm_osb_generic_11.1.1.6.0_disk1_1of1.zip).
+Had installed:
+
+Oracle JRockit (jrockit-jdk1.6.0_37-R28.2.5-4.1.0-windows-x64.exe)
+WebLogic 10.3.6
+OEPE (oepe-indigo-all-in-one-11.1.1.8.0.201110211138-win32-x86_64)
+
+Turns out that running Disk1\setup.exe doesn&rsquo;t work.
+Instead, run Disk1\install\win64\setup.exe.
+D&rsquo;oh! Thanks for the heads-up Oracle (not)&hellip;
+Boot note&hellip;
+If you, on first start-up of OEPE Eclipse experience the error: &lsquo;Failed to load the JNI shared library &ldquo;C:\Program Files(x86)\Java\jre7\bin\client\jvm.dll&rdquo;&rsquo; then it&rsquo;s because Eclipse is trying to start your default (32-bit) JRE Java VM.">
+<meta name="keywords" content="blog,developer,personal">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Oracle Service Bus on Windows 7 64-bit: &#39;setup.exe has stopped working&#39;">
+  <meta name="twitter:description" content="This one had me scratching my head for a couple of days before I managed to workaround “setup.exe has stopped working” every time I started setup.exe in the Oracle Service Bus 11.1.1.6 distribution on 64-bit Windows 7 for development purposes (ofm_osb_generic_11.1.1.6.0_disk1_1of1.zip).
+Had installed:
+Oracle JRockit (jrockit-jdk1.6.0_37-R28.2.5-4.1.0-windows-x64.exe) WebLogic 10.3.6 OEPE (oepe-indigo-all-in-one-11.1.1.8.0.201110211138-win32-x86_64) Turns out that running Disk1\setup.exe doesn’t work.
+Instead, run Disk1\install\win64\setup.exe.
+D’oh! Thanks for the heads-up Oracle (not)… Boot note… If you, on first start-up of OEPE Eclipse experience the error: ‘Failed to load the JNI shared library “C:\Program Files(x86)\Java\jre7\bin\client\jvm.dll”’ then it’s because Eclipse is trying to start your default (32-bit) JRE Java VM.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/oracle-service-bus-on-windows-7-64-bit-setupexe-has-stopped-working/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Oracle Service Bus on Windows 7 64-bit: &#39;setup.exe has stopped working&#39;">
+  <meta property="og:description" content="This one had me scratching my head for a couple of days before I managed to workaround “setup.exe has stopped working” every time I started setup.exe in the Oracle Service Bus 11.1.1.6 distribution on 64-bit Windows 7 for development purposes (ofm_osb_generic_11.1.1.6.0_disk1_1of1.zip).
+Had installed:
+Oracle JRockit (jrockit-jdk1.6.0_37-R28.2.5-4.1.0-windows-x64.exe) WebLogic 10.3.6 OEPE (oepe-indigo-all-in-one-11.1.1.8.0.201110211138-win32-x86_64) Turns out that running Disk1\setup.exe doesn’t work.
+Instead, run Disk1\install\win64\setup.exe.
+D’oh! Thanks for the heads-up Oracle (not)… Boot note… If you, on first start-up of OEPE Eclipse experience the error: ‘Failed to load the JNI shared library “C:\Program Files(x86)\Java\jre7\bin\client\jvm.dll”’ then it’s because Eclipse is trying to start your default (32-bit) JRE Java VM.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2013-02-05T19:46:00+00:00">
+    <meta property="article:modified_time" content="2013-02-05T19:46:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/oracle-service-bus-on-windows-7-64-bit-setupexe-has-stopped-working/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/oracle-service-bus-on-windows-7-64-bit-setupexe-has-stopped-working/">
+              Oracle Service Bus on Windows 7 64-bit: &#39;setup.exe has stopped working&#39;
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2013-02-05T19:46:00Z">
+                February 5, 2013
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              One-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>This one had me scratching my head for a couple of days before I managed to workaround &ldquo;setup.exe has stopped working&rdquo; every time I started setup.exe in the Oracle Service Bus 11.1.1.6 distribution on 64-bit Windows 7 for development purposes (ofm_osb_generic_11.1.1.6.0_disk1_1of1.zip).</p>
+<p>Had installed:</p>
+<ul>
+<li>Oracle JRockit (jrockit-jdk1.6.0_37-R28.2.5-4.1.0-windows-x64.exe)</li>
+<li>WebLogic 10.3.6</li>
+<li>OEPE (oepe-indigo-all-in-one-11.1.1.8.0.201110211138-win32-x86_64)</li>
+</ul>
+<p>Turns out that running Disk1\setup.exe doesn&rsquo;t work.</p>
+<p>Instead, run Disk1\install\win64\setup.exe.</p>
+<p>D&rsquo;oh! Thanks for the heads-up Oracle (not)&hellip;
+<strong>Boot note&hellip;</strong>
+If you, on first start-up of OEPE Eclipse experience the error: &lsquo;Failed to load the JNI shared library &ldquo;C:\Program Files(x86)\Java\jre7\bin\client\jvm.dll&rdquo;&rsquo; then it&rsquo;s because Eclipse is trying to start your default (32-bit) JRE Java VM.</p>
+<p>Instead, edit the eclipse.ini file and add the following lines immediately following the &ldquo;openFile&rdquo; line:
+<code>-vm C:/Program Files/Java/jrockit-jdk1.6.0_37-R28.2.5-4.1.0/bin/javaw.exe</code></p>
+<hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2013/02/oracle-service-bus-on-windows-7-64-bit.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2013/02/oracle-service-bus-on-windows-7-64-bit.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

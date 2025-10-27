@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Integrating Oracle APEX with EJS Charts · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="It is possible to integrate Oracle APEX quite neatly with the EJS Charts (http://www.ejschart.com/), which personally I find one of the best charting solutions for the &ldquo;Web 2.0&rdquo; interactive charting era, well able to compete with the JavaScript and Flash (AnyCharts) charting used by websites like http://www.reuters.com/finance/stocks and http://uk.finance.yahoo.com/echarts. It is based entirely on JavaScript and enables you to interactively manipulate the charts on your web pages - and includes functions out-of-the-box including zooming, panning and enabling/disabling data series without resubmitting the web page. It is all very-very interactive. Just try your mouse wheel for zooms, right-click and drag for pan and double-click to reset.">
+<meta name="keywords" content="Integrating, Oracle, APEX, Charts">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Integrating Oracle APEX with EJS Charts">
+  <meta name="twitter:description" content="It is possible to integrate Oracle APEX quite neatly with the EJS Charts (http://www.ejschart.com/), which personally I find one of the best charting solutions for the “Web 2.0” interactive charting era, well able to compete with the JavaScript and Flash (AnyCharts) charting used by websites like http://www.reuters.com/finance/stocks and http://uk.finance.yahoo.com/echarts. It is based entirely on JavaScript and enables you to interactively manipulate the charts on your web pages - and includes functions out-of-the-box including zooming, panning and enabling/disabling data series without resubmitting the web page. It is all very-very interactive. Just try your mouse wheel for zooms, right-click and drag for pan and double-click to reset.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/integrating-oracle-apex-with-ejs-charts/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Integrating Oracle APEX with EJS Charts">
+  <meta property="og:description" content="It is possible to integrate Oracle APEX quite neatly with the EJS Charts (http://www.ejschart.com/), which personally I find one of the best charting solutions for the “Web 2.0” interactive charting era, well able to compete with the JavaScript and Flash (AnyCharts) charting used by websites like http://www.reuters.com/finance/stocks and http://uk.finance.yahoo.com/echarts. It is based entirely on JavaScript and enables you to interactively manipulate the charts on your web pages - and includes functions out-of-the-box including zooming, panning and enabling/disabling data series without resubmitting the web page. It is all very-very interactive. Just try your mouse wheel for zooms, right-click and drag for pan and double-click to reset.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2009-02-11T19:40:00+00:00">
+    <meta property="article:modified_time" content="2009-02-11T19:40:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/integrating-oracle-apex-with-ejs-charts/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/integrating-oracle-apex-with-ejs-charts/">
+              Integrating Oracle APEX with EJS Charts
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2009-02-11T19:40:00Z">
+                February 11, 2009
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              6-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>It is possible to integrate Oracle APEX quite neatly with the EJS Charts (<a href="http://www.ejschart.com/%29"  class="external-link" target="_blank" rel="noopener">http://www.ejschart.com/)</a>, which personally I find one of the best charting solutions for the &ldquo;Web 2.0&rdquo; interactive charting era, well able to compete with the JavaScript and Flash (AnyCharts) charting used by websites like <a href="http://www.reuters.com/finance/stocks"  class="external-link" target="_blank" rel="noopener">http://www.reuters.com/finance/stocks</a> and <a href="http://uk.finance.yahoo.com/echarts"  class="external-link" target="_blank" rel="noopener">http://uk.finance.yahoo.com/echarts</a>. It is based entirely on JavaScript and enables you to interactively manipulate the charts on your web pages - and includes functions out-of-the-box including zooming, panning and enabling/disabling data series without resubmitting the web page. It is all very-very interactive. Just try your mouse wheel for zooms, right-click and drag for pan and double-click to reset.</p>
+<p>In this posting I will show you how this can be achieved. If you click on the embedded picture you will get an idea of the strength of the EJS Charting sofware.</p>
+<p>When I started out on this work I used the Personal Edition while evaluating the charting itself. When using the Personal Edition you &ldquo;loose out&rdquo; on a number of different charts (including OHLC). But I was so thoroughly impressed at the end of my evaluation that I purchased the Professional Edition.</p>
+<p>There are a number of different ways in which EJS Chart can receive the data sets (series) for charting purposes, including XML and AJAX based data sources, CSV, JSON etc. However, the one I found the easiest to integrate with, is to dynamically construct JavaScript arrays from within Oracle APEX using PL/SQL - and to print the JavaScript code required in an anonymous PL/SQL block in an Oracle APEX reqion. While the array approach will not enable you to refresh the data on-the-fly without submitting the page I have not yet had the need for this functionality because all the data is readily available to be zoomed, panned, series enabled and disabled on the fly etc. anyway.</p>
+<p>In my current use it would simply make the application more complex - and would likely require writing a servlet or equivalent to service the retrieval of data sets via AJAX on-the-fly.</p>
+<p>So, how to integrate EJS Chart and Oracle APEX? EJS Chart requires very simple JavaScript constructs to add charts inside HTML pages. You will see how later on. So to get started, simply follow the instruction below.</p>
+<ol>
+<li>
+<p>You will need to ensure that your EJS Charting distribution has been installed and is accessible to your web browser. The easiest way to do so is set-up a web server that services the pages from a static directory on your file system. In my case I use the Apache web server as a reverse proxy to Oracle APEX and to serve the EJS Chart files (/charting is an alias to a file system directory containing the EJS Chart distribution). Please read the EJS Chart installation instructions on how to do so - you will also be able to make use of the examples provided in the instructions in order to ensure that the EJS Chart software has been properly installed, before continuing to use the instructions below to integrate EJS Chart and Oracle APEX.</p>
+</li>
+<li>
+<p>Create a new page template called EJS Charting. Edit that page template and include the EJS Chart .js files in the header definition. If you have got the Professional Edition and wish to use the more advanced charts then you will need to include additional .js files depending on your requirements. In my case I required the following lines to be added to the EJS Charting page template header:</p>
+</li>
+</ol>
+<pre tabindex="0"><code></code></pre><ol start="3">
+<li>
+<p>Create a new page using the EJS Charting template and add an anonymous PL/SQL reqion.</p>
+</li>
+<li>
+<p>Create a function to generate JavaScript array format. In this case we want a generic function, which will render the data into JavaScript arrays (2-dimensional, e.g. [ [&lsquo;1&rsquo;,&lsquo;1&rsquo;], [&lsquo;2&rsquo;,&lsquo;2&rsquo;] ]). In my case I needed a generic function that would render up to 5 columns of data (OHLC charts: date, open, high, low and close). I&rsquo;m therefore relying on the Oracle SYS_REFCURSOR for weak typing. The only prerequisite to the function is that all the columns sent to the function are implicitly convertible to VARCHAR2 - and that exactly 5 columns are returned by the REF CURSOR (ranging value1 - value5 in the code). If only 2 columns are needed for a series (e.g. time and share close value, as in my example) then hardcode the remaining three columns as null.</p>
+</li>
+</ol>
+<p>An example of a valid query for a REF CURSOR is provided below. Be advised that EJS Chart requires dates to be milliseconds since 01-JAN-1970 - hence the millisecond calculation in the value1 column.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> (sysdate <span style="color:#f92672">+</span> rownum <span style="color:#f92672">-</span> TO_DATE(<span style="color:#e6db74">&#39;01-JAN-70&#39;</span>, <span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">86400000</span> value1 , rownum value2 , <span style="color:#66d9ef">null</span> value3 , <span style="color:#66d9ef">null</span> value4 , <span style="color:#66d9ef">null</span> value5from all_objectswhere rownum <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">100</span>
+</span></span></code></pre></div><p>The function for generating the JavaScript Array data is provided below.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">create</span> <span style="color:#a6e22e">or</span> <span style="color:#a6e22e">replace</span> <span style="color:#a6e22e">FUNCTION</span> <span style="color:#a6e22e">GENERATE_EJSCHART_DATASET</span> (<span style="color:#a6e22e">dataset</span> <span style="color:#a6e22e">SYS_REFCURSOR</span>)<span style="color:#a6e22e">RETURN</span> <span style="color:#a6e22e">CLOB</span> <span style="color:#a6e22e">ASd</span> <span style="color:#a6e22e">CLOB</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#39;&#39;</span>;<span style="color:#a6e22e">i</span> <span style="color:#a6e22e">NUMBER</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">value1</span> <span style="color:#a6e22e">VARCHAR2</span>(<span style="color:#ae81ff">32</span>);<span style="color:#a6e22e">value2</span> <span style="color:#a6e22e">VARCHAR2</span>(<span style="color:#ae81ff">32</span>);<span style="color:#a6e22e">value3</span> <span style="color:#a6e22e">VARCHAR2</span>(<span style="color:#ae81ff">32</span>);<span style="color:#a6e22e">value4</span> <span style="color:#a6e22e">VARCHAR2</span>(<span style="color:#ae81ff">32</span>);<span style="color:#a6e22e">value5</span> <span style="color:#a6e22e">VARCHAR2</span>(<span style="color:#ae81ff">32</span>);<span style="color:#a6e22e">BEGINd</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;[&#39;</span>;<span style="color:#a6e22e">LOOP</span> <span style="color:#a6e22e">FETCH</span> <span style="color:#a6e22e">dataset</span> <span style="color:#a6e22e">INTO</span> <span style="color:#a6e22e">value1</span>, <span style="color:#a6e22e">value2</span>, <span style="color:#a6e22e">value3</span>, <span style="color:#a6e22e">value4</span>, <span style="color:#a6e22e">value5</span>; <span style="color:#a6e22e">EXIT</span> <span style="color:#a6e22e">WHEN</span> <span style="color:#a6e22e">dataset</span><span style="color:#f92672">%</span><span style="color:#a6e22e">NOTFOUND</span>; <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">IF</span> (<span style="color:#a6e22e">i</span> <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">1</span>) <span style="color:#a6e22e">THEN</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;,&#39;</span>; <span style="color:#a6e22e">END</span> <span style="color:#a6e22e">IF</span>; <span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;[&#39;</span>; <span style="color:#f92672">--</span> <span style="color:#a6e22e">There</span> <span style="color:#a6e22e">always</span> <span style="color:#a6e22e">have</span> <span style="color:#a6e22e">to</span> <span style="color:#a6e22e">be</span> <span style="color:#a6e22e">at</span> <span style="color:#a6e22e">least</span> <span style="color:#ae81ff">2</span> <span style="color:#a6e22e">values</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;&#39;&#39;&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">value1</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;&#39;&#39;&#39;</span>; <span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;,&#39;&#39;&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">value2</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;&#39;&#39;&#39;</span>; <span style="color:#a6e22e">IF</span> (<span style="color:#a6e22e">value3</span> <span style="color:#a6e22e">IS</span> <span style="color:#a6e22e">NOT</span> <span style="color:#a6e22e">NULL</span>) <span style="color:#a6e22e">THEN</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;,&#39;&#39;&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">value3</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;&#39;&#39;&#39;</span>; <span style="color:#a6e22e">END</span> <span style="color:#a6e22e">IF</span>; <span style="color:#a6e22e">IF</span> (<span style="color:#a6e22e">value4</span> <span style="color:#a6e22e">IS</span> <span style="color:#a6e22e">NOT</span> <span style="color:#a6e22e">NULL</span>) <span style="color:#a6e22e">THEN</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;,&#39;&#39;&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">value4</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;&#39;&#39;&#39;</span>; <span style="color:#a6e22e">END</span> <span style="color:#a6e22e">IF</span>; <span style="color:#a6e22e">IF</span> (<span style="color:#a6e22e">value5</span> <span style="color:#a6e22e">IS</span> <span style="color:#a6e22e">NOT</span> <span style="color:#a6e22e">NULL</span>) <span style="color:#a6e22e">THEN</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;,&#39;&#39;&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">value5</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;&#39;&#39;&#39;</span>; <span style="color:#a6e22e">END</span> <span style="color:#a6e22e">IF</span>; <span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;]&#39;</span>;<span style="color:#a6e22e">END</span> <span style="color:#a6e22e">LOOP</span>;<span style="color:#a6e22e">CLOSE</span> <span style="color:#a6e22e">dataset</span>;<span style="color:#a6e22e">d</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">d</span> <span style="color:#f92672">||</span> <span style="color:#e6db74">&#39;]&#39;</span>;<span style="color:#a6e22e">RETURN</span> <span style="color:#a6e22e">d</span>;<span style="color:#a6e22e">END</span> <span style="color:#a6e22e">GENERATE_EJSCHART_DATASET</span>;
+</span></span></code></pre></div><ol start="5">
+<li>We need a procedure that will &ldquo;buffer print&rdquo; CLOBs. The htp.prn procedure coming with the PL/SQL Web Toolkit in the Oracle database will only allow up to 8192 characters to be printed at a time, which is too small a number in my case. So this function below will split a CLOB up into to 256 character fragments and htp.prn them one at a time.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-javascript" data-lang="javascript"><span style="display:flex;"><span><span style="color:#a6e22e">create</span> <span style="color:#a6e22e">or</span> <span style="color:#a6e22e">replace</span> <span style="color:#a6e22e">PROCEDURE</span> <span style="color:#a6e22e">HTP_BUF_PRN</span>( <span style="color:#a6e22e">p_text</span> <span style="color:#a6e22e">IN</span> <span style="color:#a6e22e">CLOB</span>) <span style="color:#a6e22e">ASl_buflen</span> <span style="color:#a6e22e">INTEGER</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">256</span>;<span style="color:#a6e22e">BEGINFOR</span> <span style="color:#a6e22e">i</span> <span style="color:#a6e22e">IN</span> <span style="color:#ae81ff">0</span> .. <span style="color:#a6e22e">FLOOR</span>(<span style="color:#a6e22e">LENGTH</span>(<span style="color:#a6e22e">p_text</span>)<span style="color:#f92672">/</span><span style="color:#a6e22e">l_buflen</span>) <span style="color:#a6e22e">LOOP</span> <span style="color:#f92672">--</span> <span style="color:#a6e22e">HTP</span>.<span style="color:#a6e22e">PRN</span> <span style="color:#a6e22e">will</span> <span style="color:#a6e22e">only</span> <span style="color:#a6e22e">accept</span> <span style="color:#a6e22e">strings</span> <span style="color:#a6e22e">up</span> <span style="color:#a6e22e">to</span> <span style="color:#ae81ff">8192</span> <span style="color:#a6e22e">characters</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">hence</span> <span style="color:#66d9ef">this</span> <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">is</span> <span style="color:#a6e22e">needed</span> <span style="color:#a6e22e">htp</span>.<span style="color:#a6e22e">prn</span>(<span style="color:#a6e22e">substr</span>(<span style="color:#a6e22e">p_text</span>, <span style="color:#a6e22e">i</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">l_buflen</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">l_buflen</span>));<span style="color:#a6e22e">END</span> <span style="color:#a6e22e">LOOP</span>;<span style="color:#f92672">--</span> <span style="color:#a6e22e">htp</span>.<span style="color:#a6e22e">prn</span>(<span style="color:#a6e22e">substr</span>(<span style="color:#a6e22e">p_text</span>, <span style="color:#a6e22e">LENGTH</span>(<span style="color:#a6e22e">p_text</span>) <span style="color:#f92672">-</span> (<span style="color:#a6e22e">LENGTH</span>(<span style="color:#a6e22e">p_text</span>) <span style="color:#a6e22e">mod</span> <span style="color:#a6e22e">l_buflen</span>), <span style="color:#a6e22e">LENGTH</span>(<span style="color:#a6e22e">p_text</span>) <span style="color:#a6e22e">mod</span> <span style="color:#a6e22e">l_buflen</span>));<span style="color:#a6e22e">END</span> <span style="color:#a6e22e">HTP_BUF_PRN</span>;
+</span></span></code></pre></div><ol start="6">
+<li>Edit the PL/SQL region, generate the data set and finally &ldquo;print&rdquo; the JavaScript and data series. An example of this is provided below. Be advised that this example requires a security_day_prices table to exist - but you could just as readily use the example query above (all_objects) in order to quickly plot your first EJS Chart.</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span>declares_close <span style="color:#66d9ef">CLOB</span>;rc_close SYS_REFCURSOR;beginopen rc_close FORselect (value_date <span style="color:#f92672">-</span> TO_DATE(<span style="color:#e6db74">&#39;01-JAN-70&#39;</span>, <span style="color:#e6db74">&#39;DD-MON-RR&#39;</span>)) <span style="color:#f92672">*</span> <span style="color:#ae81ff">86400000</span> value1 , round(<span style="color:#66d9ef">close</span>, <span style="color:#ae81ff">2</span>) value2 , <span style="color:#66d9ef">null</span> value3 , <span style="color:#66d9ef">null</span> value4 , <span style="color:#66d9ef">null</span> value5from security_day_priceswhere security_id<span style="color:#f92672">=</span>:A_SECURITY_ID <span style="color:#66d9ef">order</span> <span style="color:#66d9ef">by</span> value_date)) d <span style="color:#66d9ef">and</span> value_date <span style="color:#66d9ef">between</span> <span style="color:#e6db74">&#39;01-JAN-2009&#39;</span> <span style="color:#66d9ef">and</span> <span style="color:#e6db74">&#39;01-FEB-2009&#39;</span>;s_close :<span style="color:#f92672">=</span> generate_ejschart_dataset(rc_close);htp.prn(<span style="color:#e6db74">&#39;&#39;</span>);<span style="color:#66d9ef">end</span>;
+</span></span></code></pre></div><p>Caveats:</p>
+<ul>
+<li>My current approach, for the sake of simplicity, only enables data sets each of up to 32kb (in clear text) to be generated because the code returns a CLOB. However, the code could be further &ldquo;pipelined&rdquo; to handle this by running htp.prn more often on data sets</li>
+<li>Be advised that htp.prn will only print out 8kb of data at a time - otherwise you&rsquo;ll get an ORA-6502 error, which doesn&rsquo;t look initially as if it&rsquo;s got anything to do with the problem.</li>
+</ul>
+<hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2009/02/integrating-oracle-apex-with-ejs-charts.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2009/02/integrating-oracle-apex-with-ejs-charts.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

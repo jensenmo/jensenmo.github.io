@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Oracle Forms &amp; Reports 11.1.2.1.0 config.sh fails, unable to start AdminServer · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="OK, here&rsquo;s another one that have had me tear my hair out for a couple of days - surprisingly, when looking in the mirror, I still have some left&hellip; Sigh&hellip;
+
+  The Problem
+  
+    
+    Link to heading
+  
+
+So, you&rsquo;re attempting to install and configure the latest and greatest Oracle Forms &amp; Reports 11.1.2.1.0. You do an Install-Only and subsequently call $ORACLE_HOME/bin/config.sh. The configuration stalls at &ldquo;Creating Domain&rdquo; for an hour before ultimately failing.">
+<meta name="keywords" content="Oracle, Forms, Reports, 11.1.2.1.0, config.sh, fails,, unable, start, AdminServer">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Oracle Forms & Reports 11.1.2.1.0 config.sh fails, unable to start AdminServer">
+  <meta name="twitter:description" content="OK, here’s another one that have had me tear my hair out for a couple of days - surprisingly, when looking in the mirror, I still have some left… Sigh…
+The Problem Link to heading So, you’re attempting to install and configure the latest and greatest Oracle Forms &amp; Reports 11.1.2.1.0. You do an Install-Only and subsequently call $ORACLE_HOME/bin/config.sh. The configuration stalls at “Creating Domain” for an hour before ultimately failing.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/oracle-forms-reports-111210-configsh-fails-unable-to-start-adminserver/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Oracle Forms & Reports 11.1.2.1.0 config.sh fails, unable to start AdminServer">
+  <meta property="og:description" content="OK, here’s another one that have had me tear my hair out for a couple of days - surprisingly, when looking in the mirror, I still have some left… Sigh…
+The Problem Link to heading So, you’re attempting to install and configure the latest and greatest Oracle Forms &amp; Reports 11.1.2.1.0. You do an Install-Only and subsequently call $ORACLE_HOME/bin/config.sh. The configuration stalls at “Creating Domain” for an hour before ultimately failing.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2013-02-08T15:28:00+00:00">
+    <meta property="article:modified_time" content="2013-02-08T15:28:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/oracle-forms-reports-111210-configsh-fails-unable-to-start-adminserver/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/oracle-forms-reports-111210-configsh-fails-unable-to-start-adminserver/">
+              Oracle Forms &amp; Reports 11.1.2.1.0 config.sh fails, unable to start AdminServer
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2013-02-08T15:28:00Z">
+                February 8, 2013
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              5-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>OK, here&rsquo;s another one that have had me tear my hair out for a couple of days - surprisingly, when looking in the mirror, I still have some left&hellip; Sigh&hellip;</p>
+<h2 id="the-problem">
+  The Problem
+  <a class="heading-link" href="#the-problem">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>So, you&rsquo;re attempting to install and configure the latest and greatest Oracle Forms &amp; Reports 11.1.2.1.0. You do an Install-Only and subsequently call <code>$ORACLE_HOME/bin/config.sh</code>. The configuration stalls at &ldquo;Creating Domain&rdquo; for an hour before ultimately failing.</p>
+<p>In the <code>/u01/app/oraInventory/logs/install*.out</code> logs you find:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Creating a new AdminServer Object ...
+</span></span><span style="display:flex;"><span>AdminServer port is 7001
+</span></span><span style="display:flex;"><span>Starting the domain ...
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>oracle.as.provisioning.util.ConfigException:
+</span></span><span style="display:flex;"><span>Error while starting the domain.
+</span></span><span style="display:flex;"><span>Cause:
+</span></span><span style="display:flex;"><span>An error occurred while starting the domain.
+</span></span><span style="display:flex;"><span>Action:
+</span></span><span style="display:flex;"><span>See logs for more details.
+</span></span><span style="display:flex;"><span>at oracle.as.provisioning.util.ConfigException.createConfigException(ConfigException.java:123)
+</span></span><span style="display:flex;"><span>at oracle.as.provisioning.weblogic.ASDomain.startDomain(ASDomain.java:3180)
+</span></span><span style="display:flex;"><span>at oracle.as.provisioning.weblogic.ASDomain.startDomain(ASDomain.java:3040)
+</span></span><span style="display:flex;"><span>at oracle.as.provisioning.engine.WorkFlowExecutor._startAdminServer(WorkFlowExecutor.java:1645)
+</span></span><span style="display:flex;"><span>at oracle.as.provisioning.engine.WorkFlowExecutor._createDomain(WorkFlowExecutor.java:635)
+</span></span><span style="display:flex;"><span>at oracle.as.provisioning.engine.WorkFlowExecutor.executeWLSWorkFlow(WorkFlowExecutor.java:391)
+</span></span><span style="display:flex;"><span>at oracle.as.provisioning.engine.Config.executeConfigWorkflow_WLS(Config.java:866)
+</span></span></code></pre></div><p>Now, I know from extensive personal experience that this particular exception dump and similar dumps at this configuration run juncture is perhaps one of the most dreaded ever periods in a DBA&rsquo;s and Middleware administrator&rsquo;s and developer&rsquo;s life when they are attempting to install Oracle Forms &amp; Reports. It can happen for sooo many reasons, including but not limited to:</p>
+<ul>
+<li>Node Manager is running</li>
+<li><code>nodemanager.properties</code> is &ldquo;wrong&rdquo; for Forms&amp;Reports installation (so just rename it to something else until install is finished)</li>
+<li>Domain already exists in some shape, including inside <code>domain-registry.xml</code> and <code>nodemanager.domains</code></li>
+<li>Domain already exists on filesystem under <code>$MW_HOME/user_projects/applications/</code> or <code>$MW_HOME/user_projects/domains/</code></li>
+<li><code>/etc/hosts</code> is wrongly configured (host name pointing to 127.0.0.1 has been a bug bear for quite some time in my virtualized environments with DHCP configured)</li>
+<li><code>/etc/nsswitch.conf</code> pointing to DNS first and DNS requests do not resolve</li>
+<li>And so on and so forth&hellip;</li>
+</ul>
+<p>But here&rsquo;s a new one that I didn&rsquo;t know about or had experienced before (to my knowledge)&hellip; It&rsquo;s also not (yet?) documented on Oracle Support. So stay tuned&hellip;</p>
+<h2 id="investigation">
+  Investigation
+  <a class="heading-link" href="#investigation">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>You notice in <code>$MW_HOME/logs/wlst_*.log</code> that the domain appears to be created correctly from the output logged:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>2013-02-08 14:32:04,077 INFO [main] com.oracle.cie.domain.script.ScriptExecutor - succeed: read domain from &#34;/u01/app/oracle/Middleware/user_projects/domains/frsdev&#34;
+</span></span><span style="display:flex;"><span>2013-02-08 14:32:04,077 INFO [main] com.oracle.cie.domain.script.ScriptExecutor - succeed: update domain
+</span></span><span style="display:flex;"><span>2013-02-08 14:32:04,077 INFO [main] com.oracle.cie.domain.script.ScriptExecutor - close template
+</span></span><span style="display:flex;"><span>2013-02-08 14:32:04,077 INFO [main] com.oracle.cie.domain.script.ScriptExecutor - succeed: close template
+</span></span></code></pre></div><p>And yet, the AdminServer is simply not starting up as it should - and for this very reason the OUI waits for 1 hour for it to start before giving up and failing (that&rsquo;s a looong time to wait btw.). You check with <code>ps</code> and find no AdminServer java process.</p>
+<p>At this point you might even get desperate enough to run an <code>strace</code> against the OUI java process using: <code>strace -f -s80 -o/tmp/oui.strace -p&lt;pid&gt;</code> and notice something along the lines of:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>31939 open(&#34;/tmp/tmp1360242470594.py&#34;, O_WRONLY|O_CREAT|O_TRUNC, 0666) = 615
+</span></span><span style="display:flex;"><span>31939 write(615, &#34;import os\nreadTemplate(&#39;/tmp/tmp1360242469306wls.jar&#39;)\ndumpStack()\nsetOption(&#39;Se&#34;..., 1513) = 1513
+</span></span><span style="display:flex;"><span>31939 stat(&#34;/u01/app/oracle/Middleware/wlserver_10.3/common/bin/wlst.sh&#34;, {st_mode=S_IFREG|0750, st_size=785, ...}) = 0
+</span></span><span style="display:flex;"><span>31939 stat(&#34;/u01/app/oracle/Middleware/wlserver_10.3/common/bin/wlst.sh&#34;, {st_mode=S_IFREG|0750, st_size=785, ...}) = 0
+</span></span><span style="display:flex;"><span>31939 clone(child_stack=0x7f8fd7821ff0, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x7f8fd78229d0, tls=0x7f8fd7822700, child_tidptr=0x7f8fd78229d0) = 19272
+</span></span><span style="display:flex;"><span>31939 clone(child_stack=0x7f90152e1ff0, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x7f90152e29d0, tls=0x7f90152e2700, child_tidptr=0x7f90152e29d0) = 19274
+</span></span><span style="display:flex;"><span>31939 &lt;... clone resumed&gt; child_stack=0x7f8fd7922ff0, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tidptr=0x7f8fd79239d0, tls=0x7f8fd7923700, child_tidptr=0x7f8fd79239d0) = 19275
+</span></span><span style="display:flex;"><span>31939 --- SIGSEGV (Segmentation fault) @ 0 (0) ---
+</span></span></code></pre></div><p>Hmmmm, <code>SIGSEGV</code> is no good - but you&rsquo;re not any wiser as to the root cause&hellip;</p>
+<p>Ok, back in the <code>/u01/app/oraInventory/logs/*.out</code> logs you may (not necessarily) notice in the beginning of the file(s):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Command Launched: /usr/java/jdk1.6.0_38/bin/java -cp /tmp/OraInstall2013-02-08_08-37-48AM/ext/jlib/handlers/weblogicHandlers.jar oracle.as.install.common.handlers.weblogicQueries.PrintJVMProperties
+</span></span><span style="display:flex;"><span>java.io.IOException: Cannot run program &#34;/usr/java/jdk1.6.0_38/bin/java&#34;: java.io.IOException: error=2, No such file or directory
+</span></span><span style="display:flex;"><span>at java.lang.ProcessBuilder.start(ProcessBuilder.java:460)
+</span></span><span style="display:flex;"><span>at java.lang.Runtime.exec(Runtime.java:593)
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>java.io.IOException: Cannot run program &#34;/usr/java/jdk1.6.0_38/bin/java&#34;: java.io.IOException: error=2, No such file or directory
+</span></span><span style="display:flex;"><span>at java.lang.ProcessBuilder.start(ProcessBuilder.java:460)
+</span></span><span style="display:flex;"><span>at java.lang.Runtime.exec(Runtime.java:593)
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>java.io.IOException: Cannot run program &#34;/usr/java/jdk1.6.0_38/bin/java&#34;: java.io.IOException: error=2, No such file or directory
+</span></span><span style="display:flex;"><span>at java.lang.ProcessBuilder.start(ProcessBuilder.java:460)
+</span></span><span style="display:flex;"><span>at java.lang.Runtime.exec(Runtime.java:593)
+</span></span></code></pre></div><p>Hmmmm, what&rsquo;s going on here? There is no <code>/usr/java/jdk1.6.0_38</code> <code>JAVA_HOME</code> on your file system.</p>
+<p>Interestingly, you find that during installation (not configuration) similar errors may have been (quietly - i.e. no errors reported during installation) dropped in <code>$ORACLE_HOME/cfgtoollogs/oui</code> log files, e.g. <code>install*.out</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>Command Launched: /usr/java/jdk1.6.0_38/bin/java -cp /tmp/OraInstall2013-02-08_11-31-25AM/ext/jlib/handlers/weblogicHandlers.jar oracle.as.install.common.handlers.weblogicQueries.PrintJVMProperties
+</span></span><span style="display:flex;"><span>java.io.IOException: Cannot run program &#34;/usr/java/jdk1.6.0_38/bin/java&#34;: java.io.IOException: error=2, No such file or directory
+</span></span><span style="display:flex;"><span>at java.lang.ProcessBuilder.start(ProcessBuilder.java:460)
+</span></span><span style="display:flex;"><span>at java.lang.Runtime.exec(Runtime.java:593)
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>java.io.IOException: Cannot run program &#34;/usr/java/jdk1.6.0_38/bin/java&#34;: java.io.IOException: error=2, No such file or directory
+</span></span><span style="display:flex;"><span>at java.lang.ProcessBuilder.start(ProcessBuilder.java:460)
+</span></span><span style="display:flex;"><span>at java.lang.Runtime.exec(Runtime.java:593)
+</span></span><span style="display:flex;"><span>...
+</span></span></code></pre></div><p>You have at this stage perhaps dilligently (and desperately) tried running the OUI and <code>config.sh</code> with all the Java location options in your arsenal - but to no avail&hellip; Things still keep failing:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>export JAVA_HOME<span style="color:#f92672">=</span>/usr/java/jdk1.6.0_39
+</span></span><span style="display:flex;"><span>export PATH<span style="color:#f92672">=</span>$JAVA_HOME/bin:$PATH
+</span></span><span style="display:flex;"><span>unset ORACLE_HOME LD_LIBRARY_PATH
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>which java
+</span></span><span style="display:flex;"><span>/usr/java/jdk1.6.0_39/bin/java
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>./runInstaller -logLevel finest -jreLoc /usr/java/jdk1.6.0_39
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>. frsdev
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cd $ORACLE_HOME
+</span></span><span style="display:flex;"><span>bin/config.sh -logLevel finest -jreLoc /usr/java/jdk1.6.0_39
+</span></span></code></pre></div><p>Ok, you&rsquo;ve run out of options and stuff to try - there is but one remaining issue to try and identify - where on earth is this non-existing <code>/usr/java/jdk1.6.0_38</code> home originating from&hellip;?!</p>
+<h2 id="the-root-cause">
+  The Root Cause
+  <a class="heading-link" href="#the-root-cause">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Meet find/grep&hellip;</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>pwd
+</span></span><span style="display:flex;"><span>/u01/app/oracle/Middleware/wlserver_10.3
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>find . -type f -exec grep -i <span style="color:#e6db74">&#34;jdk1.6.0_38&#34;</span> <span style="color:#f92672">{}</span> <span style="color:#ae81ff">\;</span> -ls
+</span></span><span style="display:flex;"><span>JAVA_HOME<span style="color:#f92672">=</span>/usr/java/jdk1.6.0_38
+</span></span><span style="display:flex;"><span>WLS_JAVA_HOME<span style="color:#f92672">=</span>/usr/java/jdk1.6.0_38
+</span></span><span style="display:flex;"><span>JAVAHOME<span style="color:#f92672">=</span>/usr/java/jdk1.6.0_38
+</span></span><span style="display:flex;"><span><span style="color:#ae81ff">2638455</span> <span style="color:#ae81ff">4</span> -rw-r----- <span style="color:#ae81ff">1</span> oracle oinstall <span style="color:#ae81ff">1180</span> Jan <span style="color:#ae81ff">10</span> 11:27 ./.product.properties
+</span></span></code></pre></div><p>Yeah, I hear you&hellip; NO WAY!!! But the evidence is irrefutable - on the filesystem Oracle (or the old BEA staff) have quietly dropped in a hidden file, which contains its own <code>JAVA_HOME</code> definitions. And not only that, they override WHATEVER you throw at the shell (<code>export JAVA_HOME=...</code>), OUI (<code>-jreLoc</code>) and <code>config.sh</code> (<code>-jreLoc</code>).</p>
+<h2 id="the-solution">
+  The Solution
+  <a class="heading-link" href="#the-solution">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Now, stop <code>config.sh</code>, fix this file, remove the old configuration remnants (as described above) and now retry.</p>
+<p>Ok, so why-oh-why did this happen - how did this old(er) JDK definition make it into the file in the first place? Let me answer you with a question: did you ever upgrade your JDK(s) on the system and remove the old one(s)? Did you do this after you installed WebLogic?</p>
+<p>Yes, I know you dilligently changed all <code>{domain}/bin/setDomainEnv.sh</code>, <code>nodemanager.properties</code>, <code>startNodeManager.sh</code> etc. etc. etc. There was just this tiny one <code>.product.properties</code> file left to ruin it all&hellip;</p>
+<p>Sigh&hellip; 2 days wasted&hellip; There are times when I consider completely moving to an open source stack&hellip; At least you got better access to code and scripts to troubleshoot such trivialities and not having to waste this amount of time!</p>
+<hr>
+<p><em>Originally published at <a href="https://jensenmo.blogspot.com/2013/02/oracle-forms-reports-111210-configsh.html"  class="external-link" target="_blank" rel="noopener">https://jensenmo.blogspot.com/2013/02/oracle-forms-reports-111210-configsh.html</a></em></p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>
