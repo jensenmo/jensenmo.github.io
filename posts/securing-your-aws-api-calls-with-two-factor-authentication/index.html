@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Securing AWS API Calls &amp; CLI Access with MFA (Two-Factor) Authentication · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="One of the largest concerns of allowing AWS API calls to be made from the outside is issuing an API key and secret for developer and administrator PCs and laptops alike because they may be interceptable in one way or another. Some scenarios spring to mind:
+
+Laptop is stolen/un-encrypted or left unlocked
+Key/secret is accidentally left hard-coded in code
+Key/secret is intercepted in-transit, e.g. through email or from a portable device
+
+Add to that the fact that policies (bundles of permissions) can be hard to formulate and get right; and therefore often do not reflect a least-privilege policy. Policies are therefore often construed as overly permissive as there simply isn&rsquo;t the time in the day to run many trial-and-error simulations to get it right and get on with business although CloudTrail does often thankfully help to identify requisite privileges when things fail.">
+<meta name="keywords" content="AWS, Cloud, CLI, API, developer, IAM, MFA, secure, security">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Securing AWS API Calls & CLI Access with MFA (Two-Factor) Authentication">
+  <meta name="twitter:description" content="One of the largest concerns of allowing AWS API calls to be made from the outside is issuing an API key and secret for developer and administrator PCs and laptops alike because they may be interceptable in one way or another. Some scenarios spring to mind:
+Laptop is stolen/un-encrypted or left unlocked Key/secret is accidentally left hard-coded in code Key/secret is intercepted in-transit, e.g. through email or from a portable device Add to that the fact that policies (bundles of permissions) can be hard to formulate and get right; and therefore often do not reflect a least-privilege policy. Policies are therefore often construed as overly permissive as there simply isn’t the time in the day to run many trial-and-error simulations to get it right and get on with business although CloudTrail does often thankfully help to identify requisite privileges when things fail.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/securing-your-aws-api-calls-with-two-factor-authentication/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Securing AWS API Calls & CLI Access with MFA (Two-Factor) Authentication">
+  <meta property="og:description" content="One of the largest concerns of allowing AWS API calls to be made from the outside is issuing an API key and secret for developer and administrator PCs and laptops alike because they may be interceptable in one way or another. Some scenarios spring to mind:
+Laptop is stolen/un-encrypted or left unlocked Key/secret is accidentally left hard-coded in code Key/secret is intercepted in-transit, e.g. through email or from a portable device Add to that the fact that policies (bundles of permissions) can be hard to formulate and get right; and therefore often do not reflect a least-privilege policy. Policies are therefore often construed as overly permissive as there simply isn’t the time in the day to run many trial-and-error simulations to get it right and get on with business although CloudTrail does often thankfully help to identify requisite privileges when things fail.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2016-02-03T21:22:38+00:00">
+    <meta property="article:modified_time" content="2016-02-03T21:22:38+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/securing-your-aws-api-calls-with-two-factor-authentication/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/securing-your-aws-api-calls-with-two-factor-authentication/">
+              Securing AWS API Calls &amp; CLI Access with MFA (Two-Factor) Authentication
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2016-02-03T21:22:38Z">
+                February 3, 2016
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              5-minute read
+            </span>
+          </div>
+          
+          <div class="categories">
+  <i class="fa-solid fa-folder" aria-hidden="true"></i>
+    <a href="/categories/uncategorized/">Uncategorized</a></div>
+
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>One of the largest concerns of allowing AWS API calls to be made from the outside is issuing an API key and secret for developer and administrator PCs and laptops alike because they may be interceptable in one way or another. Some scenarios spring to mind:</p>
+<ul>
+<li>Laptop is stolen/un-encrypted or left unlocked</li>
+<li>Key/secret is accidentally left hard-coded in code</li>
+<li>Key/secret is intercepted in-transit, e.g. through email or from a portable device</li>
+</ul>
+<p>Add to that the fact that policies (bundles of permissions) can be hard to formulate and get right; and therefore often do not reflect a least-privilege policy. Policies are therefore often construed as overly permissive as there simply isn&rsquo;t the time in the day to run many trial-and-error simulations to get it right and get on with business although CloudTrail does often thankfully help to identify requisite privileges when things fail.</p>
+<p>One way to at least mitigate the risk of AWS keys and secrets being usable if falling into the wrong hands is to make those sets of credentials with high-impacting permissions time-limited and to make policies dependent on multi-factor authentication. Time limitation can be achieved by issuing credentials via the <a href="https://blogs.aws.amazon.com/security/post/Tx3CYWU11LY2GLB/AWS-Security-Token-Service-Is-Now-Available-in-Every-AWS-Region"  class="external-link" target="_blank" rel="noopener">Secure Token Service</a>, which was introduced in 2015.</p>
+<p>I have worked with STS combined with MFA over the last few weeks in an effort to increase security while still enabling people to get on with their work and I have come up with a self-service approach that involves the following example set-up:</p>
+<ul>
+<li>Create a new IAM user testuser and issue a set of API key + secret credentials then store them in ~/.aws/credentials file (or use aws configure to do so), e.g. setting up a new profile testuser. Do <strong>not</strong> assign the user any groups or policies of any kind.</li>
+<li><a href="http://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_mfa_enable.html"  class="external-link" target="_blank" rel="noopener">Set-up an MFA device for the user</a> (e.g. using Google Authenticator)</li>
+<li>Create a new IAM policy that make permissions conditional on MFA. In this case we allow the EC2 DescribeRegions call to be made but <strong>only</strong> if the user MFA is authenticated.</li>
+</ul>
+<pre tabindex="0"><code>{
+  &#34;Version&#34;: &#34;2012-10-17&#34;,
+  &#34;Statement&#34;: [
+    {
+      &#34;Effect&#34;: &#34;Allow&#34;,
+      &#34;Action&#34;: &#34;ec2:DescribeRegions&#34;,
+      &#34;Resource&#34;: &#34;*&#34;,
+      &#34;Condition&#34;: {
+        &#34;Bool&#34;: {
+          &#34;aws:MultiFactorAuthPresent&#34;: &#34;true&#34;
+        }
+      }
+    }
+  ]
+}
+</code></pre><ul>
+<li>Assign just this policy either to a group (with no other permissions) or the user; if the former, assign the group to testuser</li>
+<li>With the previously generated API key&amp;secret attempt to make the ec2:DescribeRegions call using the aws CLI (as expected, this will fail)</li>
+</ul>
+<pre tabindex="0"><code>aws ec2 describe-regions --profile testuser --region eu-west-1
+A client error (UnauthorizedOperation) occurred when calling the DescribeRegions operation: You are not authorized to perform this operation.
+</code></pre><ul>
+<li>Now, with the same API key/secret <a href="http://docs.aws.amazon.com/cli/latest/reference/sts/get-session-token.html"  class="external-link" target="_blank" rel="noopener">request an STS token using the aws CLI</a>. In my case I created a small helper script aws-temp-creds.sh and put it in my local ~/bin/ folder to do so, which when <strong>sourced</strong> will export the resulting temporary key, secret and token to environment variables (with a default validity period of 4 hours) make sure to replace the serial-number in the script with the actual (in this case) virtual MFA ARN of the user:</li>
+</ul>
+<pre tabindex="0"><code>unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+echo -n &#34;Enter token followed by [ENTER]: &#34;
+read token
+output=`aws sts get-session-token --duration-seconds 14400 --serial-number arn:aws:iam::012345678912:mfa/testuser --token-code $token --output text &#34;$@&#34;`
+rc=$?
+if [[ $rc -ne 0 ]] ; then
+  return $rc
+fi
+oarr=($output)
+export AWS_ACCESS_KEY_ID=&#34;${oarr[1]}&#34;
+export AWS_SECRET_ACCESS_KEY=&#34;${oarr[3]}&#34;
+export AWS_SESSION_TOKEN=&#34;${oarr[4]}&#34;
+</code></pre><ul>
+<li>Now call the temporary script and attempt to run the ec2:DescribeRegions call:</li>
+</ul>
+<pre tabindex="0"><code>. aws-temp-creds.sh --profile testuser
+Enter token followed by [ENTER]: 123456
+
+aws ec2 describe-regions --region eu-west-1
+REGIONS	ec2.eu-west-1.amazonaws.com	eu-west-1
+REGIONS	ec2.ap-southeast-1.amazonaws.com	ap-southeast-1
+REGIONS	ec2.ap-southeast-2.amazonaws.com	ap-southeast-2
+REGIONS	ec2.eu-central-1.amazonaws.com	eu-central-1
+REGIONS	ec2.ap-northeast-2.amazonaws.com	ap-northeast-2
+REGIONS	ec2.ap-northeast-1.amazonaws.com	ap-northeast-1
+REGIONS	ec2.us-east-1.amazonaws.com	us-east-1
+REGIONS	ec2.sa-east-1.amazonaws.com	sa-east-1
+REGIONS	ec2.us-west-1.amazonaws.com	us-west-1
+REGIONS	ec2.us-west-2.amazonaws.com	us-west-2
+</code></pre><ul>
+<li>Finally, to test what happens when the credentials no longer are available one could try the following:</li>
+</ul>
+<pre tabindex="0"><code>unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+aws ec2 describe-regions --region eu-west-1
+Unable to locate credentials. You can configure credentials by running &#34;aws configure&#34;.
+aws ec2 describe-regions --region eu-west-1 --profile testuser
+A client error (UnauthorizedOperation) occurred when calling the DescribeRegions operation: You are not authorized to perform this operation.
+</code></pre><p>The reason this approach works is that the environment variables take precedence over the credentials configured in ~/.aws/credentials. Therefore, if the environment variables are not set one would default back to the non-MFA permissions currently none, although this need not necessarily be the case.</p>
+<p>As for choosing a validity period of the token this would be a balance between risk and convenience. In my case I choose 4 hours as this allows me to work in the morning until lunch, then take out a new set of credentials in the afternoon. The chance of someone intercepting the temporary set of credentials and being able to use them before they expire is therefore reasonably low.</p>
+<p>On the other hand the risk of 3rd party access to the permanent credentials stored in the .aws/credentials file is in this case mitigated by the fact that there are no inherent permissions assigned because the credentials are not MFA authenticated. While one should still rotate them regularly the possible impact of interception is considerably reduced.</p>
+<p>Another advantage is that with MFA authentication in place one can unify the policies &amp; permissions for users of both the API and the Console because two-factor authentication is enabled.</p>
+<p>Finally, one point worth mentioning is that there are per-region soft limits to how many instances of services like RDS, EC2 etc. that can be spun up. To further reduce the likelihood of attackers managing to spin up a considerable amount of <strong>costly</strong> estate, e.g. for the purposes of bitcoin mining, one would want to remove the ability to issue STS tokens for regions that are not being used in the account. To do so, simply follow the STS blog previously mentioned and do the reverse (deactivate) regions from STS.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

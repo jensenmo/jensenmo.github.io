@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Why Serverless &amp; DevOps makes a (big) difference · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+  Background
+  
+    
+    Link to heading
+  
+
+We have recently completed a Serverless &amp; DevOps transformation project with one of our clients, CitizenMe. CitizenMe presently has more than 200.000 global end-users and has processed millions of transactions since inception.
+CitizenMe uses AWS and mobile apps almost exclusively for its product and service offerings. Most of the components are built and maintained in-house by a small team of developers and testers.">
+<meta name="keywords" content="AWS, DevOps, DevSecOps, Pipeline, Serverless">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Why Serverless & DevOps makes a (big) difference">
+  <meta name="twitter:description" content="Background Link to heading We have recently completed a Serverless &amp; DevOps transformation project with one of our clients, CitizenMe. CitizenMe presently has more than 200.000 global end-users and has processed millions of transactions since inception.
+CitizenMe uses AWS and mobile apps almost exclusively for its product and service offerings. Most of the components are built and maintained in-house by a small team of developers and testers.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/2019-08-19-why-serverless-and-devops-makes-a-big-difference/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Why Serverless & DevOps makes a (big) difference">
+  <meta property="og:description" content="Background Link to heading We have recently completed a Serverless &amp; DevOps transformation project with one of our clients, CitizenMe. CitizenMe presently has more than 200.000 global end-users and has processed millions of transactions since inception.
+CitizenMe uses AWS and mobile apps almost exclusively for its product and service offerings. Most of the components are built and maintained in-house by a small team of developers and testers.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-08-19T00:00:00+00:00">
+    <meta property="article:modified_time" content="2019-08-19T00:00:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/2019-08-19-why-serverless-and-devops-makes-a-big-difference/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/2019-08-19-why-serverless-and-devops-makes-a-big-difference/">
+              Why Serverless &amp; DevOps makes a (big) difference
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2019-08-19T00:00:00Z">
+                August 19, 2019
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              4-minute read
+            </span>
+          </div>
+          
+          <div class="categories">
+  <i class="fa-solid fa-folder" aria-hidden="true"></i>
+    <a href="/categories/uncategorized/">Uncategorized</a></div>
+
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <h1 id="background">
+  Background
+  <a class="heading-link" href="#background">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>We have recently completed a Serverless &amp; DevOps transformation project with one of our clients, <a href="https://www.citizenme.com/"  class="external-link" target="_blank" rel="noopener">CitizenMe</a>. CitizenMe presently has more than 200.000 global end-users and has processed millions of transactions since inception.</p>
+<p>CitizenMe uses AWS and mobile apps almost exclusively for its product and service offerings. Most of the components are built and maintained in-house by a small team of developers and testers.</p>
+<p>Development of the offerings started in 2013 on AWS and the platform architecture was based on EC2 and Elastic Beanstalk. Over the previous 5 years infrastructure and services were built and configured by hand and the development team would do infrequent, release-based software deployments manually.</p>
+<p>CitizenMe&rsquo;s challenges included considerable problems with quality, availability, scale and consistency. Additionally, few actionable metrics existed and logging didn&rsquo;t provide the necessary insights to derive more actionable metrics or to troubleshoot issues quickly.</p>
+<h1 id="scope">
+  Scope
+  <a class="heading-link" href="#scope">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>The transformation project initially focused on the platform API. However, the project quickly expanded in scope to encompass virtually all other components including web services, web apps, reporting services and website. The transformation led to adoption of the following AWS Serverless components:</p>
+<ul>
+<li>API Gateway</li>
+<li>CloudFront</li>
+<li>Lambda (Java, node.js, python)</li>
+<li>ECS Fargate/Docker (node.js)</li>
+<li>Application Load Balancer</li>
+<li>Aurora RDS for MySQL</li>
+<li>DynamoDB</li>
+<li>QuickSight Business Intelligence &amp; Reporting</li>
+<li>Cognito authentication</li>
+<li>AWS Auto Scaling</li>
+<li>CloudWatch Logs, Metrics, Alarms, Dashboards &amp; Insights</li>
+<li>GuardDuty</li>
+<li>Trusted Advisor</li>
+<li>Web Application Firewall (WAF)</li>
+</ul>
+<p>Developers transitioned over time from releases to adopt a feature-based release cycle to improve testing, quality and velocity. AWS Codepipeline was adopted for each component to automate the development workflow from GitHub commit, through build &amp; test and to rollout to production using Continuous Delivery. Each pipeline has development, test and production stages.</p>
+<p>Peer reviews were successfully implemented in order to improve code quality and documentation. Frameworks to identify code dependency security vulnerabilities were introduced through <a href="https://docs.npmjs.com/auditing-package-dependencies-for-security-vulnerabilities"  class="external-link" target="_blank" rel="noopener">npm audit</a> and <a href="https://www.owasp.org/index.php/OWASP_Dependency_Check"  class="external-link" target="_blank" rel="noopener">Maven Dependency-Check</a>.</p>
+<p>In addition the following non-functional areas were addressed:</p>
+<ul>
+<li>Contextual logging was added to all Java, node.js &amp; python apps and services (using e.g. Java Apache Log4J 2 <a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html"  class="external-link" target="_blank" rel="noopener">Thread Contexts</a>). Logged information included AWS request id, start/end time &amp; duration, memory consumption start/end and API call identifiers. This helped us identify and address numerous bugs, performance issues and growth trends</li>
+<li>Auto Scaling of ECS Fargate services based on CPU metrics</li>
+<li>CloudWatch custom metrics for particular counts that helped us understand use of the components both from an operational and business metrics context (API calls, payments, push notifications etc - and failures)</li>
+<li>CloudWatch Alarms on Lambda failures &amp; timeouts, API Gateway request failures, custom metrics alarms for business critical operations etc.</li>
+<li>CloudWatch Dashboards to aggregate business and operationally critical information per application or service, which could be put on a public screen</li>
+<li>GuardDuty to monitor and alert on suspicious network and AWS API activities</li>
+<li>Trusted Advisor reports to assist with identification of cost, security, performance, fault tolerance and service limits issues</li>
+<li>All alerting was sent to operational, security and pipeline Slack channels to alert developers of issues within seconds to minutes of occurrence</li>
+</ul>
+<h1 id="impact">
+  Impact
+  <a class="heading-link" href="#impact">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>The resulting impact of all of the changes has been profound to CitizenMe. The key performance indicators of the changes are:</p>
+<ul>
+<li>Adopting AWS serverless has reduced operational burden for the whole development team by 75+%</li>
+<li>With automation, logging, metrics and alerts quality of service has been improved considerably across all products with a reduction of major events by 90+%.</li>
+<li>Pipelines and Serverless architectures have virtually removed all deployment outages</li>
+<li>DevOps has increased velocity of individual changes by at least 5x</li>
+<li>Issue reaction time has been reduced from days or weeks to minutes or at most hours depending on urgency. It is not unusual for issues to be detected and rectified in production within an hour from occurrence</li>
+<li>A considerable reduction in new bugs reaching production because each new feature and change is tested in isolation. As a result the test function has also become much more transparent across the organisation</li>
+<li>A considerable reduction of existing bugs due to active logging, monitoring and alerting</li>
+<li>The cost of operating in AWS is almost exactly the same with more than 200.000 users as it was on the old architecture with less than 100.000 users 12 months ago</li>
+</ul>
+<p>As a result cultural changes across the organisation have also been observed.</p>
+<p>The technical team now alerts the business of encountered issues in advance of end-users contacting CitizenMe. This has improved the business proposition considerably and as a result it has meant much happier customers.</p>
+<p>Furthermore, the business now has a much better understanding of the backlog and outstanding issues in the pipeline. Agile practices and the JIRA board have also been much simplified.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

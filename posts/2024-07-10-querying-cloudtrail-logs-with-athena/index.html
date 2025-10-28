@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Querying AWS CloudTrail Logs with Athena in AWS Organizations: Setup, Use and Challenges · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+
+  Background
+  
+    
+    Link to heading
+  
+
+Over the years, we have helped organisations make sense of their CloudTrail logs when the need arises to query for specific events or to aggregate and report on the data. Our tool of choice is generally Amazon Athena to accomplish this.
+It is quick to set-up and will have you running queries in minutes.">
+<meta name="keywords" content="AWS, Governance, Guardrails, Organizations, Athena, Glue, CloudTrail, Logs, SQL">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Querying AWS CloudTrail Logs with Athena in AWS Organizations: Setup, Use and Challenges">
+  <meta name="twitter:description" content="Background Link to heading Over the years, we have helped organisations make sense of their CloudTrail logs when the need arises to query for specific events or to aggregate and report on the data. Our tool of choice is generally Amazon Athena to accomplish this.
+It is quick to set-up and will have you running queries in minutes.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/2024-07-10-querying-cloudtrail-logs-with-athena/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Querying AWS CloudTrail Logs with Athena in AWS Organizations: Setup, Use and Challenges">
+  <meta property="og:description" content="Background Link to heading Over the years, we have helped organisations make sense of their CloudTrail logs when the need arises to query for specific events or to aggregate and report on the data. Our tool of choice is generally Amazon Athena to accomplish this.
+It is quick to set-up and will have you running queries in minutes.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-07-11T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-07-11T00:00:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/2024-07-10-querying-cloudtrail-logs-with-athena/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/2024-07-10-querying-cloudtrail-logs-with-athena/">
+              Querying AWS CloudTrail Logs with Athena in AWS Organizations: Setup, Use and Challenges
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2024-07-11T00:00:00Z">
+                July 11, 2024
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              11-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p><img src="images/aab0e636-ad5f-4b37-b094-4b8efa1b90a8.jpeg" alt="Querying CloudTrail Logs in an AWS Organization with Athena"></p>
+<h1 id="background">
+  Background
+  <a class="heading-link" href="#background">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Over the years, we have helped organisations make sense of their CloudTrail logs when the need arises to query for specific events or to aggregate and report on the data. Our tool of choice is generally Amazon Athena to accomplish this.</p>
+<p>It is quick to set-up and will have you running queries in minutes.</p>
+<p>Amazon Athena provides a serverless, interactive query service that enables users to analyse large amounts of data stored in Amazon Simple Storage Service (S3) buckets using Structured Query Language (SQL).</p>
+<p>One of Athena&rsquo;s most potent features is <strong>partition projection</strong>, which can be particularly useful when working with AWS CloudTrail logs across an AWS Organization&rsquo;s trail.</p>
+<p>In this blog post we describe how to set-up Athena and query the logs while also pointing out some caveats when using Athena.</p>
+<h1 id="understanding-athena-partition-projection">
+  Understanding Athena Partition Projection
+  <a class="heading-link" href="#understanding-athena-partition-projection">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Partition projection in Athena is a method to <strong>speed up query processing</strong> and <strong>automate partition management</strong> for highly partitioned tables. Instead of performing time-consuming and resource intensive metadata scanning - via AWS Glue - and lookups in the AWS Glue Data Catalog, Athena calculates partition values and locations using the table properties that you configure and the predicates (where clause conditions) that you provide in the queries. This approach can significantly reduce overheads and query runtime.</p>
+<h1 id="how-to-use-partition-projection-with-cloudtrail-logs">
+  How to Use Partition Projection with CloudTrail Logs
+  <a class="heading-link" href="#how-to-use-partition-projection-with-cloudtrail-logs">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>To leverage Athena partition projection for CloudTrail logs, you will need to:</p>
+<ol>
+<li><strong>Configure Athena Prerequisites</strong>: Set-up a query result location in an Amazon S3 bucket</li>
+<li><strong>Create an External Table</strong>: Define your CloudTrail table in Athena, specifying the schema that matches your CloudTrail logs and the S3 bucket location where they are stored.</li>
+<li><strong>Configure Partition Projection</strong>: Set up partition projection properties for your table in AWS Glue, defining the ranges of partition values and projection types for each partition column.</li>
+<li><strong>Query Your Logs</strong>: Run SQL queries against your CloudTrail logs using Athena, benefiting from the reduced query runtime and automated partition management.</li>
+</ol>
+<p>This post will show you how for an AWS Organization trail.</p>
+<h1 id="finding-the-cloudtrail">
+  Finding the CloudTrail
+  <a class="heading-link" href="#finding-the-cloudtrail">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>In an AWS Organization the organisational CloudTrail is defined in the AWS management account (the payer account). When using Control Tower, the CloudTrail is defined out-of-the box to save events in JSON format to an S3 bucket called <code>aws-controltower-logs-&lt;Log Archive account id&gt;-&lt;Control Tower home region&gt;</code> in the <a href="https://docs.aws.amazon.com/controltower/latest/userguide/accounts.html#special-accounts"  class="external-link" target="_blank" rel="noopener">Log Archive account</a>.</p>
+<p>This account is typically also where we define the Athena table to query the data.</p>
+<h1 id="configuring-athena-prerequisites">
+  Configuring Athena Prerequisites
+  <a class="heading-link" href="#configuring-athena-prerequisites">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Athena requires an S3 bucket in order to run queries. For instance, by creating an S3 bucket with a name such as <code>athena-query-results-&lt;account id&gt;-&lt;region&gt;</code> and configure Athena to use this bucket from the Athena Console prior to attempting to run the first query.</p>
+<h1 id="defining-the-table">
+  Defining the Table
+  <a class="heading-link" href="#defining-the-table">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>The AWS-provided Athena documentation already describes parts of the puzzle to define the table on the page <a href="https://docs.aws.amazon.com/athena/latest/ug/cloudtrail-logs.html"  class="external-link" target="_blank" rel="noopener">Querying AWS CloudTrail logs</a>.</p>
+<p>However, the documentation does not show how to set-up partition projection for an AWS Organizations CloudTrail.</p>
+<p>The following Data Definition Language (DDL) snippet provides a working table definition with the caveat that the following values must be replaced with real AWS Organization values:</p>
+<ul>
+<li><code>123456789012</code>: The account id where the CloudTrail S3 bucket exists</li>
+<li><code>eu-west-1</code>: The region where the CloudTrail S3 bucket exists</li>
+<li><code>o-123456789a</code>: The Organizations id of the AWS Organization</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">EXTERNAL</span> <span style="color:#66d9ef">TABLE</span> cloudtrail_logs(
+</span></span><span style="display:flex;"><span>    eventVersion STRING,
+</span></span><span style="display:flex;"><span>    userIdentity STRUCT<span style="color:#f92672">&lt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">type</span>: STRING,
+</span></span><span style="display:flex;"><span>        principalId: STRING,
+</span></span><span style="display:flex;"><span>        arn: STRING,
+</span></span><span style="display:flex;"><span>        accountId: STRING,
+</span></span><span style="display:flex;"><span>        invokedBy: STRING,
+</span></span><span style="display:flex;"><span>        accessKeyId: STRING,
+</span></span><span style="display:flex;"><span>        userName: STRING,
+</span></span><span style="display:flex;"><span>        sessionContext: STRUCT<span style="color:#f92672">&lt;</span>
+</span></span><span style="display:flex;"><span>            attributes: STRUCT<span style="color:#f92672">&lt;</span>
+</span></span><span style="display:flex;"><span>                mfaAuthenticated: STRING,
+</span></span><span style="display:flex;"><span>                creationDate: STRING<span style="color:#f92672">&gt;</span>,
+</span></span><span style="display:flex;"><span>            sessionIssuer: STRUCT<span style="color:#f92672">&lt;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">type</span>: STRING,
+</span></span><span style="display:flex;"><span>                principalId: STRING,
+</span></span><span style="display:flex;"><span>                arn: STRING,
+</span></span><span style="display:flex;"><span>                accountId: STRING,
+</span></span><span style="display:flex;"><span>                userName: STRING<span style="color:#f92672">&gt;</span>,
+</span></span><span style="display:flex;"><span>            ec2RoleDelivery:string,
+</span></span><span style="display:flex;"><span>            webIdFederationData: STRUCT<span style="color:#f92672">&lt;</span>
+</span></span><span style="display:flex;"><span>                federatedProvider: STRING,
+</span></span><span style="display:flex;"><span>                attributes: <span style="color:#66d9ef">map</span><span style="color:#f92672">&lt;</span>string,string<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&gt;</span>,
+</span></span><span style="display:flex;"><span>    eventTime STRING,
+</span></span><span style="display:flex;"><span>    eventSource STRING,
+</span></span><span style="display:flex;"><span>    eventName STRING,
+</span></span><span style="display:flex;"><span>    awsRegion STRING,
+</span></span><span style="display:flex;"><span>    sourceIpAddress STRING,
+</span></span><span style="display:flex;"><span>    userAgent STRING,
+</span></span><span style="display:flex;"><span>    errorCode STRING,
+</span></span><span style="display:flex;"><span>    errorMessage STRING,
+</span></span><span style="display:flex;"><span>    requestparameters STRING,
+</span></span><span style="display:flex;"><span>    responseelements STRING,
+</span></span><span style="display:flex;"><span>    additionaleventdata STRING,
+</span></span><span style="display:flex;"><span>    requestId STRING,
+</span></span><span style="display:flex;"><span>    eventId STRING,
+</span></span><span style="display:flex;"><span>    readOnly STRING,
+</span></span><span style="display:flex;"><span>    resources ARRAY<span style="color:#f92672">&lt;</span>STRUCT<span style="color:#f92672">&lt;</span>
+</span></span><span style="display:flex;"><span>        arn: STRING,
+</span></span><span style="display:flex;"><span>        accountId: STRING,
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">type</span>: STRING<span style="color:#f92672">&gt;&gt;</span>,
+</span></span><span style="display:flex;"><span>    eventType STRING,
+</span></span><span style="display:flex;"><span>    apiVersion STRING,
+</span></span><span style="display:flex;"><span>    recipientAccountId STRING,
+</span></span><span style="display:flex;"><span>    serviceEventDetails STRING,
+</span></span><span style="display:flex;"><span>    sharedEventID STRING,
+</span></span><span style="display:flex;"><span>    vpcendpointid STRING,
+</span></span><span style="display:flex;"><span>    eventCategory STRING,
+</span></span><span style="display:flex;"><span>    tlsDetails struct<span style="color:#f92672">&lt;</span>
+</span></span><span style="display:flex;"><span>        tlsVersion:string,
+</span></span><span style="display:flex;"><span>        cipherSuite:string,
+</span></span><span style="display:flex;"><span>        clientProvidedHostHeader:string<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>  )
+</span></span><span style="display:flex;"><span>PARTITIONED <span style="color:#66d9ef">BY</span> (
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">`</span>origin_region<span style="color:#f92672">`</span> string,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">`</span>origin_account<span style="color:#f92672">`</span> string,
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">`</span>delivered_timestamp<span style="color:#f92672">`</span> string)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">ROW</span> FORMAT SERDE <span style="color:#e6db74">&#39;org.openx.data.jsonserde.JsonSerDe&#39;</span>
+</span></span><span style="display:flex;"><span>STORED <span style="color:#66d9ef">AS</span> INPUTFORMAT <span style="color:#e6db74">&#39;com.amazon.emr.cloudtrail.CloudTrailInputFormat&#39;</span>
+</span></span><span style="display:flex;"><span>OUTPUTFORMAT <span style="color:#e6db74">&#39;org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">LOCATION</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;s3://aws-controltower-logs-123456789012-eu-west-1/o-123456789a/AWSLogs/o-123456789a/&#39;</span>
+</span></span><span style="display:flex;"><span>TBLPROPERTIES (
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;projection.enabled&#39;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;true&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;projection.origin_account.type&#39;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;injected&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;projection.origin_region.type&#39;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;injected&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;projection.delivered_timestamp.type&#39;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;date&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;projection.delivered_timestamp.format&#39;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;yyyy/MM/dd&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;projection.delivered_timestamp.interval&#39;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;1&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;projection.delivered_timestamp.interval.unit&#39;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;DAYS&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;projection.delivered_timestamp.range&#39;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;2023/01/01,NOW&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;storage.location.template&#39;</span><span style="color:#f92672">=</span><span style="color:#e6db74">&#39;s3://aws-controltower-logs-123456789012-eu-west-1/o-123456789a/AWSLogs/o-123456789a/${origin_account}/CloudTrail/${origin_region}/${delivered_timestamp}&#39;</span>)
+</span></span></code></pre></div><p>The table is partitioned by 3 columns:</p>
+<ul>
+<li><code>origin_region</code>: The origin region of the events</li>
+<li><code>origin_account</code>: The origin account id of the events</li>
+<li><code>delivered_timestamp</code>: The timestamp of the CloudTrail S3 object</li>
+</ul>
+<h1 id="testing-the-table">
+  Testing the Table
+  <a class="heading-link" href="#testing-the-table">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>The following query tests that the table does indeed work and returns one row. Note that we chose a partition type of <code>injected</code> for the <code>origin_region</code> and <code>origin_account</code> columns and as a result we must include both columns in the query (or we receive a <code>CONSTRAINT_VIOLATION</code> error).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-SQL" data-lang="SQL"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> cloudtrail_logs
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> origin_account <span style="color:#66d9ef">in</span> (<span style="color:#e6db74">&#39;123456789012&#39;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">and</span> origin_region <span style="color:#66d9ef">in</span> (<span style="color:#e6db74">&#39;eu-west-1&#39;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">and</span> delivered_timestamp <span style="color:#66d9ef">between</span> <span style="color:#e6db74">&#39;2024/07/10&#39;</span> <span style="color:#66d9ef">and</span> <span style="color:#e6db74">&#39;2024/07/10&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">limit</span> <span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><p>As will be seen later, it&rsquo;s possible to make different partition projection choices. Each choice has its own pros and cons. The choice of <code>injected</code> was made for simplicity, i.e. no need to provide a list of possible values in the table definition.</p>
+<h1 id="constraints-and-issues">
+  Constraints and Issues
+  <a class="heading-link" href="#constraints-and-issues">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>While partition projection offers many benefits, there are some constraints and issues to be aware of. These are discussed in the following sections.</p>
+<h2 id="pick-the-json-serde-with-care">
+  Pick the JSON SerDe with care
+  <a class="heading-link" href="#pick-the-json-serde-with-care">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Athena can use <a href="https://docs.aws.amazon.com/athena/latest/ug/json-serde.html"  class="external-link" target="_blank" rel="noopener">several serializer/deserializer&rsquo;s to process JSON data</a>. There are in fact 3 possible SerDe&rsquo;s that can be used for CloudTrail logs.</p>
+<p>The observant reader may have noticed that the SerDe used in the above table definition example (<code>org.openx.data.jsonserde.JsonSerDe</code>) is not <a href="https://docs.aws.amazon.com/athena/latest/ug/cloudtrail-logs.html"  class="external-link" target="_blank" rel="noopener">the SerDe suggested in the Athena CloudTrail documentation</a>.</p>
+<p>Over the years, Athena JSON SerDe&rsquo;s and CloudTrail Logs have suffered from various issues that have caused errors during queries or incomplete results when querying the logs.</p>
+<p>Identifying that there is an issue in the first place can be challenging when results are returned. Do the rows or counts match actual events - how will you know?</p>
+<p>One of the latest problems we encountered was with finding EC2 <code>RunInstances</code> events over a period. It turned out that only 1/5th of the events were returned. The query failed quietly. We found whole CloudTrail events files with <code>RunInstances</code> calls that were not included in the result set.</p>
+<p>Therefore, trust but verify the results. If you are not sure that the results are correct and you are reasonably confident that the query and table definition is sound, you might try another SerDe to see if this makes a difference. In case of a difference we recommend contacting AWS Support in the first instance.</p>
+<p>The three CloudTrail JSON SerDe&rsquo;s are:</p>
+<ul>
+<li><a href="https://cwiki.apache.org/confluence/display/Hive/LanguageManual&#43;DDL#LanguageManualDDL-JSON"  class="external-link" target="_blank" rel="noopener"><code>org.apache.hive.hcatalog.data.JsonSerDe</code></a>: The AWS recommended one. This was the SerDe quietly failing for us when attempting to query <code>RunInstances</code> events, which returned incomplete results (as it turns out, due to the added column definition for <code>webIdFederationData</code> -  verified with AWS Support)</li>
+<li><a href="https://docs.aws.amazon.com/athena/latest/ug/cloudtrail-logs.html#create-cloudtrail-table"  class="external-link" target="_blank" rel="noopener"><code>com.amazon.emr.hive.serde.CloudTrailSerde</code></a>: A legacy SerDe that according to AWS does not curently support newer CloudTrail columns</li>
+<li><a href="https://github.com/rcongiu/Hive-JSON-Serde"  class="external-link" target="_blank" rel="noopener"><code>org.openx.data.jsonserde.JsonSerDe</code></a>: We generally use this. We are yet to encounter a major issue when querying CloudTrail logs</li>
+</ul>
+<h2 id="there-are-different-ways-to-partition-columns">
+  There are different ways to partition columns
+  <a class="heading-link" href="#there-are-different-ways-to-partition-columns">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>As alluded to previously, there are <a href="https://docs.aws.amazon.com/athena/latest/ug/partition-projection-supported-types.html"  class="external-link" target="_blank" rel="noopener">different ways to project partitions</a>.</p>
+<p>In the above example we chose <code>injected</code> for the <code>origin_account</code> and <code>origin_region</code> columns while the <code>delivered_timestamp</code> column was projected as <code>date</code>. We did this for DDL definition simplicity. However, the downside to this approach is that both <code>origin_</code> columns must be included in the predicates in the where clause with either <code>=</code> or <code>IN</code> conditions and actual values.</p>
+<p>Other partition projection options include:</p>
+<ul>
+<li>Partition the <code>origin_account</code> and <code>origin_region</code> columns as <code>enum</code> with <code>'projection.origin_account.values'='123456789012,234567890123,...', 'projection.origin_region.type'='enum', 'projection.origin_region.values'='eu-west-1,eu-west-2,...',</code> (<code>...</code> for brevity, see below for how to generate a full list). The downside to this approach is that all column values that you wish to query on must be present in each list.</li>
+<li>Partition the <code>origin_account</code> column as an <code>integer</code> with <code>'projection.origin_account.type'='integer', 'projection.origin_account,range'='000000000000,999999999999', 'projection.origin_account.digits'='12'</code>. However, the downside to this approach is that the query optimiser will draw incorrect assumptions about continuity of account id&rsquo;s where there is none and this will affect query performance - and therefore cost - considerably. It is not recommended to do this.</li>
+</ul>
+<p>We generally tend to favour the <code>injected</code> partition projection when we know what AWS accounts and regions to query within the AWS Organization.</p>
+<p>When there is a need to query across all accounts or regions, we may, from time to time, use <code>enum</code> projection.</p>
+<p>And sometimes we create tables for both options.</p>
+<hr>
+<p><em><strong>Note</strong></em> You can use the following AWS CLI and <code>jq</code> commands to generate the AWS accounts and regions lists required for enum partitioning:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># Generate list of active regions</span>
+</span></span><span style="display:flex;"><span>aws account list-regions | jq -rj <span style="color:#e6db74">&#39;.Regions[] | .RegionName + &#34;,&#34;&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Generate list of AWS accounts</span>
+</span></span><span style="display:flex;"><span>aws organizations list-accounts | jq -rj <span style="color:#e6db74">&#39; .Accounts[] | .Id + &#34;,&#34;&#39;</span>
+</span></span></code></pre></div><hr>
+<h2 id="consider-delivery-delays-when-querying-by-event-time">
+  Consider delivery delays when querying by event time.
+  <a class="heading-link" href="#consider-delivery-delays-when-querying-by-event-time">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The <code>delivered_timestamp</code> is a timestamp annotated to the log file at around the time it&rsquo;s written to S3. It spans typically minutes of log data. Therefore, if looking for events for a particular time period, it is necessary to expand the <code>delivered_timestamp</code> to a wider range than the <code>eventTime</code>, which is the time of the event itself, in order to ensure that all relevant results are returned.</p>
+<p>Consider the following query, which uses <code>delivered_timestamp</code> across 2 consecutive days for partition projection and then queries for a full day of data by <code>eventtime</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#66d9ef">min</span>(eventtime), <span style="color:#66d9ef">max</span>(eventtime)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> cloudtrail_logs
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> origin_account <span style="color:#66d9ef">in</span> (<span style="color:#e6db74">&#39;123456789012&#39;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">and</span> origin_region <span style="color:#66d9ef">in</span> (<span style="color:#e6db74">&#39;eu-west-1&#39;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">and</span> delivered_timestamp <span style="color:#66d9ef">between</span> <span style="color:#e6db74">&#39;2024/07/10&#39;</span> <span style="color:#66d9ef">and</span> <span style="color:#e6db74">&#39;2024/07/11&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">and</span> eventtime <span style="color:#66d9ef">between</span> <span style="color:#e6db74">&#39;2024-07-10T00:00:00Z&#39;</span> <span style="color:#66d9ef">and</span> <span style="color:#e6db74">&#39;2024-07-11T00:00:00Z&#39;</span>
+</span></span></code></pre></div><p>Had we instead specified <code>delivered_timestamp='2024/07/10'</code> we would have likely lost the last 5+ minutes worth of data for the day.</p>
+<h2 id="cost-and-time-considerations">
+  Cost and Time Considerations
+  <a class="heading-link" href="#cost-and-time-considerations">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Amazon Athena charges based on the amount of data scanned by queries - and so does S3. In addition, the amount of data scanned directly impacts the duration of a query. Therefore, whenever possible include all of the partition projection columns in the query as predicates. If there is a need to query across multiple regions, accounts or days, use the <code>IN</code> and <code>BETWEEN</code> conditions accordingly.</p>
+<h2 id="extract-event-columns-from-json">
+  Extract event columns from JSON
+  <a class="heading-link" href="#extract-event-columns-from-json">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The format underpinning CloudTrail logs is JSON. When querying the table, the most interesting data - after accounting for event source (AWS service) and event name (API call) - is typically that embedded within the <code>requestparameters</code> and <code>responseelements</code> columns, both of which are formatted in JSON.</p>
+<p>The two columns contain an extract of the input parameters to an AWS API call as well as an extract of its response. Note that some information - such as secret values - may be absent.</p>
+<p>To extract scalar values by JSON path, use the built-in function <code>json_extract_scalar</code>.</p>
+<p>For instance, the following query identifies all non-AWS service AssumeRole calls (including with SAML and Web Identity) that occurred over the past month in 2 regions:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> json_extract_scalar(requestparameters,<span style="color:#e6db74">&#39;$.roleArn&#39;</span>) roleArn,
+</span></span><span style="display:flex;"><span>        json_extract_scalar(requestparameters,<span style="color:#e6db74">&#39;$.roleSessionName&#39;</span>) roleSessionName,
+</span></span><span style="display:flex;"><span>        json_extract_scalar(requestparameters,<span style="color:#e6db74">&#39;$.durationSeconds&#39;</span>) durationSeconds,
+</span></span><span style="display:flex;"><span>        json_extract_scalar(responseelements,<span style="color:#e6db74">&#39;$.assumedRoleUser.arn&#39;</span>) assumedRoleUserArn,
+</span></span><span style="display:flex;"><span>        json_extract_scalar(responseelements,<span style="color:#e6db74">&#39;$.subject&#39;</span>) subject,        <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> cloudtrail_logs
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> origin_region <span style="color:#66d9ef">in</span> (<span style="color:#e6db74">&#39;us-east-1&#39;</span>,<span style="color:#e6db74">&#39;eu-west-1&#39;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">and</span> delivered_timestamp <span style="color:#66d9ef">between</span> <span style="color:#e6db74">&#39;2024/07/01&#39;</span> <span style="color:#66d9ef">and</span> <span style="color:#e6db74">&#39;2024/08/01&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">and</span> eventtime <span style="color:#66d9ef">between</span> <span style="color:#e6db74">&#39;2024-07-01T00:00:00Z&#39;</span> <span style="color:#66d9ef">and</span> <span style="color:#e6db74">&#39;2024-08-01T00:00:00Z&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">and</span> eventsource<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sts.amazonaws.com&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">and</span> eventname <span style="color:#66d9ef">like</span> <span style="color:#e6db74">&#39;AssumeRole%&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">and</span> useridentity.<span style="color:#66d9ef">type</span><span style="color:#f92672">!=</span><span style="color:#e6db74">&#39;AWSService&#39;</span>
+</span></span></code></pre></div><h2 id="consider-creating-views-for-common-queries">
+  Consider creating views for common queries
+  <a class="heading-link" href="#consider-creating-views-for-common-queries">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Views are great for hiding away complexity and to make queries and joins easier to write (the other option is using the <code>WITH</code> clause).</p>
+<p>Here is an example based on the previous AssumeRole query:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">create</span> <span style="color:#66d9ef">or</span> <span style="color:#66d9ef">replace</span> <span style="color:#66d9ef">view</span> user_assume_role <span style="color:#66d9ef">as</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">select</span> json_extract_scalar(requestparameters,<span style="color:#e6db74">&#39;$.roleArn&#39;</span>) roleArn,
+</span></span><span style="display:flex;"><span>        json_extract_scalar(requestparameters,<span style="color:#e6db74">&#39;$.roleSessionName&#39;</span>) roleSessionName,
+</span></span><span style="display:flex;"><span>        json_extract_scalar(requestparameters,<span style="color:#e6db74">&#39;$.durationSeconds&#39;</span>) durationSeconds,
+</span></span><span style="display:flex;"><span>        json_extract_scalar(responseelements,<span style="color:#e6db74">&#39;$.assumedRoleUser.arn&#39;</span>) assumedRoleUserArn,
+</span></span><span style="display:flex;"><span>        json_extract_scalar(responseelements,<span style="color:#e6db74">&#39;$.subject&#39;</span>) subject,        <span style="color:#f92672">*</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">from</span> cloudtrail_logs
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> eventsource<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;sts.amazonaws.com&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">and</span> eventname <span style="color:#66d9ef">like</span> <span style="color:#e6db74">&#39;AssumeRole%&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">and</span> useridentity.<span style="color:#66d9ef">type</span><span style="color:#f92672">!=</span><span style="color:#e6db74">&#39;AWSService&#39;</span>
+</span></span></code></pre></div><p>You may notice that the partition columns are not included. They will be added at query time for maximum flexibility:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> user_assume_role
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> origin_region <span style="color:#66d9ef">in</span> (<span style="color:#e6db74">&#39;us-east-1&#39;</span>,<span style="color:#e6db74">&#39;eu-west-1&#39;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">and</span> delivered_timestamp <span style="color:#66d9ef">between</span> <span style="color:#e6db74">&#39;2024/07/01&#39;</span> <span style="color:#66d9ef">and</span> <span style="color:#e6db74">&#39;2024/08/01&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">and</span> eventtime <span style="color:#66d9ef">between</span> <span style="color:#e6db74">&#39;2024-07-01T00:00:00Z&#39;</span> <span style="color:#66d9ef">and</span> <span style="color:#e6db74">&#39;2024-08-01T00:00:00Z&#39;</span>
+</span></span></code></pre></div><p>The results of the query using the view will be the same as the query without the view.</p>
+<p>The view can now be reused for any purpose.</p>
+<p>One additional benefit is that the added view columns (those derived from the JSON columns) can now also be used for conditions such as:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sql" data-lang="sql"><span style="display:flex;"><span><span style="color:#66d9ef">select</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">from</span> user_assume_role
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">where</span> origin_region <span style="color:#66d9ef">in</span> (<span style="color:#e6db74">&#39;us-east-1&#39;</span>,<span style="color:#e6db74">&#39;eu-west-1&#39;</span>)
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">and</span> delivered_timestamp <span style="color:#66d9ef">between</span> <span style="color:#e6db74">&#39;2024/07/01&#39;</span> <span style="color:#66d9ef">and</span> <span style="color:#e6db74">&#39;2024/08/01&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">and</span> eventtime <span style="color:#66d9ef">between</span> <span style="color:#e6db74">&#39;2024-07-01T00:00:00Z&#39;</span> <span style="color:#66d9ef">and</span> <span style="color:#e6db74">&#39;2024-08-01T00:00:00Z&#39;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">and</span> subject<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;someuser@corp.com&#39;</span>
+</span></span></code></pre></div><h2 id="conclusion">
+  Conclusion
+  <a class="heading-link" href="#conclusion">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Using Amazon Athena with partition projection to query CloudTrail logs offers an quick way to analyse operational activity across an AWS Organization trail. Getting started requires very little setup and configuration.</p>
+<p>By understanding the constraints and optimising for time and cost you can harness the full potential of Athena for your log analysis needs.</p>
+<p>Note that because Amazon Athena is a managed, serverless service it is hard to debug problems and will from time to time require AWS Support&rsquo;s help to troubleshoot a problem. Also, please verify the returned results - various bugs have previously returned empty or incomplete results without warning.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

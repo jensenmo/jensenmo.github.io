@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Uncategorized on Morten Jensen</title>
+    <link>https://jensenmo.github.io/categories/uncategorized/</link>
+    <description>Recent content in Uncategorized on Morten Jensen</description>
+    <generator>Hugo</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 12 Nov 2019 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://jensenmo.github.io/categories/uncategorized/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Leveraging Serverless (SAM) with Cognito Authentication</title>
+      <link>https://jensenmo.github.io/posts/leveraging-serverless-cognito-authentication/</link>
+      <pubDate>Tue, 12 Nov 2019 00:00:00 +0000</pubDate>
+      <guid>https://jensenmo.github.io/posts/leveraging-serverless-cognito-authentication/</guid>
+      <description>&lt;h2 id=&#34;introduction&#34;&gt;&#xA;  Introduction&#xA;  &lt;a class=&#34;heading-link&#34; href=&#34;#introduction&#34;&gt;&#xA;    &lt;i class=&#34;fa-solid fa-link&#34; aria-hidden=&#34;true&#34; title=&#34;Link to heading&#34;&gt;&lt;/i&gt;&#xA;    &lt;span class=&#34;sr-only&#34;&gt;Link to heading&lt;/span&gt;&#xA;  &lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;Using Serverless combined with Cognito can be a great way to eliminate the real estate as well as development and operational footprint when it comes to authentication and authorisation stacks.&lt;/p&gt;&#xA;&lt;p&gt;Furthermore, Cognito is also likely to further enhance overall security posture when compared to in particular homebrewn alternatives.&lt;/p&gt;&#xA;&lt;p&gt;We have put together a &lt;a href=&#34;https://github.com/virtuability/aws-auth/&#34;  class=&#34;external-link&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;full demonstration Cognito application stack based on Serverless (SAM)&lt;/a&gt;. This includes code, infrastructure as code and a Codepipeline. All ready to go (with some prerequisites).&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>The case for Structured, Contextual Logs</title>
+      <link>https://jensenmo.github.io/posts/the-case-for-structured-contextual-logs/</link>
+      <pubDate>Mon, 23 Sep 2019 00:00:00 +0000</pubDate>
+      <guid>https://jensenmo.github.io/posts/the-case-for-structured-contextual-logs/</guid>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;&#xA;  Introduction&#xA;  &lt;a class=&#34;heading-link&#34; href=&#34;#introduction&#34;&gt;&#xA;    &lt;i class=&#34;fa-solid fa-link&#34; aria-hidden=&#34;true&#34; title=&#34;Link to heading&#34;&gt;&lt;/i&gt;&#xA;    &lt;span class=&#34;sr-only&#34;&gt;Link to heading&lt;/span&gt;&#xA;  &lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;If correctly composed, logs can be an extremely useful resource to tap into in the following use cases:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Support end-users&lt;/li&gt;&#xA;&lt;li&gt;Derive business metrics (how many users used our service yesterday, over the last 7 days and in the past month?)&lt;/li&gt;&#xA;&lt;li&gt;Derive operational metrics (service uptime and failures)&lt;/li&gt;&#xA;&lt;li&gt;Feed metrics to generate alerts during abnormal events or to trigger capacity increases and decreases based on service loads&lt;/li&gt;&#xA;&lt;li&gt;Find and fix bugs&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;Business &amp;amp; Operational Dashboards can today be built to aggregate and chart metrics derived from logs in near-realtime. Dashboards can be tailored not only to IT but also to the wider organisation.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>6 Steps to DevOps</title>
+      <link>https://jensenmo.github.io/posts/6-steps-to-devops/</link>
+      <pubDate>Mon, 26 Aug 2019 00:00:00 +0000</pubDate>
+      <guid>https://jensenmo.github.io/posts/6-steps-to-devops/</guid>
+      <description>&lt;h1 id=&#34;introduction&#34;&gt;&#xA;  Introduction&#xA;  &lt;a class=&#34;heading-link&#34; href=&#34;#introduction&#34;&gt;&#xA;    &lt;i class=&#34;fa-solid fa-link&#34; aria-hidden=&#34;true&#34; title=&#34;Link to heading&#34;&gt;&lt;/i&gt;&#xA;    &lt;span class=&#34;sr-only&#34;&gt;Link to heading&lt;/span&gt;&#xA;  &lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;Why adopt DevOps?&lt;/p&gt;&#xA;&lt;p&gt;IT change can be painful and subject to long lead times in many organisations. The pain generally stems from treating change as exceptional rather than business-as-usual - often in the form of running a project to effect the change.&lt;/p&gt;&#xA;&lt;p&gt;Running multiple concurrent IT-related change projects can put a strain on the organisation and managing conflicts in the form of people, time, cost and overlaps can become extremely complex.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Why Serverless &amp; DevOps makes a (big) difference</title>
+      <link>https://jensenmo.github.io/posts/why-serverless-and-devops-makes-a-big-difference/</link>
+      <pubDate>Mon, 19 Aug 2019 00:00:00 +0000</pubDate>
+      <guid>https://jensenmo.github.io/posts/why-serverless-and-devops-makes-a-big-difference/</guid>
+      <description>&lt;h1 id=&#34;background&#34;&gt;&#xA;  Background&#xA;  &lt;a class=&#34;heading-link&#34; href=&#34;#background&#34;&gt;&#xA;    &lt;i class=&#34;fa-solid fa-link&#34; aria-hidden=&#34;true&#34; title=&#34;Link to heading&#34;&gt;&lt;/i&gt;&#xA;    &lt;span class=&#34;sr-only&#34;&gt;Link to heading&lt;/span&gt;&#xA;  &lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;We have recently completed a Serverless &amp;amp; DevOps transformation project with one of our clients, &lt;a href=&#34;https://www.citizenme.com/&#34;  class=&#34;external-link&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;CitizenMe&lt;/a&gt;. CitizenMe presently has more than 200.000 global end-users and has processed millions of transactions since inception.&lt;/p&gt;&#xA;&lt;p&gt;CitizenMe uses AWS and mobile apps almost exclusively for its product and service offerings. Most of the components are built and maintained in-house by a small team of developers and testers.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Moving to Cloud: the Landing Zone</title>
+      <link>https://jensenmo.github.io/posts/moving-to-cloud-the-landing-zone/</link>
+      <pubDate>Sat, 07 Jul 2018 12:22:38 +0000</pubDate>
+      <guid>https://jensenmo.github.io/posts/moving-to-cloud-the-landing-zone/</guid>
+      <description>&lt;p&gt;In military terms a Landing Zone is an area where aircraft can land; in effect a base camp from where operations can extend.&lt;/p&gt;&#xA;&lt;p&gt;AWS has for the last year or two used the term &lt;a href=&#34;https://www.youtube.com/watch?v=nXdgc1GREiU&#34;  class=&#34;external-link&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Landing Zone&lt;/a&gt; to convey an infrastructure foundation and security baseline on which applications and services can &amp;ldquo;land&amp;rdquo;. The applications inherit &amp;amp; adopt a set of shared services, integration and design patterns. The purpose of the Landing Zone is to establish an organisational baseline that supports its requirements for infrastructure and security and is rooted in &amp;ldquo;best practices&amp;rdquo;, which seek to balance business and security risks against innovation and value.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Securing Cross-Account AWS API Calls &amp; CLI Access with MFA (Two-Factor) Authentication</title>
+      <link>https://jensenmo.github.io/posts/securing-cross-account-aws-api-calls-cli-access-with-mfa-two-factor-authentication/</link>
+      <pubDate>Tue, 20 Jun 2017 18:41:28 +0000</pubDate>
+      <guid>https://jensenmo.github.io/posts/securing-cross-account-aws-api-calls-cli-access-with-mfa-two-factor-authentication/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://docs.aws.amazon.com/IAM/latest/UserGuide/tutorial_cross-account-with-roles.html&#34;  class=&#34;external-link&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;AWS Cross-Account Roles&lt;/a&gt; are an excellent way of managing access to a target account (the account in which work is carried out) from other AWS accounts. Some scenarios to consider in this context include:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Managed Services &amp;amp; Support&lt;/li&gt;&#xA;&lt;li&gt;Centralised accounts, e.g. from an AWS Organizations perspective&lt;/li&gt;&#xA;&lt;li&gt;3rd parties &amp;amp; services (e.g. Cloudcheckr)&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;The advantages of Cross-Account roles include not having to create an IAM user account in the target account for every single user that needs access and instead delegate trust to the source account (where the IAM users exist). It also enables centralised authentication inside an organisation by designating a centralised AWS access account in which all users like developers, testers and operations have an account; and in turn are given the necessary access to organisational AWS accounts.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Creating a Core Network Foundation in AWS with SSH, VPN &amp; NAT access</title>
+      <link>https://jensenmo.github.io/posts/creating-a-core-network-foundation-in-aws-with-ssh-vpn-nat-access/</link>
+      <pubDate>Wed, 14 Jun 2017 19:08:12 +0000</pubDate>
+      <guid>https://jensenmo.github.io/posts/creating-a-core-network-foundation-in-aws-with-ssh-vpn-nat-access/</guid>
+      <description>&lt;p&gt;For both test and build purposes I often find myself reusing parts of past CloudFormation templates. Over time I’ve found that the foundation of the templates like VPC, subnets, routing tables etc remain roughly the same. I have also found that the AWS VPN solution often isn’t suitable because of e.g. NAT, lack of port forwarding, lack of “hardware VPN”, expertise etc.&lt;/p&gt;&#xA;&lt;p&gt;I have therefore started to standardise the Core stack in a single – and simple – template; and rely on Cross Reference Stacks to build in layers/tiers.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Need a good reason to switch to Cloudformation YAML now? Template size limits…</title>
+      <link>https://jensenmo.github.io/posts/need-a-good-reason-to-switch-to-cloudformation-yaml-template-size-limits/</link>
+      <pubDate>Fri, 21 Oct 2016 19:12:05 +0000</pubDate>
+      <guid>https://jensenmo.github.io/posts/need-a-good-reason-to-switch-to-cloudformation-yaml-template-size-limits/</guid>
+      <description>&lt;p&gt;AWS CloudFormation size limits are well-documented in the &lt;a href=&#34;http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html&#34;  class=&#34;external-link&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;User Guide&lt;/a&gt;. However, this does not make hitting any of the limits any less painful. I recently hit the template body size limit in request (–template-body) of 51200 bytes on one of my templates. This adds the extra complexity of having to first upload the template to an S3 bucket. When you’re quickly iterating changes this becomes rather onerous very quickly.&lt;/p&gt;&#xA;&lt;p&gt;I have therefore found that one of the advantages of switching to YAML now is that it generally takes up less space – I converted two of my JSON templates to YAML and achieved an average 15% reduction in size – crucially bringing me back down below the 51200 bytes limit so that I can bypass the S3 bucket upload in each iteration.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Moving to Cloud: Agility</title>
+      <link>https://jensenmo.github.io/posts/moving-to-the-cloud-agility/</link>
+      <pubDate>Mon, 29 Aug 2016 11:27:22 +0000</pubDate>
+      <guid>https://jensenmo.github.io/posts/moving-to-the-cloud-agility/</guid>
+      <description>&lt;p&gt;Over the years I have witnessed, proposed and implemented a wide range of AWS use cases; and few of them actually belong in the sexier cutting-edge, containerised, hyper/auto-scalable, serverless micro-services realm. I mostly find a certain level of pragmatism - rooted in both tactical and strategic choices - involved in the adoption of Cloud:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Proof of Concept development and testing&lt;/li&gt;&#xA;&lt;li&gt;Development of new products and services&lt;/li&gt;&#xA;&lt;li&gt;Off-premise backup, archival &amp;amp; storage&lt;/li&gt;&#xA;&lt;li&gt;Offload external website traffic&lt;/li&gt;&#xA;&lt;li&gt;Licencing and support shortfalls; in particular for relational databases&lt;/li&gt;&#xA;&lt;li&gt;End-of-life and out-of-support hardware and software replacement&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;While the business use case in the above-mentioned examples is generally relatively clear-cut I have witnessed less obvious use cases too - in particular in mature organisations.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Securing AWS API Calls &amp; CLI Access with MFA (Two-Factor) Authentication</title>
+      <link>https://jensenmo.github.io/posts/securing-your-aws-api-calls-with-two-factor-authentication/</link>
+      <pubDate>Wed, 03 Feb 2016 21:22:38 +0000</pubDate>
+      <guid>https://jensenmo.github.io/posts/securing-your-aws-api-calls-with-two-factor-authentication/</guid>
+      <description>&lt;p&gt;One of the largest concerns of allowing AWS API calls to be made from the outside is issuing an API key and secret for developer and administrator PCs and laptops alike because they may be interceptable in one way or another. Some scenarios spring to mind:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Laptop is stolen/un-encrypted or left unlocked&lt;/li&gt;&#xA;&lt;li&gt;Key/secret is accidentally left hard-coded in code&lt;/li&gt;&#xA;&lt;li&gt;Key/secret is intercepted in-transit, e.g. through email or from a portable device&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;Add to that the fact that policies (bundles of permissions) can be hard to formulate and get right; and therefore often do not reflect a least-privilege policy. Policies are therefore often construed as overly permissive as there simply isn&amp;rsquo;t the time in the day to run many trial-and-error simulations to get it right and get on with business although CloudTrail does often thankfully help to identify requisite privileges when things fail.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  The case for Structured, Contextual Logs · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+  Introduction
+  
+    
+    Link to heading
+  
+
+If correctly composed, logs can be an extremely useful resource to tap into in the following use cases:
+
+Support end-users
+Derive business metrics (how many users used our service yesterday, over the last 7 days and in the past month?)
+Derive operational metrics (service uptime and failures)
+Feed metrics to generate alerts during abnormal events or to trigger capacity increases and decreases based on service loads
+Find and fix bugs
+
+Business &amp; Operational Dashboards can today be built to aggregate and chart metrics derived from logs in near-realtime. Dashboards can be tailored not only to IT but also to the wider organisation.">
+<meta name="keywords" content="Alarm, AWS, Contextual, DevOps, DevSecOps, Logging, Logs, Metric, Privacy, Structured">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The case for Structured, Contextual Logs">
+  <meta name="twitter:description" content="Introduction Link to heading If correctly composed, logs can be an extremely useful resource to tap into in the following use cases:
+Support end-users Derive business metrics (how many users used our service yesterday, over the last 7 days and in the past month?) Derive operational metrics (service uptime and failures) Feed metrics to generate alerts during abnormal events or to trigger capacity increases and decreases based on service loads Find and fix bugs Business &amp; Operational Dashboards can today be built to aggregate and chart metrics derived from logs in near-realtime. Dashboards can be tailored not only to IT but also to the wider organisation.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/2019-09-23-the-case-for-structured-contextual-logs/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="The case for Structured, Contextual Logs">
+  <meta property="og:description" content="Introduction Link to heading If correctly composed, logs can be an extremely useful resource to tap into in the following use cases:
+Support end-users Derive business metrics (how many users used our service yesterday, over the last 7 days and in the past month?) Derive operational metrics (service uptime and failures) Feed metrics to generate alerts during abnormal events or to trigger capacity increases and decreases based on service loads Find and fix bugs Business &amp; Operational Dashboards can today be built to aggregate and chart metrics derived from logs in near-realtime. Dashboards can be tailored not only to IT but also to the wider organisation.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-09-23T00:00:00+00:00">
+    <meta property="article:modified_time" content="2019-09-23T00:00:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/2019-09-23-the-case-for-structured-contextual-logs/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/2019-09-23-the-case-for-structured-contextual-logs/">
+              The case for Structured, Contextual Logs
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2019-09-23T00:00:00Z">
+                September 23, 2019
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              8-minute read
+            </span>
+          </div>
+          
+          <div class="categories">
+  <i class="fa-solid fa-folder" aria-hidden="true"></i>
+    <a href="/categories/uncategorized/">Uncategorized</a></div>
+
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <h1 id="introduction">
+  Introduction
+  <a class="heading-link" href="#introduction">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>If correctly composed, logs can be an extremely useful resource to tap into in the following use cases:</p>
+<ul>
+<li>Support end-users</li>
+<li>Derive business metrics (how many users used our service yesterday, over the last 7 days and in the past month?)</li>
+<li>Derive operational metrics (service uptime and failures)</li>
+<li>Feed metrics to generate alerts during abnormal events or to trigger capacity increases and decreases based on service loads</li>
+<li>Find and fix bugs</li>
+</ul>
+<p>Business &amp; Operational Dashboards can today be built to aggregate and chart metrics derived from logs in near-realtime. Dashboards can be tailored not only to IT but also to the wider organisation.</p>
+<p>Alarms can be fired to alert people either by thresholds or by anomaly from the log-derived metrics.</p>
+<p>Logs and metrics are enablers for feedback loops that enable organisations to react quickly.</p>
+<p>In other words, proper logs and supporting services are a business-critical necessity in any organisation today. They need to be treated as such as they can give an organisation that is geared towards consuming actionable metrics a competitive advantage through quick response.</p>
+<h1 id="structure--correlation">
+  Structure &amp; Correlation
+  <a class="heading-link" href="#structure--correlation">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>To support the wide variety of log use cases, logs should meet certain criteria:</p>
+<ul>
+<li>Log entries structured for easy searches with predicates (almost like SQL)</li>
+<li>Log entries &amp; messages formats that support easy filtering and aggregation</li>
+<li>Sufficient log entry context to identify Who, What, Why, When &amp; Where</li>
+<li>Correlation - or linking - of entries that pertain to the same event or action</li>
+</ul>
+<p>Some log entry fields will always be present. For instance consider a public-facing web service - HTTP request method &amp; path should always be present in order to identify the call type and operation. Same goes for timestamp, message and a log-entry linking request id.</p>
+<p>Other fields are added dynamically. For instance, a web service  HTTP response status, which is only known towards the end of the processed request.</p>
+<p>Traditional logs have in the past consisted of one-line text where fields were separated by spaces or tab, commas or other arbitrary delimiters like brackets etc. Such log formats all suffer from the challenge of effectively needing to write or configure a parser to ingest them into a store where they can be searched, filtered and aggregated. Furthermore, the formatting is often found to be inconsistent across different services and therefore service log correlation can be hard to achieve.</p>
+<p>JSON has evolved to be an excellent format to emit logs in. It can be searched, filtered and events aggregated in a way that supports all of the above-mentioned use cases.</p>
+<h1 id="example">
+  Example
+  <a class="heading-link" href="#example">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Here is a simplified example, which shows 2 log entries for the same request to a hypothetical AWS Lambda Calendar web service:</p>
+<pre tabindex="0"><code># Request log start entry
+{
+    &#34;thread&#34;: &#34;main&#34;,
+    &#34;level&#34;: &#34;INFO&#34;,
+    &#34;loggerName&#34;: &#34;com.example.lambda.Handler&#34;,
+    &#34;message&#34;: &#34;handleRequest: start&#34;,
+    &#34;contextMap&#34;: {
+        &#34;client-id&#34;: &#34;calendar-android-app-v1.23&#34;,
+        &#34;user-id&#34;: &#34;87654321-1234-5678-90ab-1234567890ab&#34;,
+        &#34;request-id&#34;: &#34;12345678-7da1-49e3-8a7b-207a12a740b6&#34;,
+        &#34;request-method&#34;: &#34;POST&#34;,
+        &#34;request-path&#34;: &#34;/calendar/event&#34;,
+        &#34;start-free-memory&#34;: &#34;52084216&#34;,
+        &#34;start-max-memory&#34;: &#34;883884032&#34;,
+        &#34;start-time&#34;: &#34;2019-09-23 06:50:16.461 +0000&#34;,
+        &#34;start-total-memory&#34;: &#34;62849024&#34;,
+        &#34;viewer-country&#34;: &#34;IE&#34;
+    }
+}
+
+# Request log end entry
+{
+    &#34;thread&#34;: &#34;main&#34;,
+    &#34;level&#34;: &#34;INFO&#34;,
+    &#34;loggerName&#34;: &#34;com.example.lambda.Handler&#34;,
+    &#34;message&#34;: &#34;handleRequest: end&#34;,
+    &#34;contextMap&#34;: {
+        &#34;client-id&#34;: &#34;calendar-android-app-v1.23&#34;,
+        &#34;user-id&#34;: &#34;87654321-1234-5678-90ab-1234567890ab&#34;,
+        &#34;duration&#34;: &#34;4645&#34;,
+        &#34;end-free-memory&#34;: &#34;40031544&#34;,
+        &#34;end-max-memory&#34;: &#34;883884032&#34;,
+        &#34;end-time&#34;: &#34;2019-09-23 06:50:21.106 +0000&#34;,
+        &#34;end-total-memory&#34;: &#34;62980096&#34;,
+        &#34;request-id&#34;: &#34;12345678-7da1-49e3-8a7b-207a12a740b6&#34;,
+        &#34;request-method&#34;: &#34;POST&#34;,
+        &#34;request-path&#34;: &#34;/calendar/event&#34;,
+        &#34;response-status&#34;: &#34;200&#34;,
+        &#34;start-free-memory&#34;: &#34;52084216&#34;,
+        &#34;start-max-memory&#34;: &#34;883884032&#34;,
+        &#34;start-time&#34;: &#34;2019-09-23 06:50:16.461 +0000&#34;,
+        &#34;start-total-memory&#34;: &#34;62849024&#34;,
+        &#34;viewer-country&#34;: &#34;IE&#34;
+    }
+}
+</code></pre><p>From the two log entries we can derive any number of insights - for example:</p>
+<ul>
+<li>The two entries were from the same request (same request-id UUID)</li>
+<li>The request succeeded (response-status: 200) - the user successfully added a new calendar event</li>
+<li>The user resides in Ireland (viewer-country = IE)</li>
+<li>The request took 4645 milliseconds to complete (more than 4.5 seconds - perhaps itself a source of concern)</li>
+<li>The user used version v1.23 of the Calendar Android app (client-id generally refers to the OAuth client id)</li>
+<li>The user UUID can be used to identify the user for support request purposes</li>
+<li>Processing of the request reduced free runtime memory by 12MB (end-free-memory - start-free-memory)</li>
+</ul>
+<p>Furthermore, the log entries satisfy practically all of the established criteria:</p>
+<ul>
+<li>It is possible to search for the log entries with e.g. AWS Cloudwatch Logs.</li>
+<li>Using filters it&rsquo;s possible to derive metrics from the entries (e.g. how many calendar events were created yesterday).</li>
+<li>It&rsquo;s also possible to derive uptime and error counts from the logs - simplistically, consider splitting the response-status field into HTTP 200 and non-200 responses and counting those events e.g. over 5 minutes.</li>
+<li>For support purposes it&rsquo;s possible to identify individual user actions</li>
+<li>Linking all log entries pertaining to a single request or event is possible with the request-id</li>
+</ul>
+<h1 id="tools">
+  Tools
+  <a class="heading-link" href="#tools">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Achieving contextual and structured logs like this is possible and indeed reasonably simple to implement across programming languages like Java and Python. A couple of examples are:</p>
+<ul>
+<li><a href="https://logging.apache.org/log4j/2.x/manual/layouts.html#JSONLayout"  class="external-link" target="_blank" rel="noopener">Log4J 2 library JSON Layout</a> and <a href="https://logging.apache.org/log4j/2.x/manual/thread-context.html"  class="external-link" target="_blank" rel="noopener">Log4j 2 thread context</a></li>
+<li><a href="https://pypi.org/project/python-json-logger/"  class="external-link" target="_blank" rel="noopener">python-json-logger</a> and <a href="https://pypi.org/project/context-log/"  class="external-link" target="_blank" rel="noopener">context-log</a> libraries - disclaimer: we created the very simple context-log library</li>
+</ul>
+<p>Additional work to standardise log emission and formats across code bases and services through e.g. Decorator or Adapter patterns is definitely warranted.</p>
+<h1 id="getting-started">
+  Getting started
+  <a class="heading-link" href="#getting-started">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Code bases today can contain 100&rsquo;s or 1000&rsquo;s of different log calls. Many code bases use older log frameworks, which do not natively emit JSON - for instance Log4j 1.x.</p>
+<p>Furthermore, many log calls may not emit particularly relevant logging information. Often, some log entries have been left in from a past debug session.</p>
+<p>It can therefore be daunting to get started refactoring all of the logs.</p>
+<p>We would make the following recommendations to get started:</p>
+<ul>
+<li>
+<p>Start simple; decide on a logging framework that supports JSON structured logging + context.</p>
+</li>
+<li>
+<p>Carefully define and structure log levels such that each level is well-defined and actionable. An example:</p>
+<ul>
+<li>ERROR: Server-side issue</li>
+<li>WARN: Client-side issue</li>
+<li>INFO: General log entry information to help understand the execution flow</li>
+<li>DEBUG: Additional logging needed to support particular issues</li>
+</ul>
+</li>
+<li>
+<p>Define relevant information to add to the context (request-id, start-time, end-time, request method/path etc.)</p>
+</li>
+<li>
+<p>Implement a context per request or event; in many runtime environments a single thread processes a given request. In these runtimes use the Thread context to store information to support contextual information.</p>
+</li>
+<li>
+<p>Implement a start and end log entry call at the top of the call stack (with all contextual information captured at each of the two points), which captures all request and response events.</p>
+</li>
+<li>
+<p>Implement log filters that capture important business,  operational and development events.</p>
+</li>
+<li>
+<p>Use the log filters to aggregate and chart metrics from the events.</p>
+</li>
+<li>
+<p>Build business and operational Dashboards from the metrics.</p>
+</li>
+<li>
+<p>From learnings above, start adding standards to log entries - in particular for messages and how they should be structured</p>
+</li>
+<li>
+<p>Refactor existing log calls over a number of sprints to use the new log format and log levels.</p>
+</li>
+</ul>
+<h1 id="personally-identifiable-information">
+  Personally Identifiable Information
+  <a class="heading-link" href="#personally-identifiable-information">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Some considerations are warranted if storing personally identifiable information in logs. The considerations include:</p>
+<ul>
+<li>It is helpful (and in many cases indeed necessary) to store user identifiers in logs in order to better support users. Ensure that this use is documented in the Privacy Policy</li>
+<li>Try to avoid email addresses as user identifiers in logs - consider instead hashing the identifier or using a &ldquo;surrogate key&rdquo; like a UUID to uniquely identify each user in the logs.</li>
+<li>Encrypt the logs at rest. With AWS Cloudwatch it is really simple to enable encryption per <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html"  class="external-link" target="_blank" rel="noopener">Log Group</a>.</li>
+<li>Per default log services like <a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html"  class="external-link" target="_blank" rel="noopener">AWS Cloudwatch Logs</a> store log entries indefinitely. This generally goes against privacy policies and should be avoided - it also comes at a considerable cost. Setting up a reasonable retention period (e.g. 1-3 months) is generally easy.</li>
+<li>Ensure that there is a proper access policy to the logs both in terms of authentication and authorisation. For instance, consider requiring MFA for log access. MFA authorisation requirements can be enforced with AWS IAM policies.</li>
+<li>Consider a policy on handling log data outside of the log service. For instance, while tools like <a href="https://github.com/jorgebastida/awslogs"  class="external-link" target="_blank" rel="noopener">AWS Logs for Humans</a> can be helpful, consider that extracting logs to laptops etc. may not offer the same level of protection (like encryption and retention policies) as services like Cloudwatch Logs. For most operational &amp; support purposes the AWS Cloudwatch Logs, Metrics, Dashboard &amp; Insights Management Consoles would be sufficient.</li>
+<li>Client IP addresses say a lot about users because they can <a href="https://www.maxmind.com/en/solutions/geoip2-enterprise-product-suite/enterprise-database"  class="external-link" target="_blank" rel="noopener">identify a location very accurately</a>. If - for instance - only the country is needed consider not logging client IP addresses (or hashing them) and instead use managed services like AWS API Gateway or <a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/header-caching.html"  class="external-link" target="_blank" rel="noopener">AWS CloudFront</a> to provide country information.</li>
+<li>As per previous point, consider whether logging the full User-Agent header is necessary or whether managed services headers (e.g. AWS CloudFront/API Gateway Is-*-Viewer) are sufficient.</li>
+<li><a href="https://krebsonsecurity.com/2019/03/facebook-stored-hundreds-of-millions-of-user-passwords-in-plain-text-for-years/"  class="external-link" target="_blank" rel="noopener">Unlike Facebook</a>, do not under any circumstances store passwords and secrets in logs.</li>
+<li>To further improve security, consider hashing user identifiers - and perhaps even things like client IP address. The hashed identifier can remain the same across log entries and requests (for searchability) but without the original user identifiers it is a lot harder to compromise user data through the logs.</li>
+</ul>
+<h1 id="conclusion">
+  Conclusion
+  <a class="heading-link" href="#conclusion">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Structured, contextual logs solve a number of business, operational and development challenges, which means that giving logs the attention they deserve will help organisations immensely.</p>
+<p>There are several tools to handle storage, usage and the lifecycle of logs. In particular AWS provides a comprensive, Cloud-native set of services that satisfy most organisational log requirements.</p>
+<p>Finally, in the past many complaints have been made suggesting that JSON is unreadable to humans. However, managed services like the AWS Cloudwatch Logs &amp; Insights Consoles have gone a long way to make it easier to read the logs. While it takes some getting used to reading JSON logs it should therefore be less of a concern today.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

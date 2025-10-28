@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Applying AWS CDK Guardrails · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+
+  Background
+  
+    
+    Link to heading
+  
+
+The AWS Cloud Development Kit (AWS CDK) is an open-source software development framework that allows developers to define cloud infrastructure in code and provision it using AWS CloudFormation. It supports familiar programming languages like TypeScript, Python, Java and others. By simplifying the process of writing CloudFormation templates, the AWS CDK enables developers to quickly and easily build cloud applications.">
+<meta name="keywords" content="AWS, CDK, Cloud Development Kit, Customise, Guardrails, Bootstrap, Security, CloudOps">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Applying AWS CDK Guardrails">
+  <meta name="twitter:description" content="Background Link to heading The AWS Cloud Development Kit (AWS CDK) is an open-source software development framework that allows developers to define cloud infrastructure in code and provision it using AWS CloudFormation. It supports familiar programming languages like TypeScript, Python, Java and others. By simplifying the process of writing CloudFormation templates, the AWS CDK enables developers to quickly and easily build cloud applications.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/2025-01-26-cdk-guardrails/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Applying AWS CDK Guardrails">
+  <meta property="og:description" content="Background Link to heading The AWS Cloud Development Kit (AWS CDK) is an open-source software development framework that allows developers to define cloud infrastructure in code and provision it using AWS CloudFormation. It supports familiar programming languages like TypeScript, Python, Java and others. By simplifying the process of writing CloudFormation templates, the AWS CDK enables developers to quickly and easily build cloud applications.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-01-26T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-01-26T00:00:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/2025-01-26-cdk-guardrails/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/2025-01-26-cdk-guardrails/">
+              Applying AWS CDK Guardrails
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2025-01-26T00:00:00Z">
+                January 26, 2025
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              7-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p><img src="images/blog-image.png" alt="Applying AWS CDK Guardrails"></p>
+<h2 id="background">
+  Background
+  <a class="heading-link" href="#background">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The AWS Cloud Development Kit (AWS CDK) is an open-source software development framework that allows developers to define cloud infrastructure in code and provision it using AWS CloudFormation. It supports familiar programming languages like TypeScript, Python, Java and others. By simplifying the process of writing CloudFormation templates, the AWS CDK enables developers to quickly and easily build cloud applications.</p>
+<p>The AWS CDK offers high-level components known as constructs, which come pre-configured with sensible defaults for cloud resources, making it easier to set up complex environments. Developers can also create custom constructs to encapsulate and reuse cloud patterns specific to their applications. This approach not only accelerates the development cycle but also ensures consistency and best practices across deployments. The AWS CDK seamlessly integrates with other AWS services and tools, further enhancing the developer experience and productivity on the AWS platform.</p>
+<p>One general challenge in AWS CDK adoption is the bootstrap process. The bootstrap is a generated, versioned CloudFormation template that provisions resources required by the CDK to deploy applications into each AWS account and region. This includes an S3 bucket for storing assets and IAM roles that the CDK assumes for various deployment activities.</p>
+<p>At Virtuability, we have worked with the CDK in various environments over the years. A common request is that the default CDK bootstrap is not secure enough. We agree. The AdministratorAccess policy is used by default, allowing unrestricted deployment, which can be problematic in organisations with stricter security requirements. Customising the bootstrap to include guardrails can address this challenge.</p>
+<p>Generally, a conversation about CDK security with Security, Cyber or CloudOps teams is had across the following dimensions:</p>
+<ul>
+<li>Use of IAM PassRole: in itself not an explicit API call but rather an implied permission in the context of allowing an AWS service to do something on your behalf via a role (e.g. a Lambda execution role)</li>
+<li>The aggregate permissions allowed to perform a deployment. For instance, access to IAM user and group creation may be restricted or disallowed</li>
+<li>What the workloads can do at runtime, e.g what AWS API calls a Lambda can make to other services such as CloudWatch Logs, S3 and DynamoDB. This is typically achieved through use of <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html"  class="external-link" target="_blank" rel="noopener">AWS IAM Permissions Boundaries</a></li>
+<li>Guardrails (or Controls) to ensure that workloads are deployed securely, e.g. that S3 buckets have default encryption enabled</li>
+<li>Separation of landing zone and app &amp; workload concerns, e.g through namespacing roles, policies and instance profiles. This includes use of AWS IAM PassRole constraints on paths</li>
+</ul>
+<p>With this blog post we have included a customised AWS CDK bootstrap repo <a href="https://github.com/virtuability/cdk-guardrails"  class="external-link" target="_blank" rel="noopener">cdk-guardrails</a>, which can be used as a foundation to get started. It demonstrates several of these dimensions.</p>
+<h2 id="challenges-with-aws-cdk-adoption">
+  Challenges with AWS CDK Adoption
+  <a class="heading-link" href="#challenges-with-aws-cdk-adoption">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>As mentioned, one of the general challenges of adopting the AWS CDK is the bootstrap process. The bootstrap is a generated, versioned CloudFormation template that provisions the necessary resources for deploying applications into each AWS account and region. It includes an S3 bucket for storing assets and IAM roles that the CDK assumes to stage templates, artifacts, perform lookups, and deploy resources.</p>
+<p>Out of the box, the bootstrap includes two roles for deployment activities:</p>
+<ul>
+<li><code>cdk-&lt;qualifier&gt;-deploy-role-&lt;account&gt;-&lt;region&gt;</code>: This role is assumed by the CDK command to initiate deployment (e.g., cloudformation:CreateStack).</li>
+<li><code>cdk-&lt;qualifier&gt;-cfn-exec-role-&lt;account&gt;-&lt;region&gt;</code>: This role is passed by the CDK command to the CloudFormation service and is used to deploy AWS resources.</li>
+</ul>
+<p>By default, the <code>AdministratorAccess</code> policy is attached to the cfn-exec role, which means there are no restrictions on what the role can deploy. This can be problematic in organisations that require a least privilege mindset and permissions. Additionally, AWS accounts typically contain landing zone components and stacks that must be protected from changes by application stacks. The good news is that the CDK bootstrap can be customised to meet security requirements and guardrails.</p>
+<h2 id="customised-cdk-bootstraps">
+  Customised CDK Bootstraps
+  <a class="heading-link" href="#customised-cdk-bootstraps">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Creating a bootstrap for each landing zone component or application is impractical. Therefore, a middle-ground solution is needed that meets security requirements and guardrails while enabling developers to work relatively unhindered.</p>
+<p>A tiered approach to multiple co-existing CDK bootstraps is possible with different bootstrap qualifiers. For instance, a CloudOps and System administrator team can use a bootstrap for landing zone concerns (e.g. qualifier <code>lz</code>), while app development teams use a bootstrap with qualifier app (or mlops as in this sample).</p>
+<ul>
+<li><code>lz</code>: A landing zone bootstrap with elevated permissions that allow a CloudOps team to deploy</li>
+<li><code>app</code>, <code>mlops</code>  etc: An app workload bootstrap that can be commonly shared between workloads and deployment pipelines</li>
+</ul>
+<h2 id="guardrails">
+  Guardrails
+  <a class="heading-link" href="#guardrails">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The following rules apply to the CDK bootstrap:</p>
+<ul>
+<li>The CDK can create roles but must attach a suitable permissions boundary.</li>
+<li>Policies, roles and instance profiles must be namespaced (e.g. /apppolicies/, /approles/, /appinstanceprofiles/) to prevent changes to IAM resources outside of these namespaces, protecting the landing zone</li>
+<li>Permissions boundaries can be split by &ldquo;job function&rdquo; or purpose. In this sample, three permissions boundaries are created:
+<ol>
+<li>app workload roles</li>
+<li>custom resources</li>
+<li>init resources (such as the EKS Cluster&rsquo;s nested template).</li>
+</ol>
+</li>
+<li>Aspects apply the correct permissions boundary based on a construct&rsquo;s context</li>
+<li>Whitelist allowed AWS services only, and do not allow the creation of a VPC or Transit Gateway but allow the creation of EC2 instances</li>
+<li>Optionally include specific role ARNs that can use the CDK bootstrap roles</li>
+</ul>
+<p>Note that it is not ucommon to have several Permissions Boundaries to protect different workloads.</p>
+<h2 id="architecture">
+  Architecture
+  <a class="heading-link" href="#architecture">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The diagram below provides an overview of how to enable developers to develop and deploy workloads that must adhere to certain guardrails.</p>
+<p><img src="images/cdk-guardrails.png" alt="Applying AWS CDK Guardrails"></p>
+<h2 id="a-note-on-permissions-boundaries">
+  A Note on Permissions Boundaries
+  <a class="heading-link" href="#a-note-on-permissions-boundaries">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>While it is possible to set the permissions boundary out-of-the-box via the cdk.json file with the following context, it is not as flexible as using an Aspect visitor pattern:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span><span style="color:#e6db74">&#34;@aws-cdk/core:permissionsBoundary&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;cdk-mlops-permissions-boundary-123456789012-eu-west-1&#34;</span>
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Setting the permissions boundary like this prevents multi-account and multi-region CDK apps from deploying successfully. Various workarounds exist, but using the above mechanism will not add permissions boundaries to roles during unit tests, making it difficult to test them.</p>
+<p>Instead, Aspects (visitor pattern) can be used to decorate roles with permissions boundaries that include account, region, and bootstrap qualifier context. This approach allows for multiple permissions boundaries for different purposes rather than just one.</p>
+<h2 id="cdk-bootstrap-deployment">
+  CDK Bootstrap Deployment
+  <a class="heading-link" href="#cdk-bootstrap-deployment">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The input parameters to the stack do not fundamentally differ from the standard bootstrap, except for one exception:</p>
+<p>When deploying via the bootstrap from one account to another (e.g., from a Shared Services account), the standard bootstrap does not offer an option to be more granular in the trust relationship between the accounts beyond account ID. This customised bootstrap offers the <code>TrustedAccountsRoles</code> input parameter, a comma-separated list of role ARNs (or role ARN patterns with wildcard *) to further narrow which roles can deploy from the trusted account to the deployment account.</p>
+<p>Finally, a CDK bootstrap can either be deployed as a standalone Cloudformation Stack or it can be deployed as a <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/what-is-cfnstacksets.html"  class="external-link" target="_blank" rel="noopener">Cloudformation StackSet</a> across multiple accounts and regions.</p>
+<p>A StackSet reduces the amount of work required to deploy and maintain the CDK bootstrap across a large Organisation. As with all things, the CDK bootstrap evolves over time. In order to test the versions of the bootstrap we typically use 3 StackSets to deploy first to a Development OU, then a Staging OU and finally a Production OU. In this way changes can be tested before being deployed to Production accounts.</p>
+<h2 id="sample-cdk-app">
+  Sample CDK App
+  <a class="heading-link" href="#sample-cdk-app">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>In the <code>samples/cdk-app</code> directory of the repo, there is a sample CDK app that demonstrates all aspects of using the CDK bootstrap with guardrails. This includes:</p>
+<ul>
+<li>An aspect that adds the CDK bootstrap permissions boundary to all roles defined in the CDK app (see <code>samples/cdk-app/common/iam_pb_aspect.py</code>).</li>
+<li>An aspect that automatically adds a path to every IAM policy, role, and instance profile (see <code>samples/cdk-app/common/iam_path_aspect.py</code>).</li>
+</ul>
+<h2 id="conclusion">
+  Conclusion
+  <a class="heading-link" href="#conclusion">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Navigating the AWS CDK with precision and security doesn&rsquo;t have to be a daunting task. By weaving in essential guardrails like permissions boundaries, namespaced IAM resources, and tailored role ARNs, organizations can hit the sweet spot between robust security and developer freedom.</p>
+<p>The tiered bootstrap approach and aspect patterns offer a dynamic and flexible framework, ensuring seamless multi-account and multi-region deployments.</p>
+<p>With these strategies in place, your team can confidently harness the power of the AWS CDK to build, innovate, and deploy—without ever compromising on security. So, gear up, dive in, and let the AWS CDK elevate your cloud application game to new heights!</p>
+<h2 id="references">
+  References
+  <a class="heading-link" href="#references">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Here are some helpful resources to further explore the use of IAM permissions boundaries and CDK guardrails:</p>
+<ul>
+<li><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html"  class="external-link" target="_blank" rel="noopener">When and where to use IAM permissions boundaries</a></li>
+<li><a href="https://github.com/aws-samples/example-permissions-boundary"  class="external-link" target="_blank" rel="noopener">aws-samples/example-permissions-boundary</a></li>
+<li><a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_passrole.html"  class="external-link" target="_blank" rel="noopener">How to use the PassRole permission with IAM roles</a></li>
+<li><a href="https://aws.amazon.com/events/reinforce/"  class="external-link" target="_blank" rel="noopener">AWS re:Inforce - Best practices for delegating access on AWS</a></li>
+</ul>
+<p>With these guidelines and guardrails in place, you can ensure that your CDK deployments are secure and compliant with organisational policies, while still enabling developers to work effectively.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

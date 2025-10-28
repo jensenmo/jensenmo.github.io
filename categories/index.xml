@@ -6,6 +6,14 @@
     <description>Recent content in Categories on Morten Jensen</description>
     <generator>Hugo</generator>
     <language>en</language>
+    <lastBuildDate>Tue, 12 Nov 2019 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://jensenmo.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Uncategorized</title>
+      <link>https://jensenmo.github.io/categories/uncategorized/</link>
+      <pubDate>Tue, 12 Nov 2019 00:00:00 +0000</pubDate>
+      <guid>https://jensenmo.github.io/categories/uncategorized/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>

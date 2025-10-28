@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Moving to Cloud: Agility · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="Over the years I have witnessed, proposed and implemented a wide range of AWS use cases; and few of them actually belong in the sexier cutting-edge, containerised, hyper/auto-scalable, serverless micro-services realm. I mostly find a certain level of pragmatism - rooted in both tactical and strategic choices - involved in the adoption of Cloud:
+
+Proof of Concept development and testing
+Development of new products and services
+Off-premise backup, archival &amp; storage
+Offload external website traffic
+Licencing and support shortfalls; in particular for relational databases
+End-of-life and out-of-support hardware and software replacement
+
+While the business use case in the above-mentioned examples is generally relatively clear-cut I have witnessed less obvious use cases too - in particular in mature organisations.">
+<meta name="keywords" content="Agile, Agility, AWS, Cloud, Shadow IT">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Moving to Cloud: Agility">
+  <meta name="twitter:description" content="Over the years I have witnessed, proposed and implemented a wide range of AWS use cases; and few of them actually belong in the sexier cutting-edge, containerised, hyper/auto-scalable, serverless micro-services realm. I mostly find a certain level of pragmatism - rooted in both tactical and strategic choices - involved in the adoption of Cloud:
+Proof of Concept development and testing Development of new products and services Off-premise backup, archival &amp; storage Offload external website traffic Licencing and support shortfalls; in particular for relational databases End-of-life and out-of-support hardware and software replacement While the business use case in the above-mentioned examples is generally relatively clear-cut I have witnessed less obvious use cases too - in particular in mature organisations.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/moving-to-the-cloud-agility/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Moving to Cloud: Agility">
+  <meta property="og:description" content="Over the years I have witnessed, proposed and implemented a wide range of AWS use cases; and few of them actually belong in the sexier cutting-edge, containerised, hyper/auto-scalable, serverless micro-services realm. I mostly find a certain level of pragmatism - rooted in both tactical and strategic choices - involved in the adoption of Cloud:
+Proof of Concept development and testing Development of new products and services Off-premise backup, archival &amp; storage Offload external website traffic Licencing and support shortfalls; in particular for relational databases End-of-life and out-of-support hardware and software replacement While the business use case in the above-mentioned examples is generally relatively clear-cut I have witnessed less obvious use cases too - in particular in mature organisations.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2016-08-29T11:27:22+00:00">
+    <meta property="article:modified_time" content="2016-08-29T11:27:22+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/moving-to-the-cloud-agility/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/moving-to-the-cloud-agility/">
+              Moving to Cloud: Agility
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2016-08-29T11:27:22Z">
+                August 29, 2016
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              3-minute read
+            </span>
+          </div>
+          
+          <div class="categories">
+  <i class="fa-solid fa-folder" aria-hidden="true"></i>
+    <a href="/categories/uncategorized/">Uncategorized</a></div>
+
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>Over the years I have witnessed, proposed and implemented a wide range of AWS use cases; and few of them actually belong in the sexier cutting-edge, containerised, hyper/auto-scalable, serverless micro-services realm. I mostly find a certain level of pragmatism - rooted in both tactical and strategic choices - involved in the adoption of Cloud:</p>
+<ul>
+<li>Proof of Concept development and testing</li>
+<li>Development of new products and services</li>
+<li>Off-premise backup, archival &amp; storage</li>
+<li>Offload external website traffic</li>
+<li>Licencing and support shortfalls; in particular for relational databases</li>
+<li>End-of-life and out-of-support hardware and software replacement</li>
+</ul>
+<p>While the business use case in the above-mentioned examples is generally relatively clear-cut I have witnessed less obvious use cases too - in particular in mature organisations.</p>
+<p>Mature organisations are often entrenched in a particular market segment. There is often a focus on execution and operation; change doesn&rsquo;t come easily for fear of business disruption - or due to budgeting constraints. Sometimes there may also be an outsourcing element to IT operations where only the operational aspect is well defined and covered by Service-Level Agreements. Therefore, development and ongoing improvements (including technical debt) often take the back seat and is addressed on a best-effort basis; sometimes resulting in projects logging requests and waiting for requisite new resource - or change - for weeks or months at end. In more extreme cases for well over half a year.</p>
+<p>In situations like this, Cloud would seem the obvious choice; Solution &amp; Technical Architects and Developers can get on with proof-of-concepts and development while waiting for operations to catch up. The obvious risk here is that of disparity of development versus production deployment platform, which has frequently caught out development and operations teams in the past; often late in the project at pre-production and even production stages. The other risk is that of what has been coined &ldquo;shadow IT&rdquo;; the adoption of Cloud services in order to &ldquo;get the job done&rdquo; and therefore no awareness - nor governance, monitoring or support - from an operational perspective. Finally - and often more crucially - there&rsquo;s the organisational risk of obsolescence, i.e. disruption by other organisations because change is costly and comes so hard and slow.</p>
+<p>Oftentimes, cost of Cloud is also used as a reason for not adopting Cloud. Organisations may already have sufficient existing on-premise or leased infrastructure to meet demands; something often enabled by virtualisation - the precursor to Cloud that we know today. There are even (infrequently) organisations that prefer CapEx over OpEx. However, one could argue that cost doesn&rsquo;t really matter if rate of change and execution - and therefore competitiveness - increases; and therefore reduces organisational risk.</p>
+<p>Agility is therefore not so much a question of technical prowess but rather an organisational and cultural mindset. The adoption of Agility often comes down to finding a common middle-ground between two organisational and market forces: change versus execution. This is especially true today where countless start-ups are vying to disrupt even mature markets like banking and insurance.</p>
+<p>Ignoring this fact comes at <a href="https://www.weforum.org/agenda/2015/01/what-is-the-life-expectancy-of-your-company/"  class="external-link" target="_blank" rel="noopener">great peril</a> in terms of organisational success and life expectancy.</p>
+<p>In conclusion, Cloud is a tool that can help facilitate organisational Agility to meet change and disruption head-on. But ultimately, that Agility must be culturally entrenched. This undoubtedly also adds more fun and job diversity for many employees.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

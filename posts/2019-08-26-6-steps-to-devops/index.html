@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  6 Steps to DevOps · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+  Introduction
+  
+    
+    Link to heading
+  
+
+Why adopt DevOps?
+IT change can be painful and subject to long lead times in many organisations. The pain generally stems from treating change as exceptional rather than business-as-usual - often in the form of running a project to effect the change.
+Running multiple concurrent IT-related change projects can put a strain on the organisation and managing conflicts in the form of people, time, cost and overlaps can become extremely complex.">
+<meta name="keywords" content="AWS, DevOps, DevSecOps, Pipeline, Workflow">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="6 Steps to DevOps">
+  <meta name="twitter:description" content="Introduction Link to heading Why adopt DevOps?
+IT change can be painful and subject to long lead times in many organisations. The pain generally stems from treating change as exceptional rather than business-as-usual - often in the form of running a project to effect the change.
+Running multiple concurrent IT-related change projects can put a strain on the organisation and managing conflicts in the form of people, time, cost and overlaps can become extremely complex.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/2019-08-26-6-steps-to-devops/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="6 Steps to DevOps">
+  <meta property="og:description" content="Introduction Link to heading Why adopt DevOps?
+IT change can be painful and subject to long lead times in many organisations. The pain generally stems from treating change as exceptional rather than business-as-usual - often in the form of running a project to effect the change.
+Running multiple concurrent IT-related change projects can put a strain on the organisation and managing conflicts in the form of people, time, cost and overlaps can become extremely complex.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-08-26T00:00:00+00:00">
+    <meta property="article:modified_time" content="2019-08-26T00:00:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/2019-08-26-6-steps-to-devops/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/2019-08-26-6-steps-to-devops/">
+              6 Steps to DevOps
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2019-08-26T00:00:00Z">
+                August 26, 2019
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              8-minute read
+            </span>
+          </div>
+          
+          <div class="categories">
+  <i class="fa-solid fa-folder" aria-hidden="true"></i>
+    <a href="/categories/uncategorized/">Uncategorized</a></div>
+
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <h1 id="introduction">
+  Introduction
+  <a class="heading-link" href="#introduction">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Why adopt DevOps?</p>
+<p>IT change can be painful and subject to long lead times in many organisations. The pain generally stems from treating change as exceptional rather than business-as-usual - often in the form of running a project to effect the change.</p>
+<p>Running multiple concurrent IT-related change projects can put a strain on the organisation and managing conflicts in the form of people, time, cost and overlaps can become extremely complex.</p>
+<p>The reality of change however is that it never stops. Often the amount of change within an organisation is ever increasing in order to fulfil new and ongoing business objectives, deliver business value, incorporate legislative change etc.</p>
+<p>A rethink is needed. Change should take front-seat in the IT organisation. It is best achieved by establishing and empowering cross-functional teams that each have responsibility and accountability for a particular function, service or product. This can indeed also include IT support, security, governance etc.</p>
+<p>Change is at the core of DevOps. DevOps is about building lean workflows and adopting an engineering culture that embraces change.</p>
+<p>Although there is no single DevOps definition it concerns three areas:</p>
+<ul>
+<li>Development practices</li>
+<li>Tooling</li>
+<li>Continuous improvement, also known as operational excellence</li>
+</ul>
+<p>Note that in this context DevOps and Agile are complementary. Simply put, Agile deals with workflow planning and DevOps with workflow execution.</p>
+<p>For DevOps transformations to succeed radical rethinking of workflows and practices across the IT organisation is needed. This will require senior sponsorship.</p>
+<h1 id="1-sponsorship">
+  1. Sponsorship
+  <a class="heading-link" href="#1-sponsorship">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Adopting DevOps can impact the wider organisation. For this reason senior sponsorship is of paramount importance in order to facilitate organisational change, to cut red tape and make exceptions to existing processes where needed.</p>
+<p>In return a sponsor will demand regular updates on progress and reporting on impact. This will include what has been learnt from the initiative.</p>
+<p>At senior level there is probably already an awareness of - and frustration with - the pain and pace of IT change. It may therefore not be that hard to find a sponsor. That frustration may even lead to a call to arms to seek ways to improve the situation.</p>
+<p>At this point change agents - with an early adopter mindset - are typically found within the organisation  to help bootstrap and drive the organisational changes required to adopt Agile &amp; DevOps practices as well as to assemble a first team.</p>
+<h1 id="2-inception">
+  2. Inception
+  <a class="heading-link" href="#2-inception">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>DevOps adoption should be done in phases.</p>
+<p>The first phase will typically be to get one or a few DevOps teams in place and to get a few successful transformation projects under the belt to learn and to adopt the DevOps tools and culture in a way that works for the organisation.</p>
+<p>At this point also consider use of an external partner in an advisory capacity to help formulate a DevOps adoption strategy that works for the business. The right partner can help mitigate risk of failure considerably by offering a realistic path to DevOps adoption.</p>
+<p>The initial transformation project choice typically entails considering service or product attributes like:</p>
+<ul>
+<li>Size</li>
+<li>Complexity</li>
+<li>Strategic relevance</li>
+<li>Risks</li>
+</ul>
+<p>There is no right answer to choosing an area of transformation but generally the function is strategically important (to focus on things that matter), small enough to be deliverable in a reasonable time frame and big enough in scope to learn DevOps practices.</p>
+<p>A note on using partners. Partners can bring in a vast amount of experience and guidance on DevOps adoption. However, attempting to use the partners as change agents within the organisation is unlikely to yield the anticipated results. Partners do not possess the influence within the organisation to effect change. Instead, use partners for help with strategy, advice and to fill knowledge and skills gaps.</p>
+<h1 id="3-team">
+  3. Team
+  <a class="heading-link" href="#3-team">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>In DevOps, culture is vitally important. Building the first teams means finding individuals within the organisation with an open, early adopter and gritty mindset.</p>
+<p>Building the first team involves identifying the roles that need to be filled in order to create a self-sustainable team. It means finding the right people for the roles from within the organisation to make it happen.</p>
+<p>The team is cross-functional to support the product fully. The team therefore often includes developers, DBAs, architects and often also roles like a Product Manager and a Scrum Master or equivalent.</p>
+<p>Team building exercises and celebratory events are recommended to build a cohesive team that shares common goals.</p>
+<p>Many roles in the team can generally be filled from within the organisation in order to facilitate organisational learning.</p>
+<p>Some roles are likely to require outside assistance in order to bring in the right expertise to fill knowledge and skill gaps to bootstrap the transformation faster. The DevOps toolset is most often the area to hire outside assistance for.</p>
+<p>Also consider the Forming, Storming, Norming &amp; Performing aspects of building a team. It will take time for the team to act as a performing unit with common goals.</p>
+<h1 id="4-tools">
+  4. Tools
+  <a class="heading-link" href="#4-tools">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Tools underpin DevOps practices in order to automate common and time consuming tasks. Often, some of the  tools are already used - unit tests, continuous integration with automated builds etc. are now quite common.</p>
+<p>The tools in the DevOps toolbox include:</p>
+<ul>
+<li>Common source code management and version control practices; e.g. Git(Hub) and feature/master branching</li>
+<li>Build automation; compilation of code and generation of artifacts</li>
+<li>Test automation; unit, integration and functional testing</li>
+<li>Build artifact staging in a repository, e.g. Docker images, jar files etc.</li>
+<li>Release management - release approval and deployment automation</li>
+<li>Configuration management - infrastructure configuration, infrastructure as code &amp; parameterisation</li>
+<li>Monitoring - performance, issue monitoring and alerting</li>
+</ul>
+<p>However, teams need to be realistic about rate of tool adoption. For many existing IT products and services it is not a simple or indeed overnight process to fully automate all aspects.</p>
+<p>It is therefore imperative to first map the underlying processes of existing development, testing and deployment practices from code commit to production deployment. This includes identifying stakeholders, gatekeepers and hand-off points.</p>
+<p>Once the processes and stakeholders are understood it is possible to plan and factor in automation gains over a number of iterations - aside from supporting business-as-usual.</p>
+<p>Finally, the vendor market for DevOps tools is overwhelming. But it&rsquo;s important to adopt the right tool for each job and to consider both development and operational aspects of tool choices that will help minimise overheads. Some of the unmanaged tools require considerable ongoing maintenance and perhaps even their own dedicated teams.</p>
+<p>The guiding principle should generally be to keep it simple and to adopt managed tools where possible in order to minimise overheads.</p>
+<h1 id="5-continuous-improvement">
+  5. Continuous Improvement
+  <a class="heading-link" href="#5-continuous-improvement">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>At the core of DevOps is an aspiration to continuously improve - also known as Operational Excellence. It is important to set aside time to regularly discuss what went well, what didn&rsquo;t and what can be done to improve workflows, cooperation, communication etc. Those bits that can be improved within the team are added to the backlog for the next iterations.</p>
+<p>In this context gathering metrics are important. Adopt actionable metrics that measure process improvement and DevOps maturity over time. Example metrics include:</p>
+<ul>
+<li>Production uptime and failure count</li>
+<li>Fix-on-fail and rollback events</li>
+<li>Pipeline time, i.e. time spent in the pipeline from commit, through build, deployment, test and until successful production rollout</li>
+<li>Change lead time, i.e. time from work starts on a feature until successful production rollout</li>
+</ul>
+<p>It&rsquo;s equally important to establish post-mortems for when things go wrong in order to identify often systemic problems, determine root cause and ultimately resolve the issue - not merely working around it. Add the learnings to the body of knowledge for future reference and training.</p>
+<h1 id="6-scale">
+  6. Scale
+  <a class="heading-link" href="#6-scale">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>As the organisation evolves its DevOps practices it is imperative that the learnings are disseminated throughout the organisation. That&rsquo;s phase 2 of DevOps adoption, which looks to scale the effort wider than the initial team.</p>
+<p>This can be achieved by building a shared body of knowledge of what works for the organisation and teams and to rotate some members out of the already existing DevOps teams to help build and coach other teams.</p>
+<p>Once the DevOps transformation endeavour hits critical mass, identifying and deploying new change agents in other parts of the organisation also helps spread the adoption of DevOps.</p>
+<h1 id="conclusion">
+  Conclusion
+  <a class="heading-link" href="#conclusion">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>&ldquo;It&rsquo;s all about the journey, not the destination&rdquo; has had some considerable mileage over the years. But in the context of DevOps it still rings true. DevOps is about continuously evolving and adapting to change and therefore does not have an ultimate end-state.</p>
+<p>People come and go. Markets and strategy change. Applications change or may get replaced. Restructuring may occur to rationalise business processes or proposition.</p>
+<p>A given DevOps team is therefore best thought of as delivering on a particular business objective. The details of that objective will invariably change over time just like everything else.</p>
+<p>Please reach out if you have any questions or comments on DevOps adoption to <a href="mailto:team@virtuability.com" >team@virtuability.com</a>.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

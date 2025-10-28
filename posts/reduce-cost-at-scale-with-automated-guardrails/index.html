@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Reduce Cost at Scale with Automated Governance &amp; Guardrails · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+
+  Background
+  
+    
+    Link to heading
+  
+
+As organisations continue to grow and with the resulting increases in AWS consumption there is a need to be able to cost-effectively scale not just workloads but also governance and guardrails to ensure that security requirements are met across the estate.
+A key requirement to move quickly to expand and improve services and products in AWS is to enable developers to work unhindered while establishing a set of guardrails that ensure safe operation of workloads.">
+<meta name="keywords" content="AWS, Governance, Guardrails, Organizations, SSO, Identity Center, Organizational Units, Control Tower, Preventive, Proactive, Detective, Account, EC2, Image Builder, CDK, Cloud Development Kit, Cloudformation, Security Hub">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Reduce Cost at Scale with Automated Governance & Guardrails">
+  <meta name="twitter:description" content="Background Link to heading As organisations continue to grow and with the resulting increases in AWS consumption there is a need to be able to cost-effectively scale not just workloads but also governance and guardrails to ensure that security requirements are met across the estate.
+A key requirement to move quickly to expand and improve services and products in AWS is to enable developers to work unhindered while establishing a set of guardrails that ensure safe operation of workloads.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/reduce-cost-at-scale-with-automated-guardrails/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Reduce Cost at Scale with Automated Governance & Guardrails">
+  <meta property="og:description" content="Background Link to heading As organisations continue to grow and with the resulting increases in AWS consumption there is a need to be able to cost-effectively scale not just workloads but also governance and guardrails to ensure that security requirements are met across the estate.
+A key requirement to move quickly to expand and improve services and products in AWS is to enable developers to work unhindered while establishing a set of guardrails that ensure safe operation of workloads.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-04-17T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-04-17T00:00:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/reduce-cost-at-scale-with-automated-guardrails/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/reduce-cost-at-scale-with-automated-guardrails/">
+              Reduce Cost at Scale with Automated Governance &amp; Guardrails
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2024-04-17T00:00:00Z">
+                April 17, 2024
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              3-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p><img src="images/landing-zone-bliss-1.jpeg" alt="Reduce Cost at Scale with Automated Governance &amp; Guardrails"></p>
+<h2 id="background">
+  Background
+  <a class="heading-link" href="#background">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>As organisations continue to grow and with the resulting increases in AWS consumption there is a need to be able to cost-effectively scale not just workloads but also governance and guardrails to ensure that security requirements are met across the estate.</p>
+<p>A key requirement to move quickly to expand and improve services and products in AWS is to enable developers to work unhindered while establishing a set of guardrails that ensure safe operation of workloads.</p>
+<h2 id="solutions">
+  Solutions
+  <a class="heading-link" href="#solutions">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Virtuability has worked closely with organisations to considerably improve governance and guardrails throughout the AWS estate, which includes automation to ensure that accounts, workloads and teams are automatically covered.</p>
+<p>The portfolio of solutions is a mix of out-of-the-box AWS capabilities combined with a range of tools that minimise overall operational overheads. The tools and capabilities include:</p>
+<ul>
+<li>An AWS Organizations account structure rooted in team structure and the development lifecycle combined with Control Tower for general governance and guardrails of AWS estate and users</li>
+<li>Automated deployment of bespoke and Control Tower Preventive, Proactive and Detective controls across the organisation in a unified configuration, which is achieved transparently on an Organisational, OU and account level</li>
+<li>Automated AWS SSO (IAM Identity Center) deployment of permission sets, customer-managed policies and account assignments as teams change, new accounts are provisioned or existing accounts are moved within the Organisational structure</li>
+<li>EC2 &amp; container Image Builder factory with automated build, hardening, test and publishing of a unified set of hardened OS flavours (25+) that are shared with and used across the organisation. Adding new or removing old, hardened OS flavours is a simple and very time-efficient process</li>
+<li>Automated, unified pipeline roles factory that automatically distributes deployment pipeline roles across the organization. Includes a set of guardrails to ensure correctness of policies and permissions</li>
+<li>Unified set of Cloud Development Kit (CDK) &amp; Cloudformation Bootstrap Stacks, roles and policies that separate landing zone concerns from application workloads through a combination of IAM paths, Permissions Boundaries and Security Control Policies</li>
+<li>A split of landing zone, deployment and app/services workload roles and resources by leveraging IAM policy and role paths and leveraging permission boundaries, which allows developers to have more permissions within well-established boundaries</li>
+<li>Regular, automated reporting of aggregate Security Hub findings has enabled the organisation to identify and correct problematic workloads on a risk/impact basis</li>
+</ul>
+<h2 id="business-outcomes">
+  Business Outcomes
+  <a class="heading-link" href="#business-outcomes">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Through the new tools and capabilities, organisations have improved governance and security posture considerably while scaling AWS consumption at the same time.</p>
+<p>This has led to a hands-off approach in provisioning new accounts, guardrails, SSO permission sets etc.</p>
+<p>Many previously manual and laborious challenges have been eliminated over time, which has allowed the IT Operations &amp; Security teams to instead focus on other business objectives and the future.</p>
+<p>For more information, please feel free to contact us at <a href="mailto:team@virtuability.com" >team@virtuability.com</a>.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

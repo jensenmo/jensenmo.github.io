@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Leveraging Serverless (SAM) with Cognito Authentication · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+  Introduction
+  
+    
+    Link to heading
+  
+
+Using Serverless combined with Cognito can be a great way to eliminate the real estate as well as development and operational footprint when it comes to authentication and authorisation stacks.
+Furthermore, Cognito is also likely to further enhance overall security posture when compared to in particular homebrewn alternatives.
+We have put together a full demonstration Cognito application stack based on Serverless (SAM). This includes code, infrastructure as code and a Codepipeline. All ready to go (with some prerequisites).">
+<meta name="keywords" content="Authentication, Authorisation, Cognito, Serverless">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Leveraging Serverless (SAM) with Cognito Authentication">
+  <meta name="twitter:description" content="Introduction Link to heading Using Serverless combined with Cognito can be a great way to eliminate the real estate as well as development and operational footprint when it comes to authentication and authorisation stacks.
+Furthermore, Cognito is also likely to further enhance overall security posture when compared to in particular homebrewn alternatives.
+We have put together a full demonstration Cognito application stack based on Serverless (SAM). This includes code, infrastructure as code and a Codepipeline. All ready to go (with some prerequisites).">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/leveraging-serverless-cognito-authentication/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Leveraging Serverless (SAM) with Cognito Authentication">
+  <meta property="og:description" content="Introduction Link to heading Using Serverless combined with Cognito can be a great way to eliminate the real estate as well as development and operational footprint when it comes to authentication and authorisation stacks.
+Furthermore, Cognito is also likely to further enhance overall security posture when compared to in particular homebrewn alternatives.
+We have put together a full demonstration Cognito application stack based on Serverless (SAM). This includes code, infrastructure as code and a Codepipeline. All ready to go (with some prerequisites).">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2019-11-12T00:00:00+00:00">
+    <meta property="article:modified_time" content="2019-11-12T00:00:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/leveraging-serverless-cognito-authentication/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/leveraging-serverless-cognito-authentication/">
+              Leveraging Serverless (SAM) with Cognito Authentication
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2019-11-12T00:00:00Z">
+                November 12, 2019
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              3-minute read
+            </span>
+          </div>
+          
+          <div class="categories">
+  <i class="fa-solid fa-folder" aria-hidden="true"></i>
+    <a href="/categories/uncategorized/">Uncategorized</a></div>
+
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <h2 id="introduction">
+  Introduction
+  <a class="heading-link" href="#introduction">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Using Serverless combined with Cognito can be a great way to eliminate the real estate as well as development and operational footprint when it comes to authentication and authorisation stacks.</p>
+<p>Furthermore, Cognito is also likely to further enhance overall security posture when compared to in particular homebrewn alternatives.</p>
+<p>We have put together a <a href="https://github.com/virtuability/aws-auth/"  class="external-link" target="_blank" rel="noopener">full demonstration Cognito application stack based on Serverless (SAM)</a>. This includes code, infrastructure as code and a Codepipeline. All ready to go (with some prerequisites).</p>
+<h2 id="contents">
+  Contents
+  <a class="heading-link" href="#contents">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>The demonstration is a somewhat simplified implementation and demonstrates the following capabilities:</p>
+<ul>
+<li>Numerous AWS CLI Cognito authentication examples (did you know that you can act as a Cognito user with the AWS CLI?)</li>
+<li>AWS Codepipeline to perform source, build and deployment to development (single-stage pipeline) or test and production (multi-stage pipeline)</li>
+<li>AWS CodeBuild for build of application stack and code</li>
+<li>Cognito User Pool for user authentication</li>
+<li>Cognito custom domain with hosted UI where web browser users can sign-up, confirm account and sign-in</li>
+<li>Cognito Identity Pool to demonstrate both unauthenticated and authenticated access and exchange of Cognito token for temporary AWS credentials that can be used to interact with AWS services (in this case AWS PinPoint)</li>
+<li>Cognito Resource Server to demonstrate how to obtain OAuth2 client (service-to-service) credentials</li>
+<li>Cognito User Group to demonstrate how to add users to a group</li>
+<li>AWS Lambdas to demonstrate Cognito integration: User Pre-Signup trigger (validates email address and <a href="https://github.com/ivolo/disposable-email-domains"  class="external-link" target="_blank" rel="noopener">email domain from a list of disposable email domains</a>), User Sign-in (used both Pre and Post) trigger, Post-Signup trigger</li>
+<li>API Gateway to demonstrate user and guest access</li>
+<li>AWS Lambda underpinning the API Gateway to demonstrate guest and user access via ID token</li>
+<li>AWS SNS topic where that user events are posted to (creation and sign-in)</li>
+<li>AWS CloudWatch Log Groups (with automatic encryption applied via custom resource)</li>
+<li>AWS CloudWatch Dashboard for runtime metrics surrounding the AWS Lambdas</li>
+<li>Route 53 records for both Cognito hosted UI and API Gateway (this does require AWS-hosted domains)</li>
+</ul>
+<h2 id="limitations">
+  Limitations
+  <a class="heading-link" href="#limitations">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Cognito, as with all other technologies, has a number of limitations to consider.</p>
+<ul>
+<li>Currently there are no CloudWatch metrics for Cognito. Advanced offers per-user metrics but it is a costly option</li>
+<li>There&rsquo;s only very limited Cognito logging out of the box (user migration)</li>
+<li>Cognito Cloudformation coverage is not complete although very recently <a href="https://aws.amazon.com/about-aws/whats-new/2019/10/amazon-cognito-increases-cloudformation-support/"  class="external-link" target="_blank" rel="noopener">it did get better</a>. For instance <code>AWS::Cognito::UserPoolDomain</code> does not return the required alias target (Cloudfront distribution) in order to create a Route53 AA record</li>
+<li>Cognito Lambda trigger execution time has a maximum of 5 seconds. The trigger is retried 3 times at which point the user request (sign-up, sign-in, user migration etc.) is failed. This limitation does make Lambda invocation very tricky if the Lambda is attached to a VPC due to cold-start</li>
+</ul>
+<p>To workaround some of the cons consider:</p>
+<ul>
+<li>To get Cognito usage metrics, introduce pre/post sign-in and sign-up Lambda triggers that log events to CloudWatch Logs.</li>
+<li>We included a UserPoolDomain custom resource that supports returning the alias target (Cloudfront distribution) in order to create a Route53 AA record</li>
+<li>Where possible, avoid attaching triggers to a VPC. Alternatively, a mitigation would be to trigger each Lambda trigger regularly to keep Lambda instances warm for as long as possible</li>
+</ul>
+<h2 id="conclusion">
+  Conclusion
+  <a class="heading-link" href="#conclusion">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h2>
+<p>Authentication and authorisation stacks don&rsquo;t have to be daunting. We have provided a fairly comprehensive example of a Serverless Cognito stack.</p>
+<p>Much more is possible. A couple of examples:</p>
+<ul>
+<li>Password-less authentication with Cognito using the authentication challenge Lambda triggers</li>
+<li>Complete customisation of messages with proper html formatted emails for password-less authentication, sign-up and even a welcome email</li>
+<li>Seemless user migration from legacy authentication stacks with the help of some Cognito Lambda trigger plumbing</li>
+</ul>
+<p>Feel free to raise any bugs/issues on GitHub and we will try to address them. Even better, feel free to issue pull requests (that also includes documentation).</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

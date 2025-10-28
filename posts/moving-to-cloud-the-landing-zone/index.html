@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  Moving to Cloud: the Landing Zone · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="In military terms a Landing Zone is an area where aircraft can land; in effect a base camp from where operations can extend.
+AWS has for the last year or two used the term Landing Zone to convey an infrastructure foundation and security baseline on which applications and services can &ldquo;land&rdquo;. The applications inherit &amp; adopt a set of shared services, integration and design patterns. The purpose of the Landing Zone is to establish an organisational baseline that supports its requirements for infrastructure and security and is rooted in &ldquo;best practices&rdquo;, which seek to balance business and security risks against innovation and value.">
+<meta name="keywords" content="AWS, AWS Organizations, AWS Config, Cloud, CloudWatch, CloudFormation, CloudTrail, Consolidated Billing, Encryption, Governance, GuardDuty, Landing zone, Network, Security, Trusted Advisor, VPC">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Moving to Cloud: the Landing Zone">
+  <meta name="twitter:description" content="In military terms a Landing Zone is an area where aircraft can land; in effect a base camp from where operations can extend.
+AWS has for the last year or two used the term Landing Zone to convey an infrastructure foundation and security baseline on which applications and services can “land”. The applications inherit &amp; adopt a set of shared services, integration and design patterns. The purpose of the Landing Zone is to establish an organisational baseline that supports its requirements for infrastructure and security and is rooted in “best practices”, which seek to balance business and security risks against innovation and value.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/moving-to-cloud-the-landing-zone/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="Moving to Cloud: the Landing Zone">
+  <meta property="og:description" content="In military terms a Landing Zone is an area where aircraft can land; in effect a base camp from where operations can extend.
+AWS has for the last year or two used the term Landing Zone to convey an infrastructure foundation and security baseline on which applications and services can “land”. The applications inherit &amp; adopt a set of shared services, integration and design patterns. The purpose of the Landing Zone is to establish an organisational baseline that supports its requirements for infrastructure and security and is rooted in “best practices”, which seek to balance business and security risks against innovation and value.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2018-07-07T12:22:38+00:00">
+    <meta property="article:modified_time" content="2018-07-07T12:22:38+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/moving-to-cloud-the-landing-zone/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/moving-to-cloud-the-landing-zone/">
+              Moving to Cloud: the Landing Zone
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2018-07-07T12:22:38Z">
+                July 7, 2018
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              6-minute read
+            </span>
+          </div>
+          
+          <div class="categories">
+  <i class="fa-solid fa-folder" aria-hidden="true"></i>
+    <a href="/categories/uncategorized/">Uncategorized</a></div>
+
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p>In military terms a Landing Zone is an area where aircraft can land; in effect a base camp from where operations can extend.</p>
+<p>AWS has for the last year or two used the term <a href="https://www.youtube.com/watch?v=nXdgc1GREiU"  class="external-link" target="_blank" rel="noopener">Landing Zone</a> to convey an infrastructure foundation and security baseline on which applications and services can &ldquo;land&rdquo;. The applications inherit &amp; adopt a set of shared services, integration and design patterns. The purpose of the Landing Zone is to establish an organisational baseline that supports its requirements for infrastructure and security and is rooted in &ldquo;best practices&rdquo;, which seek to balance business and security risks against innovation and value.</p>
+<p>The foundation generally includes:</p>
+<ul>
+<li>A Multi-Account structure that is linked with <a href="https://aws.amazon.com/organizations/"  class="external-link" target="_blank" rel="noopener">AWS Organizations</a> and <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/consolidated-billing.html"  class="external-link" target="_blank" rel="noopener">Consolidated Billing</a></li>
+<li>Central root account management and break-glass procedures for all accounts using hardware MFA tokens</li>
+<li>Central authentication &amp; authorization between accounts (from a single Shared Services account), using cross-account roles and IAM users &amp; groups to map to those roles</li>
+<li>A set of security and audit enablers, including CloudTrail in all accounts/regions and replication of the trails to a central Security &amp; Logging account</li>
+<li>A set of central alerting enablers such as SNS topics and integration to alerting/messaging platforms (for instance SMS, email to mailing groups like Google - or even Slack)</li>
+<li>Two sets of VPC patterns; one for shared services and management access (bastion, proxy etc.) and one for each environment; perhaps each environment is also hosted in a separate account</li>
+<li>An application/services environment account structure that isolates Software Development Life-cycle environments by VPC and/or account; perhaps even by service/application</li>
+<li>Integration with On-Premise Data Centres via VPN - either environment-by-environment or perhaps via the use of a central Transit VPC account, which acts either as Proxy or Routing</li>
+<li>Centralised Bastion and VPC peering from e.g. Shared Services to environment accounts for centralised SSH access where warranted</li>
+<li><a href="https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Dashboards.html"  class="external-link" target="_blank" rel="noopener">Cloudwatch Dashboards</a> for Infrastructure metrics</li>
+</ul>
+<p>It is important to note building a full Landing Zone from scratch is no easy feat. It&rsquo;s therefore important to start off in small bites and evolve the Landing Zone over time. A suggested priority order is this:</p>
+<ul>
+<li>Decide on a suitable AWS account structure: Shared Services, Security &amp; Logging and a number of environment accounts. Create an AWS account and continue any further account creation via AWS Organizations.</li>
+<li>Establish as set of bootstrap IAM users, groups and roles that will support the Infrastructure/DevOps team and initial Developers, Testers, DBAs and Operations staff</li>
+<li>Use AWS Cloudformation Stack-Sets to rollout common resources and configuration for e.g. CloudTrail, Cloudwatch and Config across all of the accounts. The advantage of Stack-Sets is that adding another account to the Landing Zone is very straightforward</li>
+<li>Enable CloudTrail and Config in all accounts and regions and copy trails and config to a central account</li>
+<li>Establish an Infrastructure (Code)pipeline to automatically rollout infrastructure changes across the accounts</li>
+</ul>
+<p>The Landing Zone security baseline should also include considerations and tools like:</p>
+<ul>
+<li>VPC FlowLogs and NACLs (Network Access Controls).</li>
+<li>Configuration management and tracking across all accounts, e.g. using AWS Config - with monitoring of baseline rules through AWS Config Rules</li>
+<li>Regular use of Trusted Advisor (with Business Support) for security and cost optimisation recommendations</li>
+<li>Monitoring &amp; Alerting; Consider alerting endpoints like Slack, which offer mobile push notifications and a collaborative space to work on issues</li>
+<li>GuardDuty for threat detection where the VPCs are public facing or are connected via VPNs to on-prem or 3rd party Data Centres and services</li>
+<li>Blast radius limitation. Things to consider are whether development and test environments should be publicly accessible. Consider using AWS CloudFront with WAF to whitelist access; similarly Application Load Balancers can also have whitelisted IP access (e.g. from Cloudfront only)</li>
+<li>Encryption requirements; encrypt data at rest (EBS volumes, RDS storage, S3 objects and Cloudwatch Logs ) and in transit (TLS/SSL between client and app/service). Consider whether encryption keys should be managed from a central account, which makes other accounts consumers (only) of the keys without means to delete the keys</li>
+<li>Data Exfiltration &amp; malware phone-home mitigations. For instance using an Egress Proxy (as opposed to NAT Gateways that have unrestricted outbound routing) like Squid to whitelist domains and IP addresses for read-only and rewrite activity. Whitelist egress traffic for e.g. operating system updates etc. For outbound traffic exceptions consider replacing NAT Gateways with NAT instances because NAT instances can have Security Groups assigned to them</li>
+<li>Developer, Tester, DBA and Operations access. Workspaces can be an excellent option for facilitating access to AWS that is &ldquo;out-of-band&rdquo;, i.e. there&rsquo;s no need for bastion or Internet access to facilitate access.</li>
+</ul>
+<p>Establishing a good Landing Zone foundation is important in order to avoid sprawl, inconsistency and security concerns when it comes to migrating or rolling out services in AWS. Below is a list of relevant Landing Zone resources for getting started on the Landing Zone journey. The list includes AWS announcements and links to predefined templates that are a good starting point.</p>
+<p>Resources:</p>
+<ul>
+<li><a href="https://aws.amazon.com/answers/aws-landing-zone/"  class="external-link" target="_blank" rel="noopener">AWS Landing Zone</a> was very recently announced and promises a starting point for many of the aspects covered in this article. At the time of publishing, the AWS Landing Zone was not yet publicly available. It features a number of interesting services including the Account Vending Machine and anInfrastructure (Code) Pipeline</li>
+<li>Setting up <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/useconsolidatedbilling-procedure.html"  class="external-link" target="_blank" rel="noopener">Consolidated Billing and Linked Accounts via AWS Organizations</a>  is essential when operating a multi-account Landing Zone set-up. The process is fairly straightforward and it&rsquo;s even possible to create accounts from AWS Organizations without having to go through the usual account creation process.</li>
+<li>Preparing for Cloudformation cross-account StackSets is strongly recommended for a consistent cross-account set-up. Pre-baked roles and policies to enable StackSets can be found at <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/stacksets-prereqs.html"  class="external-link" target="_blank" rel="noopener">Prerequisites: Granting Permissions for Stack Set Operations</a></li>
+<li>Starting point for monitoring and alerting on API access via CloudTrail (unauthorized access attempts, login failures and create/update/delete operations on some resources); <a href="https://docs.aws.amazon.com/awscloudtrail/latest/userguide/use-cloudformation-template-to-create-cloudwatch-alarms.html#use-cloudformation-template-to-create-cloudwatch-alarms-example"  class="external-link" target="_blank" rel="noopener">Example Cloudformation Template</a></li>
+<li>One could do worse than start with the <a href="https://aws.amazon.com/quickstart/architecture/compliance-uk-official/"  class="external-link" target="_blank" rel="noopener">UK-OFFICIAL management and environment VPC blueprint</a>, which includes a set of ready-to-go templates for standing up the VPCs. However, some caveats include: this set-up utilises only a single AWS account (one may want to stand up the management VPC in a shared services account) and egress traffic is unbounded via NAT Gateways per default</li>
+<li>One can utilise <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-roles.html"  class="external-link" target="_blank" rel="noopener">cross-account roles for Developer, Tester, DBA &amp; Operations API access</a> (just like the Console) for better security posture, e.g. via the AWS CLI. The CLI facilitates both MFA and token caching so that one doesn&rsquo;t have to type in an MFA code at each call</li>
+<li><a href="https://aws.amazon.com/about-aws/whats-new/2018/04/new-multi-account-multi-region-data-aggregation-capability-in-aws-config/"  class="external-link" target="_blank" rel="noopener">New Multi-Account, Multi-Region Data Aggregation Capability in AWS Config</a></li>
+<li><a href="https://aws.amazon.com/about-aws/whats-new/2018/07/automate-amazon-guardduty-provisioning-over-multiple-accounts-and-regions-with-aws-cloudformation-stacksets-integration/"  class="external-link" target="_blank" rel="noopener">Automate Amazon GuardDuty Provisioning Over Multiple Accounts and Regions with AWS CloudFormation StackSets Integration</a></li>
+<li>There are a bunch of relevant Cloudformation templates available in the <a href="https://github.com/awslabs/aws-cloudformation-templates"  class="external-link" target="_blank" rel="noopener">AWS Labs</a> github repository. Cloning it and grepping for areas of interest is highly recommended when starting with something new.</li>
+</ul>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>
+  How to Customise the AWS CDK Pipeline · Morten Jensen
+</title>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+
+
+
+
+<meta name="author" content="Morten Jensen">
+<meta name="description" content="
+
+  Background
+  
+    
+    Link to heading
+  
+
+Have you ever wanted the power of the AWS CodePipeline mixed with the convenience of the AWS CDK pipeline and supporting services in a CDK app?
+The AWS CDK (Cloud Development Kit) Pipeline is a high-level construct that simplifies the creation and management of CI/CD pipelines using AWS CodePipeline. It abstracts away much of the complexity involved in setting up a pipeline by providing an opinionated approach to defining the stages and actions within the pipeline. This makes it easier to implement best practices and integrate with other AWS services like CodeBuild and CloudFormation.">
+<meta name="keywords" content="AWS, CDK, Customise, Pipelines, CodePipeline, V2">
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="How to Customise the AWS CDK Pipeline">
+  <meta name="twitter:description" content="Background Link to heading Have you ever wanted the power of the AWS CodePipeline mixed with the convenience of the AWS CDK pipeline and supporting services in a CDK app?
+The AWS CDK (Cloud Development Kit) Pipeline is a high-level construct that simplifies the creation and management of CI/CD pipelines using AWS CodePipeline. It abstracts away much of the complexity involved in setting up a pipeline by providing an opinionated approach to defining the stages and actions within the pipeline. This makes it easier to implement best practices and integrate with other AWS services like CodeBuild and CloudFormation.">
+
+<meta property="og:url" content="https://jensenmo.github.io/posts/how-to-customise-cdk-pipelines/">
+  <meta property="og:site_name" content="Morten Jensen">
+  <meta property="og:title" content="How to Customise the AWS CDK Pipeline">
+  <meta property="og:description" content="Background Link to heading Have you ever wanted the power of the AWS CodePipeline mixed with the convenience of the AWS CDK pipeline and supporting services in a CDK app?
+The AWS CDK (Cloud Development Kit) Pipeline is a high-level construct that simplifies the creation and management of CI/CD pipelines using AWS CodePipeline. It abstracts away much of the complexity involved in setting up a pipeline by providing an opinionated approach to defining the stages and actions within the pipeline. This makes it easier to implement best practices and integrate with other AWS services like CodeBuild and CloudFormation.">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-10-07T00:00:00+00:00">
+    <meta property="article:modified_time" content="2024-10-07T00:00:00+00:00">
+
+
+
+
+<link rel="canonical" href="https://jensenmo.github.io/posts/how-to-customise-cdk-pipelines/">
+
+
+<link rel="preload" href="/fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+
+
+  
+  
+  <link rel="stylesheet" href="/css/coder.min.4b392a85107b91dbdabc528edf014a6ab1a30cd44cafcd5325c8efe796794fca.css" integrity="sha256-SzkqhRB7kdvavFKO3wFKarGjDNRMr81TJcjv55Z5T8o=" crossorigin="anonymous" media="screen" />
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32x32.png" sizes="32x32">
+<link rel="icon" type="image/png" href="/img/favicon-16x16.png" sizes="16x16">
+
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/images/safari-pinned-tab.svg" color="#5bbad5">
+
+
+
+
+
+
+
+
+
+</head>
+
+
+
+
+<body class="preload-transitions colorscheme-light">
+  
+<div class="float-container">
+    <a id="dark-mode-toggle" class="colorscheme-toggle">
+        <i class="fa-solid fa-adjust fa-fw" aria-hidden="true"></i>
+    </a>
+</div>
+
+
+  <main class="wrapper">
+    <nav class="navigation">
+  <section class="container">
+    
+    <a class="navigation-title" href="https://jensenmo.github.io/">
+      Morten Jensen
+    </a>
+    
+    
+      <input type="checkbox" id="menu-toggle" />
+      <label class="menu-button float-right" for="menu-toggle">
+        <i class="fa-solid fa-bars fa-fw" aria-hidden="true"></i>
+      </label>
+      <ul class="navigation-list">
+        
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/posts/">Blog</a>
+            </li>
+          
+            <li class="navigation-item">
+              <a class="navigation-link " href="/about/">About</a>
+            </li>
+          
+        
+        
+      </ul>
+    
+  </section>
+</nav>
+
+
+    <div class="content">
+      
+  <section class="container post">
+    <article>
+      <header>
+        <div class="post-title">
+          <h1 class="title">
+            <a class="title-link" href="https://jensenmo.github.io/posts/how-to-customise-cdk-pipelines/">
+              How to Customise the AWS CDK Pipeline
+            </a>
+          </h1>
+        </div>
+        <div class="post-meta">
+          <div class="date">
+            <span class="posted-on">
+              <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              <time datetime="2024-10-07T00:00:00Z">
+                October 7, 2024
+              </time>
+            </span>
+            <span class="reading-time">
+              <i class="fa-solid fa-clock" aria-hidden="true"></i>
+              6-minute read
+            </span>
+          </div>
+          
+          
+          
+        </div>
+      </header>
+
+      <div class="post-content">
+        
+        <p><img src="images/510469b1-70df-4aa3-91e1-feb94f46f92e.jpeg" alt="How to Customise the AWS CDK Pipeline"></p>
+<h1 id="background">
+  Background
+  <a class="heading-link" href="#background">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Have you ever wanted the power of the AWS CodePipeline mixed with the convenience of the AWS CDK pipeline and supporting services in a CDK app?</p>
+<p>The AWS CDK (Cloud Development Kit) Pipeline is a high-level construct that simplifies the creation and management of CI/CD pipelines using AWS CodePipeline. It abstracts away much of the complexity involved in setting up a pipeline by providing an opinionated approach to defining the stages and actions within the pipeline. This makes it easier to implement best practices and integrate with other AWS services like CodeBuild and CloudFormation.</p>
+<p>Using the AWS CDK Pipeline over fully implementing CodePipeline in the CDK offers several advantages. It reduces the amount of boilerplate code you need to write, allowing you to focus on the core logic of your application. Additionally, the CDK Pipeline construct includes built-in support for common tasks such as source control integration, build and test stages and deployment strategies (e.g. Waves), which can save time and reduce errors. This makes it an excellent choice for developers who want to quickly set up robust, scalable CI/CD pipelines without getting bogged down in the details of individual pipeline components.</p>
+<p>At Virtuability, we have often customised the CDK pipeline to do things that would otherwise have required the extra heavylifting of implementing a AWS CodePipeline from scratch in the CDK. We have done so in order to add quicker value and offer easier maintenance for our customers.</p>
+<p>This blog post demonstrates some of the types of customisations that are possible with the CDK pipeline. The supporting example code for a fully functioning, customised CDK pipeline is provided in the github repository <a href="https://github.com/virtuability/cdk-custom-pipeline"  class="external-link" target="_blank" rel="noopener">virtuability/cdk-custom-pipeline</a>.</p>
+<h1 id="use-new-codepipeline-v2-features">
+  Use new CodePipeline V2 features
+  <a class="heading-link" href="#use-new-codepipeline-v2-features">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>With the release of the <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types.html"  class="external-link" target="_blank" rel="noopener">AWS CodePipeline V2</a>, the CDK pipeline has not yet been upgraded to take advantage of the new features and there is currently a recommendation that <a href="https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.pipelines-readme.html"  class="external-link" target="_blank" rel="noopener">to use V2 features one should drop down to using the <code>aws-codepipeline</code> construct library directly</a>.</p>
+<p>The V2 pipeline is backwards compatible with the V1 pipeline. In other words, to upgrade to V2 is as simple as overriding the pipeline type.</p>
+<p>This can be achieved in code with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e"># Materialize the pipeline to allow us to override pipeline configuration</span>
+</span></span><span style="display:flex;"><span>cdk_pipeline<span style="color:#f92672">.</span>build_pipeline()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>cfn_pipeline <span style="color:#f92672">=</span> cdk_pipeline<span style="color:#f92672">.</span>pipeline<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>default_child
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Override the pipeline type to a V2</span>
+</span></span><span style="display:flex;"><span>cfn_pipeline<span style="color:#f92672">.</span>pipeline_type <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;V2&#34;</span>
+</span></span></code></pre></div><p>See <code>pipeline/pipeline_stack.py</code> in the repository for the full example.</p>
+<p>The V2 pipeline offers a different pricing model. Where the active V1 pipeline costs $1 per month the V2 pipeline is charged by action execution time (excluding manual approval and custom action types). If you have many CodePipelines (such as for landing zones) that are executed infrequently then this can make a cost difference.</p>
+<h1 id="use-the-pipeline-v2-variables">
+  Use the pipeline V2 variables
+  <a class="heading-link" href="#use-the-pipeline-v2-variables">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>The V2 pipeline can use variables as input to each pipeline execution. The code demonstrates how a pipeline variable is defined, which is used to give the deployed Cloudformation stack a prefix when deployed by the pipeline.</p>
+<p>Pipeline variables can be used for a variety of purposes. For instance, variables can be used where artifacts such as container images or software packages are built outside of the pipeline or by third-parties.</p>
+<p>Adding a pipeline variable means that a value can be set per pipeline execution. The variable remains the same for all stages and actions that are deployed by the pipelines in that execution.</p>
+<p>In this example we provide a somewhat construed example (for simplicity) that simply adds a prefix to a resource name in a stack. The following code demonstrates the definition of the pipeline variable:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>        cfn_pipeline<span style="color:#f92672">.</span>add_property_override(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Variables&#34;</span>,
+</span></span><span style="display:flex;"><span>            [
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;Name&#34;</span>: <span style="color:#e6db74">&#34;resource_prefix&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;Description&#34;</span>: <span style="color:#e6db74">&#34;Resource prefix&#34;</span>,
+</span></span><span style="display:flex;"><span>                    <span style="color:#e6db74">&#34;DefaultValue&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>,
+</span></span><span style="display:flex;"><span>                },
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>        )
+</span></span></code></pre></div><p>This code demonstrates the use of the pipeline variable by the <code>ShellStep</code>, i.e. CodeBuild Project:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>        synth_step <span style="color:#f92672">=</span> pipelines<span style="color:#f92672">.</span>ShellStep(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Synth&#34;</span>,
+</span></span><span style="display:flex;"><span>            input<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>_input_source,
+</span></span><span style="display:flex;"><span>            env<span style="color:#f92672">=</span>{
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;RESOURCE_PREFIX&#34;</span>: <span style="color:#e6db74">&#34;#</span><span style="color:#e6db74">{variables.resource_prefix}</span><span style="color:#e6db74">&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;PIPELINE_EXECUTION_ID&#34;</span>: <span style="color:#e6db74">&#34;#</span><span style="color:#e6db74">{codepipeline.PipelineExecutionId}</span><span style="color:#e6db74">&#34;</span>,
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            commands<span style="color:#f92672">=</span>[
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;echo RESOURCE_PREFIX: $RESOURCE_PREFIX&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;echo PIPELINE_EXECUTION_ID: $PIPELINE_EXECUTION_ID&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;python3 -m pip install -r requirements.txt&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;python3 -m pytest&#34;</span>,
+</span></span><span style="display:flex;"><span>                <span style="color:#75715e"># Carry over the cdk.context.json settings as the file is not checked in</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;cdk synth -c pipeline_repo=</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>_pipeline_conf<span style="color:#f92672">.</span>repo<span style="color:#e6db74">}</span><span style="color:#e6db74"> -c pipeline_branch=</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>_pipeline_conf<span style="color:#f92672">.</span>branch<span style="color:#e6db74">}</span><span style="color:#e6db74"> -c pipeline_connection_arn=</span><span style="color:#e6db74">{</span>self<span style="color:#f92672">.</span>_pipeline_conf<span style="color:#f92672">.</span>connection_arn<span style="color:#e6db74">}</span><span style="color:#e6db74"> -c resource_prefix=$RESOURCE_PREFIX&#34;</span>,
+</span></span><span style="display:flex;"><span>            ],
+</span></span><span style="display:flex;"><span>        )
+</span></span></code></pre></div><p>The pipeline also has predefined variables such as <code>#{codepipeline.PipelineExecutionId}</code>, which we output for demonstration purposes.</p>
+<p>More information on pipeline variables can be found in the <a href="https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-variables.html"  class="external-link" target="_blank" rel="noopener">documentation</a>.</p>
+<h1 id="add-a-custom-cdk-pipeline-action">
+  Add a custom CDK pipeline action
+  <a class="heading-link" href="#add-a-custom-cdk-pipeline-action">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>The CDK pipeline enables users to define custom pipeline actions. The documentation for how to implement custom actions is vague but it involves implementing the abstract class <a href="https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.pipelines/ICodePipelineActionFactory.html"  class="external-link" target="_blank" rel="noopener"><code>ICodePipelineActionFactory</code></a>. An example can be found in the <a href="https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.pipelines/Step.html"  class="external-link" target="_blank" rel="noopener"><code>Step</code> documentation</a>.</p>
+<p>In this example we implement a <code>CloudFormationDeleteStackStep</code> action in the <code>pipeline/pipeline_stack.py</code> file, which deletes a previously deployed Cloudformation Stack. The purpose of this is that pipelines can be used to temporarily create a stack, tests can be carried out against the stack and on completion the stack is deleted in order to save cost.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#a6e22e">@jsii.implements</span>(pipelines<span style="color:#f92672">.</span>ICodePipelineActionFactory)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">CloudFormationDeleteStackStep</span>(pipelines<span style="color:#f92672">.</span>Step):
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;&#34;&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    Custom pipeline action that deletes a CloudFormation stack
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;&#34;&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">__init__</span>(
+</span></span><span style="display:flex;"><span>        self,
+</span></span><span style="display:flex;"><span>        scope: Construct,
+</span></span><span style="display:flex;"><span>        id: str,
+</span></span><span style="display:flex;"><span>        stack_name: str,
+</span></span><span style="display:flex;"><span>    ):
+</span></span><span style="display:flex;"><span>        super()<span style="color:#f92672">.</span><span style="color:#a6e22e">__init__</span>(id)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>_discover_referenced_outputs({<span style="color:#e6db74">&#34;env&#34;</span>: {}})
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>_action_name <span style="color:#f92672">=</span> id
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>_stack_name <span style="color:#f92672">=</span> stack_name
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>_destroy_role <span style="color:#f92672">=</span> iam<span style="color:#f92672">.</span>Role<span style="color:#f92672">.</span>from_role_arn(
+</span></span><span style="display:flex;"><span>            scope,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>id<span style="color:#e6db74">}</span><span style="color:#e6db74">DestroyRole&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;arn:</span><span style="color:#e6db74">{</span>scope<span style="color:#f92672">.</span>partition<span style="color:#e6db74">}</span><span style="color:#e6db74">:iam::</span><span style="color:#e6db74">{</span>scope<span style="color:#f92672">.</span>account<span style="color:#e6db74">}</span><span style="color:#e6db74">:role/cdk-</span><span style="color:#e6db74">{</span>scope<span style="color:#f92672">.</span>synthesizer<span style="color:#f92672">.</span>bootstrap_qualifier<span style="color:#e6db74">}</span><span style="color:#e6db74">-deploy-role-</span><span style="color:#e6db74">{</span>scope<span style="color:#f92672">.</span>account<span style="color:#e6db74">}</span><span style="color:#e6db74">-</span><span style="color:#e6db74">{</span>scope<span style="color:#f92672">.</span>region<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>,
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        self<span style="color:#f92672">.</span>_exec_role <span style="color:#f92672">=</span> iam<span style="color:#f92672">.</span>Role<span style="color:#f92672">.</span>from_role_arn(
+</span></span><span style="display:flex;"><span>            scope,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>id<span style="color:#e6db74">}</span><span style="color:#e6db74">ExecRole&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;arn:</span><span style="color:#e6db74">{</span>scope<span style="color:#f92672">.</span>partition<span style="color:#e6db74">}</span><span style="color:#e6db74">:iam::</span><span style="color:#e6db74">{</span>scope<span style="color:#f92672">.</span>account<span style="color:#e6db74">}</span><span style="color:#e6db74">:role/cdk-</span><span style="color:#e6db74">{</span>scope<span style="color:#f92672">.</span>synthesizer<span style="color:#f92672">.</span>bootstrap_qualifier<span style="color:#e6db74">}</span><span style="color:#e6db74">-cfn-exec-role-</span><span style="color:#e6db74">{</span>scope<span style="color:#f92672">.</span>account<span style="color:#e6db74">}</span><span style="color:#e6db74">-</span><span style="color:#e6db74">{</span>scope<span style="color:#f92672">.</span>region<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>,
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">produce_action</span>(
+</span></span><span style="display:flex;"><span>        self,
+</span></span><span style="display:flex;"><span>        stage,
+</span></span><span style="display:flex;"><span>        scope: pipelines<span style="color:#f92672">.</span>ProduceActionOptions,
+</span></span><span style="display:flex;"><span>        action_name<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>        run_order<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>        variables_namespace<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>        artifacts<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>        fallbackArtifact<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>        pipeline<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>        codeBuildDefaults<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>        beforeSelfMutation<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>        stackOutputsMap<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>,
+</span></span><span style="display:flex;"><span>    ):
+</span></span><span style="display:flex;"><span>        action <span style="color:#f92672">=</span> codepipeline_actions<span style="color:#f92672">.</span>CloudFormationDeleteStackAction(
+</span></span><span style="display:flex;"><span>            action_name<span style="color:#f92672">=</span>scope<span style="color:#f92672">.</span>action_name,
+</span></span><span style="display:flex;"><span>            run_order<span style="color:#f92672">=</span>scope<span style="color:#f92672">.</span>run_order,
+</span></span><span style="display:flex;"><span>            admin_permissions<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>,
+</span></span><span style="display:flex;"><span>            stack_name<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>_stack_name,
+</span></span><span style="display:flex;"><span>            role<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>_destroy_role,
+</span></span><span style="display:flex;"><span>            deployment_role<span style="color:#f92672">=</span>self<span style="color:#f92672">.</span>_exec_role,
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        stage<span style="color:#f92672">.</span>add_action(action)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> pipelines<span style="color:#f92672">.</span>CodePipelineActionFactoryResult(run_orders_consumed<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><p>Finally, note that <a href="https://github.com/aws/jsii"  class="external-link" target="_blank" rel="noopener"><code>jsii</code></a> is a framework that enables code in various languages to interact with JavaScript classes. The user documentation can be found <a href="https://aws.github.io/jsii/"  class="external-link" target="_blank" rel="noopener">here</a>.</p>
+<h1 id="override-cdk-pipeline-artifact-s3-bucket-properties">
+  Override CDK pipeline artifact S3 bucket properties
+  <a class="heading-link" href="#override-cdk-pipeline-artifact-s3-bucket-properties">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Per default the CDK pipeline creates an S3 bucket for artifacts built during the pipeline execution. While an S3 bucket can be fed in to the pipeline on creation, another option is to use escape hatches to override the S3 bucket properties and resource policies:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>        cfn_bucket <span style="color:#f92672">=</span> cdk_pipeline<span style="color:#f92672">.</span>pipeline<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>find_child(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;ArtifactsBucket&#34;</span>
+</span></span><span style="display:flex;"><span>        )<span style="color:#f92672">.</span>node<span style="color:#f92672">.</span>default_child
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e"># Include a lifecycle configuration for the pipeline artifacts bucket</span>
+</span></span><span style="display:flex;"><span>        cfn_bucket<span style="color:#f92672">.</span>add_property_override(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;LifecycleConfiguration&#34;</span>,
+</span></span><span style="display:flex;"><span>            {
+</span></span><span style="display:flex;"><span>                <span style="color:#e6db74">&#34;Rules&#34;</span>: [
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;AbortIncompleteMultipartUpload&#34;</span>: {<span style="color:#e6db74">&#34;DaysAfterInitiation&#34;</span>: <span style="color:#ae81ff">7</span>},
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;ExpirationInDays&#34;</span>: <span style="color:#ae81ff">365</span>,
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;NoncurrentVersionExpiration&#34;</span>: {<span style="color:#e6db74">&#34;NoncurrentDays&#34;</span>: <span style="color:#ae81ff">365</span>},
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;Status&#34;</span>: <span style="color:#e6db74">&#34;Enabled&#34;</span>,
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                ]
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        cfn_bucket<span style="color:#f92672">.</span>add_override(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;UpdateReplacePolicy&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Delete&#34;</span>,
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        cfn_bucket<span style="color:#f92672">.</span>add_override(
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;DeletionPolicy&#34;</span>,
+</span></span><span style="display:flex;"><span>            <span style="color:#e6db74">&#34;Delete&#34;</span>,
+</span></span><span style="display:flex;"><span>        )
+</span></span></code></pre></div><h1 id="override-shellstepcodebuild-project-defaults">
+  Override ShellStep/CodeBuild project defaults
+  <a class="heading-link" href="#override-shellstepcodebuild-project-defaults">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>Another option is to override the CodeBuild project defaults (e.g. for ShellStep). For instance, we may require a particular python version such as 3.12 and use the ARM/Graviton architecture instead. In addition, we may want to install additional tools at the <code>install</code> phase.</p>
+<p>The following example demonstrates this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>            code_build_defaults<span style="color:#f92672">=</span>pipelines<span style="color:#f92672">.</span>CodeBuildOptions(
+</span></span><span style="display:flex;"><span>                build_environment<span style="color:#f92672">=</span>codebuild<span style="color:#f92672">.</span>BuildEnvironment(
+</span></span><span style="display:flex;"><span>                    build_image<span style="color:#f92672">=</span>codebuild<span style="color:#f92672">.</span>LinuxBuildImage<span style="color:#f92672">.</span>AMAZON_LINUX_2_ARM_3,
+</span></span><span style="display:flex;"><span>                    compute_type<span style="color:#f92672">=</span>codebuild<span style="color:#f92672">.</span>ComputeType<span style="color:#f92672">.</span>LARGE,
+</span></span><span style="display:flex;"><span>                ),
+</span></span><span style="display:flex;"><span>                partial_build_spec<span style="color:#f92672">=</span>codebuild<span style="color:#f92672">.</span>BuildSpec<span style="color:#f92672">.</span>from_object(
+</span></span><span style="display:flex;"><span>                    {
+</span></span><span style="display:flex;"><span>                        <span style="color:#e6db74">&#34;phases&#34;</span>: {
+</span></span><span style="display:flex;"><span>                            <span style="color:#e6db74">&#34;install&#34;</span>: {
+</span></span><span style="display:flex;"><span>                                <span style="color:#e6db74">&#34;runtime-versions&#34;</span>: {<span style="color:#e6db74">&#34;python&#34;</span>: <span style="color:#e6db74">&#34;3.12&#34;</span>},
+</span></span><span style="display:flex;"><span>                                <span style="color:#e6db74">&#34;commands&#34;</span>: [
+</span></span><span style="display:flex;"><span>                                    <span style="color:#e6db74">&#34;pip3 install pytest&#34;</span>,
+</span></span><span style="display:flex;"><span>                                    <span style="color:#e6db74">&#34;npm install -g aws-cdk&#34;</span>,
+</span></span><span style="display:flex;"><span>                                ],
+</span></span><span style="display:flex;"><span>                            }
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                ),
+</span></span><span style="display:flex;"><span>            ),
+</span></span></code></pre></div><p>Note that the CodeBuild project defaults can be overridden for all CodeBuild projects or individually for the asset publishing, self mutation or synth projects. This can be achieved by setting the respective properties at <code>pipelines.CodePipeline</code> instantiation.</p>
+<h1 id="conclusion">
+  Conclusion
+  <a class="heading-link" href="#conclusion">
+    <i class="fa-solid fa-link" aria-hidden="true" title="Link to heading"></i>
+    <span class="sr-only">Link to heading</span>
+  </a>
+</h1>
+<p>We have demonstrated some of the various ways that the CDK pipeline <a href="https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.pipelines.html"  class="external-link" target="_blank" rel="noopener"><code>pipelines.CodePipeline</code></a> library can be customised to meet the requirements of most pipeline scenarios without the need to drop down to the more laborious <a href="https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_codepipeline.html"  class="external-link" target="_blank" rel="noopener"><code>aws_codepipeline</code></a> library.</p>
+<p>If your organisation is using AWS CodePipeline and needs assistance with using it, then please feel free to reach out by visiting our <a href="/contact-us" >contact</a> page or send an email to <a href="mailto:team@virtuability.com" >team@virtuability.com</a>.</p>
+
+      </div>
+
+
+      <footer>
+        
+
+
+        
+        
+        
+        
+        
+        
+        
+      </footer>
+    </article>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css"
+    integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0" crossorigin="anonymous">
+  
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js"
+    integrity="sha384-PwRUT/YqbnEjkZO0zZxNqcxACrXe+j766U2amXcgMg5457rve2Y7I6ZJSm2A0mS4" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js"
+    integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"
+    onload="renderMathInElement(document.body,
+      {
+        delimiters: [
+          {left: '$$', right: '$$', display:true},
+          {left: '$', right: '$', display:false},
+          {left: '\\(', right: '\\)', display: false},
+          {left: '\\[', right: '\\]', display: true}
+        ]
+      }
+    );"></script>
+  </section>
+
+    </div>
+
+    <footer class="footer">
+  <section class="container">
+    ©
+    
+    2025
+     Morten Jensen 
+    ·
+    
+    Powered by <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/" target="_blank" rel="noopener">Coder</a>.
+    
+  </section>
+</footer>
+
+  </main>
+
+  
+
+  
+  
+  <script src="/js/coder.min.6ae284be93d2d19dad1f02b0039508d9aab3180a12a06dcc71b0b0ef7825a317.js" integrity="sha256-auKEvpPS0Z2tHwKwA5UI2aqzGAoSoG3McbCw73gloxc="></script>
+  
+
+  
+
+  
+
+
+  
+
+  
+
+  <script async defer data-domain="jensenmo.github.io" src="https://plausible.io/js/script.js"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</body>
+</html>

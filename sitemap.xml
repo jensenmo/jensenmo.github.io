@@ -3,13 +3,31 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://jensenmo.github.io/posts/20-years-with-ibs/</loc>
-    <lastmod>2025-10-27T00:00:00+00:00</lastmod>
+    <lastmod>2025-10-28T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jensenmo.github.io/</loc>
-    <lastmod>2025-10-27T00:00:00+00:00</lastmod>
+    <lastmod>2025-10-28T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jensenmo.github.io/posts/</loc>
-    <lastmod>2025-10-27T00:00:00+00:00</lastmod>
+    <lastmod>2025-10-28T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/cdk-guardrails/</loc>
+    <lastmod>2025-01-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/how-to-customise-cdk-pipelines/</loc>
+    <lastmod>2024-10-07T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/unlocking-the-power-of-aws-cdk/</loc>
+    <lastmod>2024-07-23T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/querying-cloudtrail-logs-with-athena/</loc>
+    <lastmod>2024-07-11T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/reduce-cost-at-scale-with-automated-guardrails/</loc>
+    <lastmod>2024-04-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/simply-deploy-aws-identity-center-permission-sets/</loc>
+    <lastmod>2022-12-17T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://jensenmo.github.io/posts/on-the-path-to-a-sustainable-home/</loc>
     <lastmod>2022-11-19T00:00:00+00:00</lastmod>
@@ -29,6 +47,27 @@
     <loc>https://jensenmo.github.io/posts/install-glue-on-ubuntu-20.04/</loc>
     <lastmod>2020-08-05T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>https://jensenmo.github.io/categories/</loc>
+    <lastmod>2019-11-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/leveraging-serverless-cognito-authentication/</loc>
+    <lastmod>2019-11-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/categories/uncategorized/</loc>
+    <lastmod>2019-11-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/the-case-for-structured-contextual-logs/</loc>
+    <lastmod>2019-09-23T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/6-steps-to-devops/</loc>
+    <lastmod>2019-08-26T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/why-serverless-and-devops-makes-a-big-difference/</loc>
+    <lastmod>2019-08-19T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/moving-to-cloud-the-landing-zone/</loc>
+    <lastmod>2018-07-07T12:22:38+00:00</lastmod>
+  </url><url>
     <loc>https://jensenmo.github.io/posts/setting-up-raspbian-os-full-unattended-updates/</loc>
     <lastmod>2018-01-27T21:37:00+00:00</lastmod>
   </url><url>
@@ -38,8 +77,23 @@
     <loc>https://jensenmo.github.io/posts/retrieving-stack-tracesbacktraces-from-apachephp-crashes-on-redhat-linux/</loc>
     <lastmod>2017-08-24T10:58:00+01:00</lastmod>
   </url><url>
+    <loc>https://jensenmo.github.io/posts/securing-cross-account-aws-api-calls-cli-access-with-mfa-two-factor-authentication/</loc>
+    <lastmod>2017-06-20T18:41:28+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/creating-a-core-network-foundation-in-aws-with-ssh-vpn-nat-access/</loc>
+    <lastmod>2017-06-14T19:08:12+00:00</lastmod>
+  </url><url>
     <loc>https://jensenmo.github.io/posts/studying-for-the-aws-certified-solution-architect-professional-exam-one-approach/</loc>
     <lastmod>2017-05-25T16:54:00+01:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/need-a-good-reason-to-switch-to-cloudformation-yaml-template-size-limits/</loc>
+    <lastmod>2016-10-21T19:12:05+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/moving-to-the-cloud-agility/</loc>
+    <lastmod>2016-08-29T11:27:22+00:00</lastmod>
+  </url><url>
+    <loc>https://jensenmo.github.io/posts/securing-your-aws-api-calls-with-two-factor-authentication/</loc>
+    <lastmod>2016-02-03T21:22:38+00:00</lastmod>
   </url><url>
     <loc>https://jensenmo.github.io/posts/getting-pptp-vpn-in-ubuntu-working-1404-with-ufw-enabled/</loc>
     <lastmod>2015-03-12T11:55:00+00:00</lastmod>
@@ -136,8 +190,6 @@
   </url><url>
     <loc>https://jensenmo.github.io/posts/getting-wireless-networking-working-in-ubuntu-804-hardy-x86i386-on-the-fujitsu-siemens-amilo-li-1718-laptop/</loc>
     <lastmod>2008-06-25T19:14:00+01:00</lastmod>
-  </url><url>
-    <loc>https://jensenmo.github.io/categories/</loc>
   </url><url>
     <loc>https://jensenmo.github.io/tags/</loc>
   </url>
